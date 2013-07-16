@@ -1,0 +1,44 @@
+<ul class="breadcrumb">
+    <li><a href="#/">Home</a> <span class="divider">/</span></li>
+    <li><a href="#/lists/index">Lists</a> <span class="divider">/</span></li>
+    <li><a href="#/lists/view/{{field.list.id}}">{{field.list.title}}</a> <span class="divider">/</span></li>
+    <li class="active">{{field.title}}</li>
+</ul>
+<div class="alert alert-danger">
+    <strong>Delete field ? </strong> Are you sure that you want to delete the field ?
+</div>
+<form name="form">
+    <div class="row-fluid">
+        <div class="span5">
+            <dl class="dl-horizontal">
+                <dt>Title</dt>
+                <dd>
+                    {{field.title}}
+                </dd>
+
+                <dt>Internal Title</dt>
+                <dd>{{field.internaltitle}}</dd>
+
+                <dt>Created</dt>
+                <dd>{{field.created || 'undefined'}}</dd>
+
+                <dt>Type</dt>
+                <dd>
+                   {{field.type}}
+                </dd>
+                
+                <dt>Description</dt>
+                <dd>{{field.description}}</dd>
+                
+                <dt>Is Published ?</dt>
+                <dd>{{page.ispublished | checkmark}}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <hr/>
+    <p class="pull-right">
+        <button type="button" ng-click="delete()" class="btn btn-danger">Delete</button>
+        <a href="#/lists/edit/{{list.id}}" class="btn">Back</a>
+    </p>
+</form>

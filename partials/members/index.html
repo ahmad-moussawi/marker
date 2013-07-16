@@ -1,0 +1,36 @@
+<div class="navbar">
+    <div class="navbar-inner">
+        <a class="brand" href="#">Members Manager</a>
+        <ul class="nav">
+            <li><a href="#/members/create">New member</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="alert alert-warning" ng-show="working">
+    Working ... 
+</div>
+
+<p>
+    Search Pages :
+    <input type="text" ng-model="searchText.login" placeholder="Search ..." class="pull-right" />
+</p>
+
+<table class="table table-hover">
+    <tr>
+        <th>Id</th>
+        <th>Login</th>
+        <th>Actions</th>
+    </tr>
+
+    <tr ng-repeat="member in members | filter:searchText">
+        <td>{{member.id}}</td>
+        <td>{{member.login}}</td>
+        <td>
+            <a class="btn" href="#/members/view/{{member.id}}" >View</a>
+            <a class="btn" href="#/members/edit/{{member.id}}" >Edit</a>
+            <a class="btn btn-danger" href="#/members/delete/{{member.id}}" >Delete</a>
+        </td>
+    </tr>
+
+</table>

@@ -1,0 +1,54 @@
+<ul class="breadcrumb">
+    <li><a href="/ci/admin">Home</a> <span class="divider">/</span></li>
+    <li><a href="/ci/admin/pages">Pages</a> <span class="divider">/</span></li>
+    <li class="active">{{page.title}}</li>
+</ul>
+
+<div class="alert alert-success" ng-show="saved">
+    <strong>Page saved: </strong> the page was automatically saved
+</div>
+
+<form name="form"  action="/ci/admin/pages/upload/" ng-upload>
+    <dl class="dl-horizontal">
+        <dt>Title</dt>
+        <dd>
+            <input type="text" ng-required="true" ng-model="page.title" />
+        </dd>
+
+        <dt>Path</dt>
+        <dd><input type="text" ng-model="page.urlpath" /></dd>
+
+        <dt>Body</dt>
+        <dd><textarea ck-editor ng-model="page.body" rows="10"></textarea></dd>
+
+        <dt>Created</dt>
+        <dd><input type="text" ng-model="page.created" /></dd>
+
+        <dt>Meta Keywords</dt>
+        <dd><input type="text" ng-model="page.meta" /></dd>
+
+        <dt>Is Published ?</dt>
+        <dd><input name="ispublished" ng-checked="page.ispublished" type="checkbox"/></dd>
+
+        <dt>Upload</dt>
+        <dd>
+            <input type="file" name="file"></input>
+            <input type="submit" value="Upload" 
+                   upload-submit="uploadComplete(content, completed)"></input>
+        </dd>
+    </dl>
+    <div>Completed : {{ completed | checkmark}}</div>
+        
+    <div class="alert alert-info">Server Response: {{response | json}}</div>
+    <div>
+        Fullname: <b>{{response.fullname}}</b><br />
+        Gender: <b>{{response.gender}}</b><br />
+        Favourite Color: <span ng-style="response.style">{{response.color}}</span><br />
+        Picture: {{response.pictureUrl}}
+    </div>
+
+    <p>
+        <button type="button" bg-click="save()" class="btn btn-primary">Save</button>
+        <a href="#/pages" class="btn">Cancel</a>
+    </p>
+</form>

@@ -1,0 +1,50 @@
+<ul class="breadcrumb">
+    <li><a href="#/">Home</a> <span class="divider">/</span></li>
+    <li><a href="#/lists/index">Lists</a> <span class="divider">/</span></li>
+    <li><a href="#/lists/view/{{list.id}}">{{list.title}}</a> <span class="divider">/</span></li>
+    <li class="active">{{field.title}}</li>
+</ul>
+
+<div class="alert alert-warning" ng-show="working">
+    Working ... 
+</div>
+
+<div class="alert alert-success" ng-show="saved">
+    <strong>Field saved</strong>
+</div>
+
+<form name="form">
+    <div class="row-fluid">
+        <div class="span5">
+            <dl class="dl-horizontal">
+                <dt>Title</dt>
+                <dd>
+                    <input type="text" ng-required="true" ng-model="field.title" />
+                </dd>
+
+                <dt>Internal Title</dt>
+                <dd><input type="text" ng-model="field.internaltitle" /></dd>
+
+                <dt>Created</dt>
+                <dd><input type="text" ng-model="field.created" /></dd>
+
+                <dt>Type</dt>
+                <dd>
+                    <select ng-model="field.type" ng-options="type.id as type.label for type in types"></select>
+                </dd>
+                
+                <dt>Description</dt>
+                <dd><textarea ng-model="field.description" /></dd>
+                
+                <dt>Is Published ?</dt>
+                <dd><input name="ispublished" ng-checked="page.ispublished" type="checkbox"/></dd>
+            </dl>
+        </div>
+    </div>
+
+    <hr/>
+    <p class="pull-right">
+        <button ng-disabled="working" type="button" ng-click="addField()" class="btn btn-primary">Add field</button>
+        <a href="#/lists/edit/{{list.id}}" class="btn">Back</a>
+    </p>
+</form>

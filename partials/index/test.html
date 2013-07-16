@@ -1,0 +1,47 @@
+<ul class="breadcrumb">
+    <li><a href="/ci/admin">Home</a> <span class="divider">/</span></li>
+    <li><a href="/ci/admin/pages">Pages</a> <span class="divider">/</span></li>
+    <li class="active">Test</li>
+</ul>
+
+<div class="alert alert-warning" ng-show="working">
+    Working ... 
+</div>
+
+<div class="alert alert-success" ng-show="saved">
+    <strong>Page saved: </strong> the page was automatically saved
+</div>
+
+<div class="row-fluid">
+    <div class="span5">
+        <div class="upload-control">
+            <div class="row">
+                <label for="fileToUpload">Select a File to Upload</label><br />
+                <input type="file" ng-model-instant id="fileToUpload" multiple onchange="angular.element(this).scope().setFiles(this)" />
+            </div>
+            <div id="dropbox" class="dropbox" ng-class="dropClass"><span>{{dropText}}</span></div>
+            <div ng-show="files.length">
+                <div ng-repeat="file in files.slice(0)">
+                    <span>{{file.webkitRelativePath || file.name}}</span>
+                    (<span ng-switch="file.size > 1024*1024">
+                        <span ng-switch-when="true">{{file.size / 1024 / 1024 | number:2}} MB</span>
+                        <span ng-switch-default>{{file.size / 1024 | number:2}} kB</span>
+                    </span>)
+                </div>
+                <input type="button" ng-click="uploadFile()" value="Upload" />
+                <div ng-show="progressVisible">
+                    <div class="percent">{{progress}}%</div>
+                    <div class="progress-bar">
+                        <div class="uploaded" ng-style="{'width': progress+'%'}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr/>
+    <p class="pull-right">
+        <button type="button" bg-click="save()" class="btn btn-primary">Save</button>
+        <a href="#/pages/index" class="btn">Back</a>
+    </p>
+</form>

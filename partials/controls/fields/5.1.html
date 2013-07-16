@@ -1,0 +1,110 @@
+<div>
+    <h4>Images Attributes</h4>
+    <dl class="dl-horizontal">
+        <dt>Maximum Number</dt>
+        <dd>
+            <input type="number" ng-required="true" ng-model="attrs.max" min="1" max="30" placeholder="30" />
+            <span class="help-block">The maximum number of images that can be uploaded for this field</span>
+        </dd>
+
+
+        <dt>Required</dt>
+        <dd>
+            <input type="checkbox" ng-required="true" ng-model="attrs.required" />
+            <span class="help-block">Indicate this field as required</span>
+        </dd>
+
+        <dt>Prefix</dt>
+        <dd>
+            <input type="text" ng-model="attrs.prefix" />
+        </dd>
+
+        <dt>Suffix</dt>
+        <dd>
+            <input type="text" ng-model="attrs.suffix" />
+        </dd>
+
+        <dt>Path</dt>
+        <dd>
+            <div class="input-prepend">
+                <span class="add-on">uploads/</span>
+                <input class="span4"  type="text" ng-model="attrs.path" placeholder="" />
+            </div>
+        </dd>
+
+        <dt>Allowed Extension</dt>
+        <dd>
+            <input type="text" ng-model="attrs.allowed_types" placeholder="png|jpg|gif" />
+        </dd>
+
+        <dt>Max Size</dt>
+        <dd>
+            <div class="input-append">
+                <input class="span4"  type="text" ng-model="attrs.max_size" placeholder="" />
+                <span class="add-on">Kb</span>
+            </div>
+        </dd>
+
+        <dt>Maximum Dimensions</dt>
+        <dd>
+            <table>
+                <tr>
+                    <td>
+                        <div class="input-append">
+                            <input class="input-mini"  type="text" ng-model="attrs.max_width" placeholder="Maximum Width" />
+                            <span class="add-on">px</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-append">
+                            <input class="input-mini"  type="text" ng-model="attrs.max_height" placeholder="Maximum Height" />
+                            <span class="add-on">px</span>
+                        </div> 
+                    </td>
+                </tr>
+            </table>
+        </dd>
+
+        <dt>Create Thumnail ?</dt>
+        <dd>
+            <input type="checkbox" ng-model="attrs.thumb" />
+        </dd>
+    </dl>
+    <dl class="dl-horizontal" ng-show="attrs.thumb">
+        <dt>Dimensions</dt>
+        <dd>
+            <table>
+                <tr>
+                    <td>
+                        <div class="input-append">
+                            <input class="input-mini" ng-model="attrs.thumb_width" placeholder="width" type="number" />
+                            <span class="add-on">px</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-append">
+                            <input class="input-mini" ng-model="attrs.thumb_height" placeholder="height" type="number" />
+                            <span class="add-on">px</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </dd>
+        <dt>Thumnail Path<dt>
+        <dd>
+            <div class="input-prepend">
+                <span class="add-on">uploads/</span>
+                <input class="span4"  type="text" ng-model="attrs.thumb_path" placeholder="" />
+            </div>
+        </dd>
+        <dt>Prefix</dt>
+        <dd>
+            <input type="text" ng-model="attrs.thumb_prefix" />
+        </dd>
+
+        <dt>Suffix</dt>
+        <dd>
+            <input type="text" ng-model="attrs.thumb_suffix" />
+        </dd>
+    </dl>
+</div>

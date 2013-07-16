@@ -1,0 +1,40 @@
+<ul class="breadcrumb">
+    <li><a href="/ci/admin">Home</a> <span class="divider">/</span></li>
+    <li><a href="/ci/admin/pages">Pages</a> <span class="divider">/</span></li>
+    <li class="active">{{page.title}}</li>
+</ul>
+
+
+<form ng-submit="save()">
+    <dl class="dl-horizontal">
+        <dt>Title</dt>
+        <dd>
+            <input type="text" ng-model="page.title" />
+        </dd>
+
+        <dt>Path</dt>
+        <dd><input type="text" ng-model="page.urlpath" /></dd>
+
+        <dt>Body</dt>
+        <dd><textarea ck-editor ng-model="page.body" rows="10"></textarea></dd>
+
+        <dt>Created</dt>
+        <dd><input type="text" ng-model="page.created" /></dd>
+
+        <dt>Meta Keywords</dt>
+        <dd><input type="text" ng-model="page.meta" /></dd>
+
+        <dt>Is Published ?</dt>
+        <dd><input name="ispublished" ng-model="page.ispublished" ng-checked="page.ispublished" type="checkbox"/></dd>
+    </dl>
+    
+    <p>
+        Is Published {{page.ispublished | checkmark}}
+        Is Published {{ page.ispublished}}
+    </p>
+    
+    <p>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn" href="#/pages">Cancel</a>
+    </p>
+</form>

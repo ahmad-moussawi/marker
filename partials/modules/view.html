@@ -1,0 +1,52 @@
+<ul class="breadcrumb">
+    <li><a href="/ci/admin">Home</a> <span class="divider">/</span></li>
+    <li><a href="#/lists/index">Lists</a> <span class="divider">/</span></li>
+    <li class="active">{{list.internaltitle}} - [{{list.title}}]</li>
+</ul>
+
+
+<div class="row-fluid">
+    <div class="span5">
+        <dl class="dl-horizontal">
+            <dt>Title</dt>
+            <dd>{{list.title}}</dd>
+            
+            <dt>Internal Title</dt>
+            <dd>{{list.internaltitle}}</dd>
+
+            <dt>Created</dt>
+            <dd>{{list.created || 'Undefined'}}</dd>
+
+            <dt>Description</dt>
+            <dd>{{list.description}}</dd>
+
+            <dt>Is Published ?</dt>
+            <dd><input name="ispublished" disabled="disabled" ng-checked="page.ispublished" type="checkbox" /></dd>
+        </dl>
+    </div>
+    <div class="span7">
+        <strong>List fields</strong>
+        <p>
+            <input type="text" class="span3" ng-model="searchField" placeholder="Search the fields..."/>
+        </p>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Attributes</th>
+            </tr>
+            <tr ng-repeat="field in list.fields | filter:searchField">
+                <td>{{field.title}}</td>
+                <td>{{field.type}}</td>
+                <td>{{field.attrs}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<hr/>
+<p class="pull-right">
+    <a href="#/lists/edit/{{list.id}}" class="btn btn-primary">Edit</a>
+    <a href="#/lists/index" class="btn">Back</a>
+
+</p>

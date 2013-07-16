@@ -1,0 +1,50 @@
+<ul class="breadcrumb">
+    <li><a href="#/index">Home</a> <span class="divider">/</span></li>
+    <li><a href="#/pages/index">Pages</a> <span class="divider">/</span></li>
+    <li class="active">{{page.title}}</li>
+</ul>
+
+<div class="alert alert-warning" ng-show="working">
+    Working ... 
+</div>
+
+<div class="alert alert-success" ng-show="saved">
+    <strong>Page saved: </strong> the page was successfully saved
+</div>
+
+<form ng-submit="save()">
+    <div class="row-fluid">
+        <div class="span5">
+            <dl class="dl-horizontal">
+                <dt>Title</dt>
+                <dd>
+                    <input type="text" ng-model="page.title" />
+                </dd>
+
+                <dt>Path</dt>
+                <dd><input type="text" ng-model="page.urlpath" /></dd>
+
+                <dt>Meta Keywords</dt>
+                <dd><input type="text" ng-model="page.meta" /></dd>
+
+                <dt>Is Published ?</dt>
+                <dd><input name="ispublished" ng-model="page.ispublished" ng-checked="page.ispublished" type="checkbox"/></dd>
+            </dl>
+        </div>
+        <div class="span7">
+            <strong>Page content</strong>
+            <textarea ck-editor ng-model="page.body" rows="10"></textarea>
+            <hr/>
+            <p>
+                <strong>Picture</strong>
+            </p>
+            <div form="form" working="working" doupload="alert('do upload')"  max="10" upload="http://demo/ci/admin/uploads/upload/32" property="page.images" fieldid="32" name="images">upload</div>
+        </div>
+    </div>
+    <hr/>
+
+    <p class="pull-right">
+        <button ng-disabled="working" type="submit" class="btn btn-primary">Save</button>
+        <a ng-disabled="working" class="btn" href="#/pages/index">Back</a>
+    </p>
+</form>

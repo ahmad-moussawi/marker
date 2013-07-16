@@ -1,0 +1,34 @@
+<ul class="breadcrumb">
+    <li><a href="/ci/admin">Home</a> <span class="divider">/</span></li>
+    <li><a href="/ci/admin/pages">Pages</a> <span class="divider">/</span></li>
+    <li class="active">{{page.title}}</li>
+</ul>
+
+<form ng-submit="delete()">
+    <dl class="dl-horizontal">
+        <dt>Title</dt>
+        <dd>
+            {{page.title}}
+        </dd>
+
+        <dt>Path</dt>
+        <dd>{{page.urlpath}}</dd>
+
+        <dt>Body</dt>
+        <dd>{{page.body}}</dd>
+
+        <dt>Created</dt>
+        <dd>{{page.created || 'Undefined'}}</dd>
+
+        <dt>Meta Keywords</dt>
+        <dd>{{page.meta}}</dd>
+
+        <dt>Is Published ?</dt>
+        <dd><input name="ispublished" disabled="disabled" ng-checked="page.ispublished" type="checkbox" /></dd>
+    </dl>
+    <p>
+        <input type="hidden" ng-model="page.id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="#/pages" class="btn">Back</a>
+    </p>
+</form>

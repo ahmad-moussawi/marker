@@ -1,0 +1,42 @@
+<ul class="breadcrumb">
+    <li><a href="/ci/">Control Panel</a> <span class="divider">/</span></li>
+    <li><a href="/ci/admin/#/members/index">members</a> <span class="divider">/</span></li>
+    <li class="active">{{member.login}}</li>
+</ul>
+
+
+<div class="alert alert-warning" ng-show="working">
+    Working ... 
+</div>
+
+<form name="form" ng-show="!working">
+    <div class="row-fluid">
+        <div class="span5">
+            <dl class="dl-horizontal">
+                <dt>Login</dt>
+                <dd>
+                    {{member.login}}
+                </dd>
+                <dt>Password</dt>
+                <dd>
+                    ******
+                </dd>
+                <dt>Description</dt>
+                <dd>{{member.description}}</dd>
+            </dl>
+        </div>
+        <div class="span7">
+            <strong>Member Of:</strong>
+            <label ng-repeat="role in roles">
+                <input type="checkbox" disabled="disabled" ng-checked="member.roles.indexOf(role.id) > -1" />
+                {{role.role}}
+            </label>
+        </div>
+    </div>
+
+    <hr/>
+    <p class="pull-right">
+        <a ng-disabled="working" href="#/members/edit/{{member.id}}" class="btn btn-primary">Edit</a>
+        <a ng-disabled="working" href="#/members/index" class="btn">Back</a>
+    </p>
+</form>

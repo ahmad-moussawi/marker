@@ -1,0 +1,32 @@
+- add the custom controller class : application/core/controller
+-- add the function loadView(view,data,area)
+
+- add the Content Helper Class
+
+
+plain text
+1.1	shorttext
+1.2	longtext
+
+rich text
+2.1	full
+2.2	medium
+2.3	simple
+
+number
+3.1	int
+3.2	float
+
+list
+4.1	select
+4.2	checkbox
+4.3	radio
+4.4 true/false
+
+media
+5.1	images
+5.2	video
+5.3	audio
+
+files
+6.1	attachements

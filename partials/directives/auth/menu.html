@@ -1,0 +1,7 @@
+<li class="dropdown pull-right">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{auth.member.login || 'Account'}} <b class="caret"></b></a>
+    <ul ng-switch="auth.isLogged" class="dropdown-menu">
+        <li ng-switch-when="true"><a href="#/account/logout">logout</a></li>
+        <li ng-switch-default><a href="#/account/login">login</a></li>
+    </ul>
+</li>
