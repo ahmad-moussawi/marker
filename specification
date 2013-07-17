@@ -25,4 +25,5 @@ Lists
  - ability to hide a field from a view
           
 
-        
+Bugs :
+Modules index, search only by title ( should search on all the fields)
