@@ -77,6 +77,41 @@ class Content {
 
                 $html .="<textarea $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
                 break;
+
+                case '1.3':
+                if (isset($attrs)) {
+                    if (isset($attrs->required) && $attrs->required) {
+                        $str = ' required="required"';
+                    }
+
+                    if (isset($attrs->default) && $attrs->default) {
+                        $str .= " ng-init=\"item.$field->internaltitle='$attrs->default'\"";
+                    }
+                    
+                     if (isset($attrs->theme) && $attrs->theme > 0) {
+                        $str .= ' theme="' . $attrs->theme . '"';
+                    }
+                }
+
+                $html .="<textarea ck-editor $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
+                break;
+                
+                case '1.4':
+                if (isset($attrs)) {
+                    if (isset($attrs->required) && $attrs->required) {
+                        $str = ' required="required"';
+                    }
+
+                    if (isset($attrs->default) && $attrs->default) {
+                        $str .= " ng-init=\"item.$field->internaltitle='$attrs->default'\"";
+                    }
+                    
+                     if (isset($attrs->theme) && $attrs->theme > 0) {
+                        $str .= ' theme="' . $attrs->theme . '"';
+                    }
+                }
+                $html .="<div class=\"editor\" data-ace=\"\" data-ng-model=\"item.$field->internaltitle\"></div>";
+                break;
             case 2:
                 $html .="<input type=\"number\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;

@@ -27,14 +27,13 @@
         <td ng-bind-html="page.isdraft | label:'warning':'draft'"></td>
         <td>{{page.id}}</td>
         <td>{{page.title}}</td>
-        <td>{{page.urlpath}}</td>
+        <td><a class="label label-info" href="../pages/view/{{page.urlpath}}" target="_blank" title="Click to preview">{{page.urlpath}}</a></td>
         <td>{{page.ispublished | checkmark}}</td>
         <td>{{page.createdby}}</td>
         <td>
-            <a class="btn" href="../pages/view/{{page.urlpath}}" target="_blank">Preview</a>
             <a class="btn" href="#/pages/view/{{page.id}}" >View</a>
-            <a class="btn" href="#/pages/edit/{{page.id}}" >Edit</a>
-            <a class="btn" href="#/pages/delete/{{page.id}}" >Delete</a>
+            <a class="btn btn-primary" href="#/pages/edit/{{page.id}}" >Edit</a>
+            <a class="btn btn-danger" href="#/pages/delete/{{page.id}}" >Delete</a>
         </td>
     </tr>
 

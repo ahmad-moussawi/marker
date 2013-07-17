@@ -1,0 +1,22 @@
+<div>
+    <h4>Short Text Attributes</h4>
+    <dl class="dl-horizontal">
+
+        <dt>Default Value</dt>
+        <dd>
+            <input type="text"  ng-model="attrs.default" />
+        </dd>
+        
+        <dt>Required</dt>
+        <dd>
+            <input type="checkbox" ng-required="true" ng-model="attrs.required" />
+        </dd>
+        
+
+        <dt>Theme</dt>
+        <dd>
+            <select ng-model="attrs.theme" ng-options="v for v in ['minimal','basic','full']">
+            </select>
+        </dd>
+    </dl>
+</div>

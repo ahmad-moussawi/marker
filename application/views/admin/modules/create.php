@@ -17,7 +17,7 @@
         <div class="span5">
             <dl class="dl-horizontal">
                 <?php foreach ($fields as $field): ?>
-                    <?php if ($field->type < 5) : ?>
+                    <?php if ($field->type < 5 && $field->type != '1.3') : ?>
                         <dt><?php echo $field->title ?></dt>
                         <dd>
                             <?php echo Content::renderEditField($field) ?>
@@ -29,7 +29,7 @@
         <div class="span7">
             <dl class="dl-horizontal">
                 <?php foreach ($fields as $field): ?>
-                    <?php if ($field->type > 5) : ?>
+                    <?php if ($field->type > 5 || $field->type == '1.3') : ?>
                         <dt><?php echo $field->title ?></dt>
                         <dd>
                             <?php echo Content::renderEditField($field) ?>

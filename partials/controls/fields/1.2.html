@@ -1,0 +1,35 @@
+<div>
+    <h4>Short Text Attributes</h4>
+    <dl class="dl-horizontal">
+
+        <dt>Default Value</dt>
+        <dd>
+            <input type="text"  ng-model="attrs.default" />
+        </dd>
+        <dt>Maximum Length</dt>
+        <dd>
+            <input type="text" ng-required="true" ng-model="attrs.max_len" />
+        </dd>
+        <dt>Minimum Length</dt>
+        <dd>
+            <input type="text" ng-required="true" ng-model="attrs.min_len" />
+        </dd>
+        <dt>Required</dt>
+        <dd>
+            <input type="checkbox" ng-required="true" ng-model="attrs.required" />
+        </dd>
+
+        <dt>Validation</dt>
+        <dd>
+            <select ng-model="attrs.validation" ng-options="v for v in ['email','url','regex']">
+                <option value="">no validation</option>
+            </select>
+            <p>
+                <input type="text" class="input" placeholder="regular expression" ng-required="attrs.validation == 'regex'" ng-show="attrs.validation == 'regex'" ng-model="attrs.validation_regex" />
+            </p>
+            <p>
+                <textarea placeholder="validation message" ng-show="attrs.validation" ng-model="attrs.validation_message" ></textarea>
+            </p>
+        </dd>
+    </dl>
+</div>

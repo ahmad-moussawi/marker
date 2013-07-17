@@ -163,13 +163,11 @@ app.controller('ModulesViewCtrl', ['$scope', '$http', '$routeParams', '$route', 
 app.controller('ModulesEditCtrl', ['$scope', '$http', '$routeParams', '$route', '$compile', function($scope, $http, $routeParams, $route, $compile) {
         $scope.working = true;
         $route.current.templateUrl = path.ajax + 'modules/renderView/edit/' + $routeParams.id;
-        $http.get($route.current.templateUrl).sucess(function(data) {
+        $http.get($route.current.templateUrl).success(function(data) {
             $http.get(path.ajax + 'modules/getItem/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
-                $scope.$apply(function() {
-                    $scope.item = r;
-                    $('#view').html($compile(data)($scope));
-                    $scope.working = false;
-                });
+                $scope.item = r;
+                $('#view').html($compile(data)($scope));
+                $scope.working = false;
             });
         });
 
@@ -186,11 +184,9 @@ app.controller('ModulesDeleteCtrl', ['$scope', '$http', '$routeParams', '$route'
         $route.current.templateUrl = path.ajax + 'modules/renderView/delete/' + $routeParams.id;
         $http.get($route.current.templateUrl).success(function(data) {
             $http.get(path.ajax + 'modules/getItem/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
-                $scope.$apply(function() {
-                    $scope.item = r;
-                    $('#view').html($compile(data)($scope));
-                    $scope.working = false;
-                });
+                $scope.item = r;
+                $('#view').html($compile(data)($scope));
+                $scope.working = false;
             });
         });
 
@@ -226,7 +222,7 @@ app.controller('AccLoginCtrl', ['$scope', '$location', '$http', 'AuthService', f
             }).error(function() {
                 $scope.errors.push('Login failed');
             });
-        }
+        };
     }]);
 
 app.controller('AccLogoutCtrl', ['$scope', '$http', '$location', 'AuthService', function($scope, $http, $location, auth) {
