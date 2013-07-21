@@ -45,6 +45,7 @@ class Lists extends CI_Controller {
             $this->dbforge->create_table($data['mapped_table']);
 
             $data['created'] = date('Y-m-d');
+            $data['createdby'] = Auth::is_authenticated()->login;
             $this->db->insert($this->table, $data);
             $id = $this->db->insert_id();
             $response = $id;
@@ -73,13 +74,20 @@ class Lists extends CI_Controller {
         echo json_encode($response);
     }
 
+    function setTitleField($fieldId, $listId){
+        $this->db->update('fields', array('istitle' => 1), array('id' => $fieldId));
+        $this->db->update('fields', array('istitle' => 0), array('listid' => $listId));
+
+        return $this->json(array('field' => $this->db->get_where('fields', array('id' => $fieldId) , 1)->row() ));
+    }
+
     /**
      * 
      * @param int or string $id the list id or internal name
      */
     function GetFields($id) {
-        $data = $this->db->from('fields')->where(array('id' => $id))->result();
-        return json_encode($data);
+        $data = $this->db->get_where('fields',array('listid' => $id))->result();
+        echo json_encode($data);
     }
 
     function GetTypes() {
@@ -128,6 +136,11 @@ class Lists extends CI_Controller {
 
         if ($getFields) {
             $data->fields = $this->db->where(array('listid' => $listId))->get('fields')->result();
+
+            foreach ($data->fields as &$row) {
+                $row->ispublished = !!$row->ispublished;
+                $row->istitle = !!$row->istitle;
+            }
         }
 
         if ($checkIfTableExists) {

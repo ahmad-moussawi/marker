@@ -1,0 +1,55 @@
+<div>
+    <h4>Select Attributes</h4>
+    <dl class="dl-horizontal">
+
+        
+        
+        <dt>Required</dt>
+        <dd>
+            <input type="checkbox" ng-model="attrs.required" />
+        </dd>
+
+        <dt>Default Value</dt>
+        <dd>
+            <input type="text"  ng-model="attrs.default" />
+        </dd>
+
+        <dt>Type</dt>
+        <dd>
+            <select ng-required="true" ng-model="attrs.type" ng-options="v for v in ['static','internal']"></select>
+        </dd>
+    </dl>
+
+
+    <div ng-switch="attrs.type">
+		<dl class="dl-horizontal" ng-switch-when="static">
+	        <dt>Values</dt>
+	        <dd>
+	            <textarea ng-required="attrs.type == 'static'" ng-model="attrs.type_static"></textarea>
+	            <p class="help-block">
+	            	Each value in a line e.g.<br/>
+	            	option1::value1<br/>
+	            	option2::value2<br/>
+	            </p>
+	        </dd>
+	    </dl>
+	    <dl class="dl-horizontal" ng-switch-when="internal">
+	        <dt>Select list</dt>
+	        <dd>
+	            <select fieldsettings:lists ng-model="attrs.type_internal" ng-required="attrs.type == 'internal'" 
+	            ng-change="attrs.type_internal_display = '-1'"></select>
+	        </dd>
+
+	        <dt>Display Field</dt>
+	        <dd>
+	            <select fieldsettings:displayfield="{{attrs.type_internal}}" multiple="multiple" size="5" ng-required="attrs.type == 'internal'" ng-model="attrs.type_internal_display"></select>
+	            <p class="help-block">Select at list one field to display, multiple field will be concatenated with a '-'</p>
+	        </dd>
+	    </dl>
+    </div>
+    
+
+
+    
+
+</div>

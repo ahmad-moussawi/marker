@@ -47,7 +47,9 @@
 
 <hr/>
 <p class="pull-right">
-    <a href="#/lists/edit/{{list.id}}" class="btn btn-primary">Edit</a>
+    <span ng-switch="list.protected">
+        <a ng-switch-when="0" class="btn btn-primary" href="#/lists/edit/{{list.id}}" >Edit</a>
+    </span>
     <a href="#/lists/index" class="btn">Back</a>
 
 </p>

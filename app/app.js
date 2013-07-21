@@ -4,8 +4,8 @@ var routes = [
     //Admin
     ['/index', path.partials + 'index/index.html', 'IndexCtrl'],
     ['/test', path.partials + 'index/test.html', 'TestCtrl'],
+
     // Modules
-    ['/modules', path.partials + 'index/modules.html', 'ModulesCtrl'],
     ['/modules/:id/index', path.partials + 'modules/blank.html', 'ModulesIndexCtrl'],
     ['/modules/:id/create', path.partials + 'modules/blank.html', 'ModulesCreateCtrl'],
     ['/modules/:id/view/:rowId', path.partials + 'modules/blank.html', 'ModulesViewCtrl'],

@@ -27,3 +27,5 @@ Lists
 
 Bugs :
 Modules index, search only by title ( should search on all the fields)
+On Upload if you remove a file and then add another one, it will be added twice
+Default Value will replace the value, should only be set if no value provided in the create view only

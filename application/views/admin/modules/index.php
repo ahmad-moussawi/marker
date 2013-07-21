@@ -1,6 +1,6 @@
 <div class="navbar">
     <div class="navbar-inner">
-        <a class="brand" href="#"><?php echo $module->title ?></a>
+        <a class="brand" href="#/index"><?php echo $module->title ?></a>
         <ul class="nav">
             <li><a href="#/modules/<?php echo $module->id ?>/create">New <?php echo $term ?></a></li>
         </ul>
@@ -8,8 +8,7 @@
 </div>
 
 <p>
-    Search Lists :
-    <input type="text" ng-model="searchText.title" placeholder="Search ..." class="pull-right" />
+    <input type="text" ng-model="searchText" placeholder="Search <?php echo $module->title ?>" class="pull-right" />
 </p>
 
 <table class="table table-hover">
@@ -29,7 +28,6 @@
         <td>
             <a class="btn" href="#/modules/<?php echo $module->id ?>/view/{{item.id}}" >View</a>
             <a class="btn btn-primary" href="#/modules/<?php echo $module->id ?>/edit/{{item.id}}" >Edit</a>
-            <a class="btn btn-danger" href="#/modules/<?php echo $module->id ?>/delete/{{item.id}}" >Delete</a>
         </td>
     </tr>
 

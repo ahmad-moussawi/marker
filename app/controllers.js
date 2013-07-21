@@ -8,9 +8,6 @@ var app = angular.module('myApp.controllers', []);
 ///////////////
 // Index
 ///////////////
-app.controller('IndexCtrl', ['$scope', function($scope) {
-    }]);
-
 app.controller('TestCtrl', ['$scope', '$http', function(scope, $http) {
         //============== DRAG & DROP =============
         // source for drag&drop: http://www.webappers.com/2011/09/28/drag-drop-file-upload-with-html5-javascript/
@@ -114,25 +111,27 @@ app.controller('TestCtrl', ['$scope', '$http', function(scope, $http) {
 
 
 
-app.controller('ModulesCtrl', ['$scope', '$http', function($scope, $http) {
+app.controller('IndexCtrl', ['$scope', '$http', function($scope, $http) {
         $scope.working = true;
-        $http.get(path.ajax + 'modules/getModules').success(function(r) {
-            $scope.modules = r;
+        // 1 is the dashboard link modules
+        $http.get(path.ajax + 'modules/get/1').success(function(r) {
+            $scope.links = r.data;
             $scope.working = false;
         });
     }]);
+
 app.controller('ModulesIndexCtrl', ['$scope', '$http', '$routeParams', '$route', '$compile', function($scope, $http, $routeParams, $route, $compile) {
         $scope.working = true;
         $route.current.templateUrl = path.ajax + 'modules/renderView/index/' + $routeParams.id;
         $http.get($route.current.templateUrl).success(function(data) {
-            $http.get(path.ajax + 'modules/getItem/' + $routeParams.id).success(function(r) {
-                $scope.items = r;
+            $http.get(path.ajax + 'modules/get/' + $routeParams.id).success(function(r) {
+                $scope.items = r.data;
                 $('#view').html($compile(data)($scope));
                 $scope.working = false;
             });
         });
     }]);
-app.controller('ModulesCreateCtrl', ['$scope', '$http', '$routeParams', '$route', '$compile', function($scope, $http, $routeParams, $route, $compile) {
+app.controller('ModulesCreateCtrl', ['$scope', '$http', '$routeParams', '$route', '$compile', '$location', function($scope, $http, $routeParams, $route, $compile, $location) {
         $scope.working = true;
         $scope.attachedfiles = [];
         $route.current.templateUrl = path.ajax + 'modules/renderView/create/' + $routeParams.id;
@@ -143,9 +142,10 @@ app.controller('ModulesCreateCtrl', ['$scope', '$http', '$routeParams', '$route'
 
         $scope.save = function() {
             $scope.working = true;
-            $http.post(path.ajax + 'modules/setItem/' + $routeParams.id, $scope.item).success(function(r) {
+            $http.post(path.ajax + 'modules/set/' + $routeParams.id, $scope.item).success(function(r) {
                 $scope.working = false;
                 $scope.saved = true;
+                $location.path('modules/' + $routeParams.id + '/index' );
             });
         };
     }]);
@@ -153,8 +153,8 @@ app.controller('ModulesViewCtrl', ['$scope', '$http', '$routeParams', '$route', 
         $scope.working = true;
         $route.current.templateUrl = path.ajax + 'modules/renderView/view/' + $routeParams.id;
         $http.get($route.current.templateUrl).success(function(data) {
-            $http.get(path.ajax + 'modules/getItem/' + $routeParams.id + '/' + $routeParams.rowId).sucess(function(r) {
-                $scope.item = r;
+            $http.get(path.ajax + 'modules/get/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
+                $scope.item = r.data;
                 $('#view').html($compile(data)($scope));
                 $scope.working = false;
             });
@@ -164,8 +164,8 @@ app.controller('ModulesEditCtrl', ['$scope', '$http', '$routeParams', '$route', 
         $scope.working = true;
         $route.current.templateUrl = path.ajax + 'modules/renderView/edit/' + $routeParams.id;
         $http.get($route.current.templateUrl).success(function(data) {
-            $http.get(path.ajax + 'modules/getItem/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
-                $scope.item = r;
+            $http.get(path.ajax + 'modules/get/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
+                $scope.item = r.data;
                 $('#view').html($compile(data)($scope));
                 $scope.working = false;
             });
@@ -173,7 +173,7 @@ app.controller('ModulesEditCtrl', ['$scope', '$http', '$routeParams', '$route', 
 
         $scope.save = function() {
             $scope.working = true;
-            $http.post(path.ajax + 'modules/setItem/' + $routeParams.id + '/' + $routeParams.rowId, $scope.item).success(function(r) {
+            $http.post(path.ajax + 'modules/set/' + $routeParams.id + '/' + $routeParams.rowId, $scope.item).success(function(r) {
                 $scope.working = false;
                 $scope.saved = true;
             });
@@ -183,15 +183,15 @@ app.controller('ModulesDeleteCtrl', ['$scope', '$http', '$routeParams', '$route'
         $scope.working = true;
         $route.current.templateUrl = path.ajax + 'modules/renderView/delete/' + $routeParams.id;
         $http.get($route.current.templateUrl).success(function(data) {
-            $http.get(path.ajax + 'modules/getItem/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
-                $scope.item = r;
+            $http.get(path.ajax + 'modules/get/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
+                $scope.item = r.data;
                 $('#view').html($compile(data)($scope));
                 $scope.working = false;
             });
         });
 
         $scope.delete = function() {
-            $http.post(path.ajax + 'modules/deleteItem/' + $routeParams.id + '/' + $routeParams.rowId, $scope.item).success(function(r) {
+            $http.post(path.ajax + 'modules/delete/' + $routeParams.id + '/' + $routeParams.rowId, $scope.item).success(function(r) {
                 $location.path('/modules/' + $routeParams.id + '/index');
             });
         };
@@ -265,6 +265,10 @@ app.controller('ListsDeleteCtrl', ['$scope', '$http', '$routeParams', '$location
 
         //get list
         $http.get(path.ajax + 'lists/get/' + $routeParams.id).success(function(r) {
+            if(r.protected){
+                $location.path('lists/view/' + $routeParams.id);
+            }
+
             $scope.list = r;
             $scope.working = false;
         });
@@ -299,12 +303,18 @@ app.controller('ListsCreateCtrl', ['$scope', '$http', '$filter', '$routeParams',
         };
 
     }]);
-app.controller('ListsEditCtrl', ['$scope', '$http', '$filter', '$routeParams', function($scope, $http, $filter, $routeParams) {
+app.controller('ListsEditCtrl', ['$scope', '$http', '$filter', '$routeParams', '$location', function($scope, $http, $filter, $routeParams, $location) {
         $scope.working = true;
 
         //get list
         $http.get(path.ajax + 'lists/get/' + $routeParams.id).success(function(r) {
+            
+            if(r.protected){
+                $location.path('lists/view/' + $routeParams.id);
+            }
+
             $scope.list = r;
+
             $scope.$watch('list.title', function(value) {
                 $scope.list.internaltitle = $filter('safetitle')(value);
             });
@@ -323,9 +333,9 @@ app.controller('ListsEditCtrl', ['$scope', '$http', '$filter', '$routeParams', f
         };
 
     }]);
-app.controller('ListsCreateFieldCtrl', ['$scope', '$http', '$routeParams', '$filter', function($scope, $http, $routeParams, $filter) {
+app.controller('ListsCreateFieldCtrl', ['$scope', '$http', '$routeParams', '$filter', '$location', function($scope, $http, $routeParams, $filter, $location){
         $scope.working = true;
-        $scope.attrs = {};
+        $scope.attrs = { };
         $scope.field = {created: $filter('date')(new Date(), 'yyyy-MM-dd'), title: '', type: '1.1'};
         $scope.$watch('field.title', function(value) {
             $scope.field.internaltitle = $filter('safetitle')(value);
@@ -344,11 +354,38 @@ app.controller('ListsCreateFieldCtrl', ['$scope', '$http', '$routeParams', '$fil
             $http.post(path.ajax + 'lists/addField/' + $routeParams.id, $scope.field).success(function(r) {
                 $scope.working = false;
                 $scope.saved = true;
+                $location.path('lists/edit/' + $routeParams.id);
             });
         };
 
 
     }]);
+app.controller('ListsEditFieldCtrl', ['$scope', '$http', '$routeParams', '$filter', '$location', function($scope, $http, $routeParams, $filter, $location){
+        $scope.working = true;
+        $scope.attrs = { };
+        $scope.field = {title: '', type: '1.1'};
+        $scope.$watch('field.title', function(value) {
+            $scope.field.internaltitle = $filter('safetitle')(value);
+        });
+
+        $http.get(path.ajax + 'fields/Types').success(function(types) {
+            $http.get(path.ajax + 'lists/get/' + $routeParams.id).success(function(r) {
+                $scope.list = r;
+                $scope.types = types;
+                $scope.working = false;
+            });
+        });
+
+        $scope.save = function() {
+            $scope.field.attrs = JSON.stringify($scope.attrs);
+            $http.post(path.ajax + 'lists/addField/' + $routeParams.id, $scope.field).success(function(r) {
+                $scope.working = false;
+                $scope.saved = true;
+                $location.path('lists/edit/' + $routeParams.id);
+            });
+        };
+    }]);
+
 app.controller('ListsDeleteFieldCtrl', ['$scope', '$http', '$routeParams', '$filter', '$location', function($scope, $http, $routeParams, $filter, $location) {
         $http.get(path.ajax + 'lists/getField/' + $routeParams.fieldId).success(function(r) {
             $scope.field = r;
@@ -368,11 +405,8 @@ app.controller('MembersIndexCtrl', '$http', ['$scope', function($scope, $http) {
         $scope.working = true;
         $scope.members = [];
         $http.get(path.ajax + 'members/get').success(function(r) {
-
-            $scope.$apply(function() {
                 $scope.members = r;
                 $scope.working = false;
-            });
         });
     }]);
 app.controller('MembersCreateCtrl', ['$scope', '$http', function($scope, $http) {
@@ -386,10 +420,8 @@ app.controller('MembersCreateCtrl', ['$scope', '$http', function($scope, $http) 
 
         //get roles
         $http.get(path.ajax + 'members/getroles').success(function(r) {
-            $scope.$apply(function() {
                 $scope.roles = r;
                 $scope.working = false;
-            });
         });
 
         $scope.save = function() {
@@ -406,17 +438,13 @@ app.controller('MembersEditCtrl', ['$scope', '$http', '$routeParams', function($
 
         //get roles
         $http.get(path.ajax + 'members/getroles').success(function(r) {
-            $scope.$apply(function() {
                 $scope.roles = r;
 
                 //get member
                 $http.get(path.ajax + 'members/get/' + $routeParams.userId).success(function(r) {
-                    $scope.$apply(function() {
                         $scope.member = r;
                         $scope.working = false;
-                    });
                 });
-            });
         });
 
 
@@ -434,17 +462,13 @@ app.controller('MembersViewCtrl', ['$scope', '$http', '$routeParams', function($
 
         //get roles
         $http.get(path.ajax + 'members/getroles').success(function(r) {
-            $scope.$apply(function() {
                 $scope.roles = r;
 
                 //get member
                 $http.get(path.ajax + 'members/get/' + $routeParams.userId).success(function(r) {
-                    $scope.$apply(function() {
                         $scope.member = r;
                         $scope.working = false;
-                    });
                 });
-            });
         });
     }]);
 

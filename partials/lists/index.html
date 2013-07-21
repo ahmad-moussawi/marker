@@ -30,8 +30,9 @@
         <td>{{list.createdby}}</td>
         <td>
             <a class="btn" href="#/lists/view/{{list.id}}" >View</a>
-            <a class="btn" href="#/lists/edit/{{list.id}}" >Edit</a>
-            <a class="btn" href="#/lists/delete/{{list.id}}" >Delete</a>
+            <span ng-switch="list.protected">
+                <a ng-switch-when="0" class="btn" href="#/lists/edit/{{list.id}}" >Edit</a>
+            </span>
         </td>
     </tr>
 

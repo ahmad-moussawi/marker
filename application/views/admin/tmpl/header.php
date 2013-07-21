@@ -46,13 +46,12 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="#"><?php echo config_item('project_title') ?></a>
+                    <a class="brand" href="#/index"><?php echo config_item('project_title') ?></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <li class="active"><a href="#/index">Home Panel</a></li>
-                            <li><a href="#/modules">Modules</a></li>
+                            <li><a href="#/index"></a></li>
                         </ul>
-                        <ul class="nav pull-right">
+                        <ul class="nav login-menu">
                             <div auth-menu></div>
                         </ul>
                         <!-- <form class="navbar-form pull-right">

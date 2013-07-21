@@ -109,7 +109,7 @@ app.directive('authCheck', ['$rootScope', '$http', '$location', 'AuthService', f
         return {
             link: function(scope, elem, attrs, ctrl) {
                 $root.$on('$routeChangeStart', function(event, currRoute, prevRoute) {
-// if (!prevRoute.access.isFree && !userSrv.isLogged) {
+                    // if (!prevRoute.access.isFree && !userSrv.isLogged) {
                     if (!auth.isLogged) {
 
                         $http.post(path.ajax + 'account/is_authenticated').success(function(r) {
@@ -216,8 +216,8 @@ app.directive('upload', ['$http',
                     if (property) {
 
                         /** UPLOAD **/
-//============== DRAG & DROP =============
-// source for drag&drop: http://www.webappers.com/2011/09/28/drag-drop-file-upload-with-html5-javascript/
+                        //============== DRAG & DROP =============
+                        // source for drag&drop: http://www.webappers.com/2011/09/28/drag-drop-file-upload-with-html5-javascript/
                         var dropbox = elm.find('.dropbox')[0];
                         scope.dropText = 'Drop files here...';
                         if (scope.property) {
@@ -242,7 +242,7 @@ app.directive('upload', ['$http',
                             });
                         }, false);
                         dropbox.addEventListener("drop", function(evt) {
-//console.log('drop evt:', JSON.parse(JSON.stringify(evt.dataTransfer)))         evt.stopPropagation();
+                            //console.log('drop evt:', JSON.parse(JSON.stringify(evt.dataTransfer)))         evt.stopPropagation();
                             evt.preventDefault();
                             scope.$apply(function() {
                                 scope.dropText = 'Drop files here...';
@@ -294,8 +294,8 @@ app.directive('upload', ['$http',
                         };
                         scope.setFiles = function(element) {
                             scope.$apply(function(scope) {
-//console.log('files:', element.files);
-// Turn the FileList object into an Array
+                                //console.log('files:', element.files);
+                                // Turn the FileList object into an Array
                                 scope.files = []
                                 for (var i = 0; i < element.files.length; i++) {
                                     scope.files.push(element.files[i]);
@@ -330,3 +330,105 @@ app.directive('upload', ['$http',
     }]);
 
 
+app.directive('fieldIstitle', ['$http', function($http) {
+        return {
+            scope: {ngModel: '='},
+            link: function(scope, elm, attr) {
+
+                scope.$watch('ngModel', function(ngModel) {
+                    if (ngModel) {
+                        if (ngModel.istitle) {
+                            elm.html('Yes')
+                        } else {
+                            elm.html('<a class="btn btn-mini">No</a>').click(function() {
+
+                                $http.post(path.ajax + 'lists/setTitleField/' + ngModel.id + '/' + ngModel.listid);
+                            })
+                        }
+                    }
+                })
+            }
+        }
+    }]);
+
+app.directive('fieldsettingsLists', ['$http', function($http) {
+        return {
+            link: function(scope, elm, attr) {
+                $http.get(path.ajax + 'lists/get').success(function(r) {
+                    if (r.length) {
+                        r.forEach(function(e) {
+                            elm.append('<option value="' + e.id + '">' + e.title + '</option>');
+                        })
+                    }
+                });
+            }
+        }
+    }]);
+
+
+app.directive('fieldsettingsDisplayfield', ['$http', function($http) {
+        return {
+            scope: {
+                fieldsettingsDisplayfield: '@',
+                ngModel: '='
+            },
+            template: '<option ng-repeat="option in options" value="{{option.id}}">{{option.title}}</option>',
+            link: function(scope, elm, attr) {
+                scope.$watch('fieldsettingsDisplayfield', function(v) {
+                    if (v) {
+                        $http.get(path.ajax + 'lists/getFields/' + v).success(function(r) {
+                            if (r.length) {
+                                scope.options = r;
+                            } else {
+                                scope.options = [];
+                            }
+                            scope.options.unshift({id: -1, title: 'id'});
+
+                            elm.change(function() {
+                                var val = $(this).val();
+                                scope.$apply(function() {
+                                    scope.ngModel = val.join(',');
+                                });
+                            });
+                        });
+                    }
+                });
+            }
+        }
+    }]);
+
+app.directive('fieldInternal', ['$http', function($http) {
+        return {
+            scope: {
+                fieldInternal: '@',
+                ngModel: '='
+            },
+            //template: '<option ng-repeat="option in options" value="{{option.id}}">{{option.title}}</option>',
+            link: function(scope, elm, attr) {
+                scope.$watch('fieldInternal', function(listid) {
+                    if (listid) {
+                        var display = attr.fieldDisplay.split(',');
+                        $http.get(path.ajax + 'modules/fieldInternalDataLookup/' + listid + '?select=' + attr.fieldDisplay).success(function(r) {
+                            if (r.data.rows.length) {
+                                r.data.rows.forEach(function(row) {
+                                    var value = [];
+                                    display.forEach(function(field){
+                                       value.push(row[field]);
+                                    });
+
+                                    var selected = row['-1'] == scope.ngModel? 'selected="selected"' :'';
+                                    elm.append('<option '+ selected +' value="' + row['-1'] + '">' + value.join(' - ') + '</option>')
+                                });
+                                elm.change(function() {
+                                    var val = $(this).val();
+                                    scope.$apply(function() {
+                                        scope.ngModel = val;
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    }]);

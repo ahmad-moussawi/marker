@@ -9,6 +9,8 @@
 input.error{}
 label.error{color:#f00;font-size: 9px;margin:0;position: relative;top:-8px;}
 
+.modules li{float:left;margin-right:10px;margin-top:10px;}
+.module{width:150px;}
 
 /** UPLOADER **/
 .percent {

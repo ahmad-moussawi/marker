@@ -1,0 +1,14 @@
+<div>
+    <h4>Boolean Attributes</h4>
+    <dl class="dl-horizontal">
+        <dt>Required</dt>
+        <dd>
+            <input type="checkbox" ng-model="attrs.required" />
+        </dd>
+
+        <dt>Default Value</dt>
+        <dd>
+            <select ng-model="attrs.default" ng-options="v for v in ['true','false']"></select>
+        </dd>
+    </dl>
+</div>

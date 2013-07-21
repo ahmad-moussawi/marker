@@ -25,7 +25,7 @@ app.filter('safetitle', function() {
 });
 app.filter('checkmark', function() {
     return function(input) {
-        return input ? '\u2713' : '\u2718';
+        return Number(input) ? '\u2713' : '\u2718';
     };
 });
 app.filter('label', function() {
@@ -76,5 +76,45 @@ app.filter('images_index', function() {
         var images = $.parseJSON(input);
         var html = '<a href="#">' + images.length + (images.length > 1 ? ' images' : ' image') + '</a>';
         return html;
+    };
+});
+
+app.filter('field_view_41', function() {
+    return function(field, keys) {
+        var values = [];
+        keys = (keys) .split(',');
+        keys.forEach(function(k) {
+            values.push(field[k] );
+        })
+        return values.join(' - ');
+    };
+});
+
+
+
+
+/**
+ * Truncate Filter
+ * @Param text
+ * @Param length, default is 10
+ * @Param end, default is "..."
+ * @return string
+ */
+app.filter('truncate', function() {
+    return function(text, length, end) {
+        text = $(text).text();
+        if (isNaN(length))
+            length = 10;
+
+        if (end === undefined)
+            end = "...";
+
+        if (text.length <= length || text.length - end.length <= length) {
+            return text;
+        }
+        else {
+            return String(text).substring(0, length - end.length) + end;
+        }
+
     };
 });

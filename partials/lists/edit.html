@@ -16,7 +16,7 @@
     <strong>List saved</strong>
 </div>
 
-<form ng-submit="save()">
+<form>
     <div class="row-fluid">
         <div class="span5">
             <dl class="dl-horizontal">
@@ -46,14 +46,11 @@
             <table class="table table-bordered table-striped">
                 <tr>
                     <th>Title</th>
-                    <th>Type</th>
                     <th></th>
                 </tr>
                 <tr ng-repeat="field in list.fields | filter:searchField">
                     <td>{{field.title}}</td>
-                    <td>{{field.type | type}}</td>
                     <td>
-                        <a href="#/lists/{{list.id}}/editfield/{{field.id}}" class="btn btn-mini">Edit</a>
                         <a href="#/lists/{{list.id}}/deletefield/{{field.id}}" class="btn btn-mini btn-danger">Delete</a>
                     </td>
                 </tr>
@@ -67,7 +64,7 @@
     <hr/>
 
     <p class="pull-right">
-        <button ng-disabled="working" type="submit" class="btn btn-primary">Save</button>
+        <button ng-disabled="working" ng-click="save()" class="btn btn-primary">Save</button>
         <a ng-disabled="working" class="btn" href="#/lists/index">Back</a>
     </p>
 </form>

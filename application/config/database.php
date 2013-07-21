@@ -45,13 +45,14 @@
 | the active record class
 */
 
-$active_group = 'ahmad-pc';
+$active_group = 'default';
 $active_record = TRUE;
 
+/** default **/
 $db['default']['hostname'] = 'localhost';
 $db['default']['username'] = 'root';
-$db['default']['password'] = 'password';
-$db['default']['database'] = 'ciproject';
+$db['default']['password'] = '';
+$db['default']['database'] = 'marker';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
@@ -63,23 +64,6 @@ $db['default']['dbcollat'] = 'utf8_general_ci';
 $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
-
-/** AHMAD-PC **/
-$db['ahmad-pc']['hostname'] = 'localhost';
-$db['ahmad-pc']['username'] = 'root';
-$db['ahmad-pc']['password'] = '';
-$db['ahmad-pc']['database'] = 'marker';
-$db['ahmad-pc']['dbdriver'] = 'mysql';
-$db['ahmad-pc']['dbprefix'] = '';
-$db['ahmad-pc']['pconnect'] = TRUE;
-$db['ahmad-pc']['db_debug'] = TRUE;
-$db['ahmad-pc']['cache_on'] = FALSE;
-$db['ahmad-pc']['cachedir'] = '';
-$db['ahmad-pc']['char_set'] = 'utf8';
-$db['ahmad-pc']['dbcollat'] = 'utf8_general_ci';
-$db['ahmad-pc']['swap_pre'] = '';
-$db['ahmad-pc']['autoinit'] = TRUE;
-$db['ahmad-pc']['stricton'] = FALSE;
 
 
 /* End of file database.php */
