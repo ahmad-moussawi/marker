@@ -3,8 +3,7 @@
 var routes = [
     //Admin
     ['/index', path.partials + 'index/index.html', 'IndexCtrl'],
-    ['/test', path.partials + 'index/test.html', 'TestCtrl'],
-
+    ['/test', path.partials + 'index/test.html', 'Test2Ctrl'],
     // Modules
     ['/modules/:id/index', path.partials + 'modules/blank.html', 'ModulesIndexCtrl'],
     ['/modules/:id/create', path.partials + 'modules/blank.html', 'ModulesCreateCtrl'],
@@ -42,17 +41,15 @@ var routes = [
 angular.module('myApp', ['ngSanitize', 'myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers']).
         config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
         $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-        $httpProvider.defaults.transformRequest = function(data){
-          if(data){
-              return $.param(data);
-          }  
+        $httpProvider.defaults.transformRequest = function(data) {
+            if (data) {
+                return $.param(data);
+            }
         };
-        if (!site.skipClientAuthCheck) {
-            routes.forEach(function(route) {
-                $routeProvider.when(route[0], {templateUrl: route[1], controller: route[2]});
-            });
-            $routeProvider.otherwise({redirectTo: '/index'});
-        }
+        routes.forEach(function(route) {
+            $routeProvider.when(route[0], {templateUrl: route[1], controller: route[2]});
+        });
+        $routeProvider.otherwise({redirectTo: '/index'});
     }]);
 
 

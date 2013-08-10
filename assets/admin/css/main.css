@@ -12,6 +12,13 @@ label.error{color:#f00;font-size: 9px;margin:0;position: relative;top:-8px;}
 .modules li{float:left;margin-right:10px;margin-top:10px;}
 .module{width:150px;}
 
+/** marker:upload **/
+marker\:upload{display: block;width:500px}
+marker\:upload .progress{width:100%;margin-bottom: 0;height:15px}
+marker\:upload .replications{font-size:10px;}
+marker\:upload .thumb{max-width: 100px;max-height: 80px;border:3px solid #acacac}
+marker\:upload .file{width:100px;min-height: 80px;}
+
 /** UPLOADER **/
 .percent {
     position: absolute; width: 300px; height: 14px; z-index: 1; text-align: center; font-size: 0.8em; color: white;

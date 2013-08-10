@@ -109,8 +109,6 @@ app.controller('TestCtrl', ['$scope', '$http', function(scope, $http) {
         }
     }]);
 
-
-
 app.controller('IndexCtrl', ['$scope', '$http', function($scope, $http) {
         $scope.working = true;
         // 1 is the dashboard link modules
@@ -142,10 +140,11 @@ app.controller('ModulesCreateCtrl', ['$scope', '$http', '$routeParams', '$route'
 
         $scope.save = function() {
             $scope.working = true;
-            $http.post(path.ajax + 'modules/set/' + $routeParams.id, $scope.item).success(function(r) {
+            var item = $.parseJSON(angular.toJson($scope.item));
+            $http.post(path.ajax + 'modules/set/' + $routeParams.id, item).success(function(r) {
                 $scope.working = false;
                 $scope.saved = true;
-                $location.path('modules/' + $routeParams.id + '/index' );
+                $location.path('modules/' + $routeParams.id + '/index');
             });
         };
     }]);
@@ -173,7 +172,8 @@ app.controller('ModulesEditCtrl', ['$scope', '$http', '$routeParams', '$route', 
 
         $scope.save = function() {
             $scope.working = true;
-            $http.post(path.ajax + 'modules/set/' + $routeParams.id + '/' + $routeParams.rowId, $scope.item).success(function(r) {
+            var item = $.parseJSON(angular.toJson($scope.item));
+            $http.post(path.ajax + 'modules/set/' + $routeParams.id + '/' + $routeParams.rowId, item).success(function(r) {
                 $scope.working = false;
                 $scope.saved = true;
             });
@@ -190,7 +190,7 @@ app.controller('ModulesDeleteCtrl', ['$scope', '$http', '$routeParams', '$route'
             });
         });
 
-        $scope.delete = function() {
+        $scope.remove= function() {
             $http.post(path.ajax + 'modules/delete/' + $routeParams.id + '/' + $routeParams.rowId, $scope.item).success(function(r) {
                 $location.path('/modules/' + $routeParams.id + '/index');
             });
@@ -200,30 +200,6 @@ app.controller('ModulesDeleteCtrl', ['$scope', '$http', '$routeParams', '$route'
 ///////////////
 // Account
 ///////////////
-
-app.controller('AccLoginCtrl', ['$scope', '$location', '$http', 'AuthService', function($scope, $location, $http, auth) {
-        $scope.signin = function(hardRedirect) {
-            hardRedirect = hardRedirect || false;
-            $scope.errors = [];
-            $http.post(path.ajax + 'account/auth', $scope.model).success(function(r) {
-                if (r) {
-                    if (hardRedirect) {
-                        window.location.href = path.ajax + '';
-                    } else {
-                        $location.path('/index');
-                    }
-                    auth.isLogged = true;
-                    auth.member = r;
-                } else {
-                    auth.isLogged = false;
-                    auth.member = false;
-                    $scope.errors.push('Login failed');
-                }
-            }).error(function() {
-                $scope.errors.push('Login failed');
-            });
-        };
-    }]);
 
 app.controller('AccLogoutCtrl', ['$scope', '$http', '$location', 'AuthService', function($scope, $http, $location, auth) {
         $scope.done = false;
@@ -238,7 +214,6 @@ app.controller('AccLogoutCtrl', ['$scope', '$http', '$location', 'AuthService', 
         });
 
     }]);
-
 
 ///////////////
 // Lists
@@ -265,7 +240,7 @@ app.controller('ListsDeleteCtrl', ['$scope', '$http', '$routeParams', '$location
 
         //get list
         $http.get(path.ajax + 'lists/get/' + $routeParams.id).success(function(r) {
-            if(r.protected){
+            if (parseInt(r.protected)) {
                 $location.path('lists/view/' + $routeParams.id);
             }
 
@@ -273,7 +248,7 @@ app.controller('ListsDeleteCtrl', ['$scope', '$http', '$routeParams', '$location
             $scope.working = false;
         });
 
-        $scope.delete = function() {
+        $scope.remove= function() {
             $http.get(path.ajax + 'lists/delete/' + $routeParams.id).success(function(r) {
                 $scope.working = false;
                 $location.path('/lists/index');
@@ -308,8 +283,8 @@ app.controller('ListsEditCtrl', ['$scope', '$http', '$filter', '$routeParams', '
 
         //get list
         $http.get(path.ajax + 'lists/get/' + $routeParams.id).success(function(r) {
-            
-            if(r.protected){
+
+            if (parseInt(r.protected)) {
                 $location.path('lists/view/' + $routeParams.id);
             }
 
@@ -333,9 +308,9 @@ app.controller('ListsEditCtrl', ['$scope', '$http', '$filter', '$routeParams', '
         };
 
     }]);
-app.controller('ListsCreateFieldCtrl', ['$scope', '$http', '$routeParams', '$filter', '$location', function($scope, $http, $routeParams, $filter, $location){
+app.controller('ListsCreateFieldCtrl', ['$scope', '$http', '$routeParams', '$filter', '$location', function($scope, $http, $routeParams, $filter, $location) {
         $scope.working = true;
-        $scope.attrs = { };
+        $scope.attrs = {};
         $scope.field = {created: $filter('date')(new Date(), 'yyyy-MM-dd'), title: '', type: '1.1'};
         $scope.$watch('field.title', function(value) {
             $scope.field.internaltitle = $filter('safetitle')(value);
@@ -360,9 +335,9 @@ app.controller('ListsCreateFieldCtrl', ['$scope', '$http', '$routeParams', '$fil
 
 
     }]);
-app.controller('ListsEditFieldCtrl', ['$scope', '$http', '$routeParams', '$filter', '$location', function($scope, $http, $routeParams, $filter, $location){
+app.controller('ListsEditFieldCtrl', ['$scope', '$http', '$routeParams', '$filter', '$location', function($scope, $http, $routeParams, $filter, $location) {
         $scope.working = true;
-        $scope.attrs = { };
+        $scope.attrs = {};
         $scope.field = {title: '', type: '1.1'};
         $scope.$watch('field.title', function(value) {
             $scope.field.internaltitle = $filter('safetitle')(value);
@@ -390,7 +365,7 @@ app.controller('ListsDeleteFieldCtrl', ['$scope', '$http', '$routeParams', '$fil
         $http.get(path.ajax + 'lists/getField/' + $routeParams.fieldId).success(function(r) {
             $scope.field = r;
         });
-        $scope.delete = function() {
+        $scope.remove= function() {
             $http.post(path.ajax + 'lists/deleteField/' + $routeParams.fieldId).success(function(r) {
                 $location.path('/lists/edit/' + $routeParams.id);
             });
@@ -405,8 +380,8 @@ app.controller('MembersIndexCtrl', '$http', ['$scope', function($scope, $http) {
         $scope.working = true;
         $scope.members = [];
         $http.get(path.ajax + 'members/get').success(function(r) {
-                $scope.members = r;
-                $scope.working = false;
+            $scope.members = r;
+            $scope.working = false;
         });
     }]);
 app.controller('MembersCreateCtrl', ['$scope', '$http', function($scope, $http) {
@@ -420,8 +395,8 @@ app.controller('MembersCreateCtrl', ['$scope', '$http', function($scope, $http) 
 
         //get roles
         $http.get(path.ajax + 'members/getroles').success(function(r) {
-                $scope.roles = r;
-                $scope.working = false;
+            $scope.roles = r;
+            $scope.working = false;
         });
 
         $scope.save = function() {
@@ -438,13 +413,13 @@ app.controller('MembersEditCtrl', ['$scope', '$http', '$routeParams', function($
 
         //get roles
         $http.get(path.ajax + 'members/getroles').success(function(r) {
-                $scope.roles = r;
+            $scope.roles = r;
 
-                //get member
-                $http.get(path.ajax + 'members/get/' + $routeParams.userId).success(function(r) {
-                        $scope.member = r;
-                        $scope.working = false;
-                });
+            //get member
+            $http.get(path.ajax + 'members/get/' + $routeParams.userId).success(function(r) {
+                $scope.member = r;
+                $scope.working = false;
+            });
         });
 
 
@@ -462,13 +437,13 @@ app.controller('MembersViewCtrl', ['$scope', '$http', '$routeParams', function($
 
         //get roles
         $http.get(path.ajax + 'members/getroles').success(function(r) {
-                $scope.roles = r;
+            $scope.roles = r;
 
-                //get member
-                $http.get(path.ajax + 'members/get/' + $routeParams.userId).success(function(r) {
-                        $scope.member = r;
-                        $scope.working = false;
-                });
+            //get member
+            $http.get(path.ajax + 'members/get/' + $routeParams.userId).success(function(r) {
+                $scope.member = r;
+                $scope.working = false;
+            });
         });
     }]);
 
@@ -521,7 +496,7 @@ app.controller('PagesDeleteCtrl', ['$scope', '$routeParams', '$http', '$location
             $scope.page = r.data.page;
         });
 
-        $scope.delete = function() {
+        $scope.remove= function() {
             $http.post(path.ajax + 'pages/delete', {id: $scope.page.id}).success(function(r) {
                 $location.path('/pages/index');
             });

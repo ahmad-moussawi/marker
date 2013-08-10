@@ -9,12 +9,22 @@ class Index extends CI_Controller {
 
     function Index() {
         if (!Auth::is_authenticated()) {
-            $this->loadView('account/login', array('skipClientCheck' => TRUE), 'admin');
+//           redirect('admin/index/auth');
+            $data = array();
+            $this->load->view('admin/account/header', $data);
+            $this->load->view('admin/account/login', $data);
+            $this->load->view('admin/account/footer', $data);
         } else {
             $this->loadView('index/index', array(), 'admin');
         }
     }
-    
+
+    function Auth() {
+        $data = array();
+        $this->load->view('admin/account/header', $data);
+        $this->load->view('admin/account/login', $data);
+        $this->load->view('admin/account/footer', $data);
+    }
 
     function JSON() {
         $types =

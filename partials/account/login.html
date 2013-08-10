@@ -36,12 +36,10 @@
     </style>
 
 
-    <form name="form" class="form-signin" ng-submit="signin()">
+    <form name="form" class="form-signin" ng-submit="signin()" ng-controller="AccLoginCtrl">
         <h2 class="form-signin-heading">Please sign in</h2>
-        <div ng-show="errors.length" class="alert alert-error" style="display:none">
-            <ul class="unstyled">
-                <li ng-repeat="error in errors">{{error}}</li>
-            </ul>
+        <div ng-show="errors.length > 0" class="alert alert-error">
+            <div ng-repeat="error in errors">{{error}}</div>
         </div>
         <input type="text" class="input-block-level" required="required" placeholder="Login" ng-model="model.login" />
         <input type="password" ng-model="model.password"  required="required" class="input-block-level" placeholder="Password" />

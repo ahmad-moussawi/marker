@@ -11,22 +11,15 @@
         <meta name="viewport" content="width=device-width">
         <base href="<?php echo site_url('admin') ?>/" />
         <?php echo Content::link('admin/css/bootstrap.css') ?>
-        <style>
-            body {
-                padding-top: 60px;
-                padding-bottom: 40px;
-            }
-        </style>
         <?php echo Content::link('admin/css/bootstrap-responsive.css') ?>
         <?php echo Content::link('admin/css/main.css') ?>
-        <?php echo Content::script('admin/js/vendor/modernizr-2.6.1-respond-1.1.0.min.js') ?>
         <script>
             var site = {name: '<?php echo config_item('project_title') ?>'};
             var path = {
                 base: '<?php echo site_url() ?>',
                 admin: '<?php echo site_url('admin') ?>/',
                 ajax: '<?php echo site_url('admin') ?>/',
-                partials: '<?php echo site_url('partials') ?>/'
+                partials : '<?php echo site_url('partials') ?>/'
             };
         </script>
     </head>
@@ -34,28 +27,5 @@
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
         <![endif]-->
-
         <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
-
-        <div class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
-                    <a class="brand" href="#/index"><?php echo config_item('project_title') ?></a>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li><a href="#/index"></a></li>
-                        </ul>
-                        <ul class="nav login-menu">
-                            <div auth-menu></div>
-                        </ul>
-                    </div><!--/.nav-collapse -->
-                </div>
-            </div>
-        </div>
-        <div auth-check></div>
-        <div id="view" ng-view class="container">
+            <div class = "container">

@@ -142,194 +142,6 @@ app.directive('authMenu', ['$rootScope', '$http', '$location', 'AuthService', fu
         };
     }]);
 
-app.directive('upload', ['$http',
-    function($http) {
-        return {
-            restrict: 'A',
-            templateUrl: path.partials + 'directives/upload.html',
-            scope: {
-                property: '=',
-                working: '=',
-                form: '=',
-                doupload: '&',
-                upload: '@',
-                max: '@',
-                thumbnail: '@',
-                fieldid: '@',
-                required: '&'
-            },
-            link: function(scope, elm, attr) {
-
-                scope.errors = scope.warnings = [];
-                scope.files = scope.uploaded = [];
-
-                function dragEnterLeave(evt) {
-                    evt.stopPropagation();
-                    evt.preventDefault();
-                    scope.$apply(function() {
-                        scope.dropText = 'Drop files here...';
-                        scope.dropClass = '';
-                    });
-                }
-
-                function uploadComplete(evt) {
-                    /* This event is raised when the server send back a response */
-                    scope.$apply(function() {
-                        var response = $.parseJSON(evt.target.responseText);
-                        scope.errors = response.errors;
-                        scope.warning = response.warning;
-
-                        response.upload_data.forEach(function(e) {
-                            scope.uploaded.push(e);
-                        });
-                        // return the uploaded fiels name to the model
-                        scope.property = JSON.stringify(scope.uploaded);
-                        scope.files = [];
-                        scope.working = false;
-                    });
-                }
-                function uploadFailed(evt) {
-                    alert("There was an error attempting to upload the file.");
-                    scope.$apply(function() {
-                        scope.working = false;
-                    });
-                }
-                function uploadCanceled(evt) {
-                    scope.$apply(function() {
-                        scope.progressVisible = false;
-                        scope.working = false;
-                    });
-                    alert("The upload has been canceled by the user or the browser dropped the connection.")
-                }
-
-                function uploadProgress(evt) {
-                    scope.$apply(function() {
-                        if (evt.lengthComputable) {
-                            scope.progress = Math.round(evt.loaded * 100 / evt.total);
-                        } else {
-                            scope.progress = 'unable to compute'
-                        }
-                    });
-                }
-
-                scope.$watch('property', function(property) {
-                    if (property) {
-
-                        /** UPLOAD **/
-                        //============== DRAG & DROP =============
-                        // source for drag&drop: http://www.webappers.com/2011/09/28/drag-drop-file-upload-with-html5-javascript/
-                        var dropbox = elm.find('.dropbox')[0];
-                        scope.dropText = 'Drop files here...';
-                        if (scope.property) {
-                            scope.uploaded = JSON.parse(scope.property)
-                        } else {
-                            scope.property = [];
-                            scope.uploaded = []; // files that successfully uploaded
-                        }
-                        ;
-                        scope.files = []; // files attached in browser but still not uploaded  
-                        // init event handlers
-
-                        dropbox.addEventListener("dragenter", dragEnterLeave, false);
-                        dropbox.addEventListener("dragleave", dragEnterLeave, false);
-                        dropbox.addEventListener("dragover", function(evt) {
-                            evt.stopPropagation();
-                            evt.preventDefault();
-                            var ok = evt.dataTransfer && evt.dataTransfer.types && evt.dataTransfer.types.indexOf('Files') >= 0;
-                            scope.$apply(function() {
-                                scope.dropText = ok ? 'Drop files here...' : 'Only files are allowed!';
-                                scope.dropClass = ok ? 'over' : 'not-available';
-                            });
-                        }, false);
-                        dropbox.addEventListener("drop", function(evt) {
-                            //console.log('drop evt:', JSON.parse(JSON.stringify(evt.dataTransfer)))         evt.stopPropagation();
-                            evt.preventDefault();
-                            scope.$apply(function() {
-                                scope.dropText = 'Drop files here...';
-                                scope.dropClass = '';
-                            });
-                            var files = evt.dataTransfer.files;
-                            if (files.length > 0) {
-                                scope.$apply(function() {
-                                    for (var i = 0; i < files.length; i++) {
-                                        if ((scope.files.length + scope.uploaded.length) == scope.max) {
-                                            break;
-                                        }
-                                        scope.files.push(files[i]);
-                                    }
-                                    scope.progressVisible = false;
-                                    scope.progress = 0;
-                                });
-                            }
-                        }, false);
-                        //============== DRAG & DROP =============
-
-                        scope.removeFile = function(el, removeOnServer) {
-                            var removeOnServer = removeOnServer || false;
-                            if (removeOnServer) {
-                                $http.post(path.ajax + 'uploads/remove', {file: JSON.stringify(el.file)}).success(function(r) {
-                                    if (r.status) {
-                                        var oldFiles = scope.uploaded;
-                                        scope.uploaded = [];
-                                        oldFiles.forEach(function(e) {
-                                            if (el.file[0].full_path !== e[0].full_path) {
-                                                scope.uploaded.push(e);
-                                            }
-                                        });
-                                        scope.property = JSON.stringify(scope.uploaded);
-                                    }
-                                    ;
-                                    scope.warnings = r.warnings;
-                                    scope.errors = r.errors;
-                                });
-                            } else {
-                                var oldFiles = scope.files;
-                                scope.files = [];
-                                oldFiles.forEach(function(e) {
-                                    if (el.file.name !== e.name) {
-                                        scope.files.push(e);
-                                    }
-                                });
-                            }
-                        };
-                        scope.setFiles = function(element) {
-                            scope.$apply(function(scope) {
-                                //console.log('files:', element.files);
-                                // Turn the FileList object into an Array
-                                scope.files = []
-                                for (var i = 0; i < element.files.length; i++) {
-                                    scope.files.push(element.files[i]);
-                                }
-                                scope.progressVisible = false;
-                            });
-                        };
-                        scope.uploadFile = function() {
-                            scope.working = true;
-                            var fd = new FormData();
-                            var c = 0;
-                            for (var i in scope.files) {
-                                fd.append("file" + (++c), scope.files[i]);
-                            }
-                            ;
-                            //console.log(fd);
-                            var xhr = new XMLHttpRequest();
-                            xhr.upload.addEventListener("progress", uploadProgress, false);
-                            xhr.addEventListener("load", uploadComplete, false);
-                            xhr.addEventListener("error", uploadFailed, false);
-                            xhr.addEventListener("abort", uploadCanceled, false);
-                            xhr.open("POST", scope.upload);
-                            scope.progressVisible = true;
-                            xhr.send(fd);
-                        };
-                        /** UPLOAD **/
-
-                    }
-                });
-            }
-        };
-    }]);
-
-
 app.directive('fieldIstitle', ['$http', function($http) {
         return {
             scope: {ngModel: '='},
@@ -364,7 +176,6 @@ app.directive('fieldsettingsLists', ['$http', function($http) {
             }
         }
     }]);
-
 
 app.directive('fieldsettingsDisplayfield', ['$http', function($http) {
         return {
@@ -412,12 +223,12 @@ app.directive('fieldInternal', ['$http', function($http) {
                             if (r.data.rows.length) {
                                 r.data.rows.forEach(function(row) {
                                     var value = [];
-                                    display.forEach(function(field){
-                                       value.push(row[field]);
+                                    display.forEach(function(field) {
+                                        value.push(row[field]);
                                     });
 
-                                    var selected = row['-1'] == scope.ngModel? 'selected="selected"' :'';
-                                    elm.append('<option '+ selected +' value="' + row['-1'] + '">' + value.join(' - ') + '</option>')
+                                    var selected = row['-1'] == scope.ngModel ? 'selected="selected"' : '';
+                                    elm.append('<option ' + selected + ' value="' + row['-1'] + '">' + value.join(' - ') + '</option>')
                                 });
                                 elm.change(function() {
                                     var val = $(this).val();
@@ -431,4 +242,90 @@ app.directive('fieldInternal', ['$http', function($http) {
                 });
             }
         }
+    }]);
+
+app.directive('markerUpload', ['$http', function($http) {
+        return {
+            restrict: 'E',
+            templateUrl: path.partials + 'directives/upload.html',
+            scope: {
+                ngModel: '='
+            },
+            link: function(scope, elm, attrs, ctrl) {
+                // Change this to the location of your server-side upload handler:
+                var url = path.ajax + attrs.path;
+                var $input = elm.find('input[type=file]');
+
+                if (scope.ngModel === null || scope.ngModel === undefined) {
+                    scope.ngModel = [];
+                }
+
+                if (!(scope.ngModel instanceof Array)) {
+                    try {
+                        scope.ngModel = $.parseJSON(scope.ngModel);
+                    } catch (ex) {
+                        scope.ngModel = [];
+                    }
+                }
+
+
+                scope.queue = [];
+                $input.fileupload({
+                    url: url,
+                    dataType: 'json',
+                    add: function(e, data) {
+                        data.getProgress = function() {
+                            var progress = data.progress(),
+                                    result = parseInt(progress.loaded / progress.total * 100, 10);
+                            return result;
+                        };
+                        scope.$apply(function() {
+                            scope.queue.push(data);
+                        });
+                        data.submit();
+                    },
+                    done: function(e, data) {
+                        var result = data.response().result;
+                        var fullpath = result.upload_data[0][0].full_path;
+                        scope.$apply(function() {
+                            // add to the model
+
+                            scope.ngModel.push(result.upload_data[0]);
+
+                            // remove from the queue
+                            var toRemove = [];
+                            angular.forEach(scope.queue, function(f, i) {
+                                if (f.response().result) {
+                                    var p1 = f.response().result.upload_data[0][0].full_path;
+                                    if (p1 === fullpath) {
+                                        toRemove.push(i);
+                                    }
+                                }
+                            });
+
+                            angular.forEach(toRemove, function(index) {
+                                scope.queue.splice(index, 1);
+                            });
+
+                        });
+                    }
+                }).prop('disabled', !$.support.fileInput)
+                        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+
+
+                scope.removeFile = function(file) {
+                    $http.post(path.ajax + 'uploads/remove', {file: angular.toJson(file)}).then(function(r) {
+                        var toRemove = [];
+                        angular.forEach(scope.ngModel, function(f, i) {
+                            if (f[0].full_path === file[0].full_path) {
+                                toRemove.push(i);
+                            }
+                        });
+                        angular.forEach(toRemove, function(index) {
+                            scope.ngModel.splice(index, 1);
+                        });
+                    });
+                };
+            }
+        };
     }]);

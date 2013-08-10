@@ -135,7 +135,7 @@ class Content {
                             $options[$row] = $row;
                         }
                     }
-                    $html .= form_dropdown($field->internaltitle, $options);
+                    $html .= form_dropdown($field->internaltitle, $options, false, "ng-model=\"$field->internaltitle\"");
                 }
 
                 if ($attrs->type == 'internal') {
@@ -157,29 +157,9 @@ class Content {
                     } else {
                         $str .= ' max="30"';
                     }
-
-                    if (isset($attrs->thumbnail) && $attrs->thumbnail) {
-
-                        if (!isset($attrs->thumbnail_width)) {
-                            $attrs->thumbnail_width = '250';
-                        }
-
-                        if (!isset($attrs->thumbnail_height)) {
-                            $attrs->thumbnail_height = '150';
-                        }
-
-                        $str .= ' thumbnail="' . $attrs->thumbnail_height . ',' . $attrs->thumbnail_width . '"';
-                    }
-
-                    if (isset($attrs->ext) && $attrs->ext) {
-                        $str .= ' ext="' . $attrs->ext . '"';
-                    }
                 }
 
-
-                $html .="<div form=\"form\" working=\"working\" doupload=\"alert('do upload')\" $str upload=\"" . site_url('admin/uploads/upload/' . $field->id) . "\" property=\"item.$field->internaltitle\" fieldid=\"$field->id\" name=\"$field->internaltitle\">upload</div>
-                    <!--<pre>{{item.{$field->internaltitle}}}</pre>-->
-                    ";
+                $html .="<marker:upload ng-model='item.$field->internaltitle' path='uploads/upload/$field->id'></marker:upload>";
                 break;
             case 6:
             default:

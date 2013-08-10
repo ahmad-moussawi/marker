@@ -82,6 +82,15 @@ class Modules extends CI_Controller {
         $module = $this->queries->getModuleMetadata($moduleId);
 
         $data = elements($module->fields_array, $this->input->post());
+        
+        // transform Array to JSON
+        
+        foreach($data as &$row){
+            if(is_array($row)){
+                $row = json_encode($row);
+            }
+        }
+        
         //return $this->json($data);
         
         if (!$id) {

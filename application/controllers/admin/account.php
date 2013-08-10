@@ -48,8 +48,6 @@ class Account extends CI_Controller {
     }
 
     function logout() {
-        
-        sleep(1);
         unset($_SESSION['login']);
         session_destroy();
     }

@@ -53,7 +53,7 @@ app.filter('type', function() {
 });
 app.filter('images_view', function() {
     return function(input, replication, limit) {
-        var replication = replication || 1;
+        var replication = replication || 0;
         var limit = limit || 0;
         var images = $.parseJSON(input);
         if (images) {
@@ -61,7 +61,7 @@ app.filter('images_view', function() {
 
             for (var i = 0; i < (limit), i < images.length; i++) {
                 var el = images[i];
-                html += '<img style="max-width:120px;display:inline-block;margin:10px 0;" class="img-polaroid"  src="' + site.base + el[replication].full_path + '" />';
+                html += '<img style="max-width:120px;display:inline-block;margin:10px 0;" class="img-polaroid"  src="../' + el[replication].full_path + '" />';
             }
             ;
             if ((images.length - limit) > 0) {
@@ -74,7 +74,9 @@ app.filter('images_view', function() {
 app.filter('images_index', function() {
     return function(input) {
         var images = $.parseJSON(input);
-        var html = '<a href="#">' + images.length + (images.length > 1 ? ' images' : ' image') + '</a>';
+        if (images) {
+            var html = '<a href="#">' + images.length + (images.length > 1 ? ' images' : ' image') + '</a>';
+        }
         return html;
     };
 });
@@ -82,9 +84,9 @@ app.filter('images_index', function() {
 app.filter('field_view_41', function() {
     return function(field, keys) {
         var values = [];
-        keys = (keys) .split(',');
+        keys = (keys).split(',');
         keys.forEach(function(k) {
-            values.push(field[k] );
+            values.push(field[k]);
         })
         return values.join(' - ');
     };
@@ -117,4 +119,10 @@ app.filter('truncate', function() {
         }
 
     };
+});
+
+app.filter('filename', function() {
+    return function(input) {
+        if(input) return input.split('/').reverse()[0];
+    }
 });

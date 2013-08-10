@@ -33,6 +33,9 @@
             <span ng-switch="list.protected">
                 <a ng-switch-when="0" class="btn" href="#/lists/edit/{{list.id}}" >Edit</a>
             </span>
+            <span ng-switch="list.protected">
+                <a ng-switch-when="0" class="btn btn-danger" href="#/lists/delete/{{list.id}}" >Delete</a>
+            </span>
         </td>
     </tr>
 

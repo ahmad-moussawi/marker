@@ -139,7 +139,6 @@ class Lists extends CI_Controller {
 
             foreach ($data->fields as &$row) {
                 $row->ispublished = !!$row->ispublished;
-                $row->istitle = !!$row->istitle;
             }
         }
 
