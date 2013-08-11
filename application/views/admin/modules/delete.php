@@ -22,7 +22,7 @@
     <hr/>
 
     <p class="pull-right">
-        <a ng-click="delete()" class="btn btn-danger">Delete</a>
+        <a ng-click="remove()" class="btn btn-danger">Delete</a>
         <a class="btn" href="#/modules/<?php echo $module->id ?>/index">Back</a>
     </p>
 </form>

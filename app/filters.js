@@ -104,7 +104,7 @@ app.filter('field_view_41', function() {
  */
 app.filter('truncate', function() {
     return function(text, length, end) {
-        text = $(text).text();
+        text = $('<div/>').text(text).text();
         if (isNaN(length))
             length = 10;
 

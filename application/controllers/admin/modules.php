@@ -21,7 +21,15 @@ class Modules extends CI_Controller {
     }
 
     function get($moduleId, $id = FALSE) {
-        $module = $this->queries->getModuleMetadata($moduleId);
+
+        try {
+            $module = $this->queries->getModuleMetadata($moduleId);
+        } catch (Exception $exc) {
+            if($exc->getCode() === 404){
+                return $this->json('Exception', array('NotFoundException'));
+            }
+        }
+        
         $data = $this->db->from($module->mapped_table);
 
         if ($this->input->get('select')) {
@@ -160,6 +168,12 @@ class Modules extends CI_Controller {
 
         $this->load->helper('inflector');
         $data['module'] = $this->db->get_where('lists', array('id' => $moduleId), 1)->row();
+        
+        if(empty($data['module'])){
+            echo '<div class="alert alert-danger">Module not found</div>';
+            return;
+        }
+        
         $data['fields'] = $this->db->get_where('fields', array('listid' => $moduleId))->result();
         $data['term'] = singular($data['module']->title);
         $this->load->view('admin/modules/' . $viewName, $data);

@@ -204,7 +204,7 @@ class Content {
         switch ($field->type) {
             case 1:
             case '1.3':
-                $html .= "{{item.$field->internaltitle|truncate:150}}";
+                $html .= "<span ng-bind-html-unsafe=\"item.$field->internaltitle | truncate:100\"></span>";
                 break;
             case 2:
             case 3:

@@ -3,7 +3,7 @@
         <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>-->
         <script>window.jQuery || document.write('<script src="<?php echo site_url('assets/admin/js/vendor/jquery-1.8.1.min.js') ?>"><\/script>')</script>
         <?php //echo Content::script('admin/js/jquery.validation.min.js') ?>
-        <?php //echo Content::script('admin/js/vendor/ckeditor/ckeditor.js') ?>
+        <?php echo Content::script('admin/js/vendor/ckeditor/ckeditor.js') ?>
         <?php echo Content::script('admin/js/vendor/ace/ace.js') ?>
         <?php echo Content::script('admin/js/vendor/bootstrap.min.js') ?>
         <?php //echo Content::script('admin/js/plugins.js') ?>
