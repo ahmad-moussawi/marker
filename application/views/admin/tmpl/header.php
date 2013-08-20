@@ -19,6 +19,7 @@
         </style>
         <?php echo Content::link('admin/css/bootstrap-responsive.css') ?>
         <?php echo Content::link('admin/css/main.css') ?>
+        <?php echo Content::link('admin/js/spectrum/spectrum.css') ?>
         <?php echo Content::script('admin/js/vendor/modernizr-2.6.1-respond-1.1.0.min.js') ?>
         <script>
             var site = {name: '<?php echo config_item('project_title') ?>'};

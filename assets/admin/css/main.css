@@ -19,6 +19,9 @@ marker\:upload .replications{font-size:10px;}
 marker\:upload .thumb{max-width: 100px;max-height: 80px;border:3px solid #acacac}
 marker\:upload .file{width:100px;min-height: 80px;}
 
+/** color picker **/
+.color-box{display:inline-block;padding:1px 6px;border-width:5px;border-style: solid;border-radius: 2px;font-size:12px;font-family:monospace}
+
 /** UPLOADER **/
 .percent {
     position: absolute; width: 300px; height: 14px; z-index: 1; text-align: center; font-size: 0.8em; color: white;

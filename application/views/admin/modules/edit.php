@@ -39,6 +39,7 @@
             </dl>
         </div>
     </div>
+    <pre>{{item}}</pre>
     <hr/>
     <p class="pull-right">
         <button ng-disabled="working" type="submit" class="btn btn-primary">Save</button>

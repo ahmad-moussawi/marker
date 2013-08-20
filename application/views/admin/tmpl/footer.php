@@ -26,6 +26,9 @@
         <?php //echo Content::script('admin/js/fileupload/jquery.fileupload-angular.js') ?>
         <!-- -->
         
+        <!-- spectrum -->
+         <?php echo Content::script('admin/js/spectrum/spectrum.js') ?>
+        
         
         <?php echo Content::script('app/app.js' ,'/') ?>
         <?php echo Content::script('app/controllers.js' ,'/') ?>

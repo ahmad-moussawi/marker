@@ -241,9 +241,28 @@ app.directive('fieldInternal', ['$http', function($http) {
                     }
                 });
             }
-        }
+        };
     }]);
 
+app.directive('colorPicker', [function() {
+        return {
+            restrict: 'A',
+            scope: {
+                ngModel: '='
+            },
+            link: function(scope, elm, attrs) {
+                elm.spectrum({
+                    color: scope.ngModel,
+                    showInput: true,
+                    change: function(color) {
+                        scope.$apply(function() {
+                            scope.ngModel = color.toHexString(); // #ff0000
+                        })
+                    }
+                });
+            }
+        };
+    }]);
 app.directive('markerUpload', ['$http', function($http) {
         return {
             restrict: 'E',
@@ -269,6 +288,7 @@ app.directive('markerUpload', ['$http', function($http) {
                 }
 
 
+
                 scope.queue = [];
                 $input.fileupload({
                     url: url,
@@ -289,6 +309,10 @@ app.directive('markerUpload', ['$http', function($http) {
                         var fullpath = result.upload_data[0][0].full_path;
                         scope.$apply(function() {
                             // add to the model
+
+                            if (!(scope.ngModel instanceof Array)) {
+                                scope.ngModel = [];
+                            }
 
                             scope.ngModel.push(result.upload_data[0]);
 

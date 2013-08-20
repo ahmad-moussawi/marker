@@ -112,6 +112,9 @@ class Content {
                 }
                 $html .="<div class=\"editor\" data-ace=\"\" data-ng-model=\"item.$field->internaltitle\"></div>";
                 break;
+            case '1.5':
+                $html .="<input color-picker type=\"color\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                break;
             case 2:
                 $html .="<input type=\"number\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;
@@ -174,6 +177,9 @@ class Content {
         $attrs = json_decode($field->attrs);
         switch ($field->type) {
             case 1:
+            case '1.5':
+                $html .="<span class=\"color-box\" style=\"border-color:{{item.$field->internaltitle}};\">{{item.$field->internaltitle}}</span>";
+                break;
             case 2:
             case 3:
                 $html .="{{item.$field->internaltitle}}";
@@ -205,6 +211,9 @@ class Content {
             case 1:
             case '1.3':
                 $html .= "<span ng-bind-html-unsafe=\"item.$field->internaltitle | truncate:100\"></span>";
+                break;
+            case '1.5':
+                $html .="<span class=\"color-box\" style=\"border-color:{{item.$field->internaltitle}};\">{{item.$field->internaltitle}}</span>";
                 break;
             case 2:
             case 3:
