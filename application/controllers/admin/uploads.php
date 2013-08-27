@@ -46,6 +46,8 @@ class Uploads extends CI_Controller {
             $this->uploadImage($fieldId);
         } else if ($type === 'video') {
             $this->uploadVideo($fieldId);
+        } else if ($type === 'audio') {
+            $this->uploadAudio($fieldId);
         }
     }
 
@@ -151,7 +153,7 @@ class Uploads extends CI_Controller {
 
         $config = $this->_conf($attrs);
         $config['max_size'] = 10000 * 1024;
-        $config['allowed_types'] = 'mp4';
+        $config['allowed_types'] = 'mp4|webm';
         
         if (isset($attrs->max) && count($_FILES) > $attrs->max) {
             $data['errors'][] = "The maximum number of files is: $attrs->max";
@@ -172,6 +174,61 @@ class Uploads extends CI_Controller {
 //                $this->my_upload->file_max_size = $config['max_size'];
 //                $this->my_upload->image_max_width = $config['max_width'];
 //                $this->my_upload->image_max_height = $config['max_height'];
+
+                if ($this->my_upload->file_src_size > $config['max_size']) {
+                    $data['errors'][] = 'Maximum size exceeded, the maximum is : ' . ceil($config['max_size'] / 1024) . 'Kb';
+                } else
+                if (!in_array($this->my_upload->file_src_name_ext, explode('|', $config['allowed_types']))) {
+                    $data['errors'][] = 'Extension unsuported, valid extensions are :' . $config['allowed_types'];
+                } else {
+                    $result = array();
+                    $this->my_upload->process($config['upload_path']);
+                    if ($this->my_upload->processed == true) {
+                        $result[] = array(
+                            //'name' => $this->my_upload->file_dst_name,
+                            'full_path' => ltrim(str_replace('\\', '/', $this->my_upload->file_dst_pathname), './'),
+                            //'ext' => $this->my_upload->file_dst_name_ext,
+                            'mime' => $this->my_upload->file_src_mime,
+                            'size' => $this->my_upload->file_src_size,
+                        );
+                    }
+                    $this->my_upload->clean();
+                    $data['upload_data'][] = $result;
+                }
+            } else {
+                $data['errors'][] = $this->my_upload->error;
+            }
+        }
+        echo json_encode($data);
+    }
+    
+    private function uploadAudio($fieldId) {
+        $field = $this->db->get_where('fields', array('id' => $fieldId), 1)->row();
+        $attrs = json_decode($field->attrs);
+
+        $data['errors'] = array();
+        $data['upload_data'] = array();
+
+        $config = $this->_conf($attrs);
+        $config['max_size'] = 40000 * 1024;
+        $config['allowed_types'] = 'mp3';
+        
+        if (isset($attrs->max) && count($_FILES) > $attrs->max) {
+            $data['errors'][] = "The maximum number of files is: $attrs->max";
+            echo json_encode($data);
+            die;
+        } else if (empty($_FILES)) {
+            $data['errors'][] = "No file selected";
+            echo json_encode($data);
+            die;
+        }
+
+        foreach ($_FILES as $value) {
+            $this->my_upload->upload($value);
+            if ($this->my_upload->uploaded == true) {
+                $this->my_upload->allowed = array('audio/*');
+                $this->my_upload->file_name_body_add = $config['suffix'];
+                $this->my_upload->file_name_body_pre = $config['prefix'];
 
                 if ($this->my_upload->file_src_size > $config['max_size']) {
                     $data['errors'][] = 'Maximum size exceeded, the maximum is : ' . ceil($config['max_size'] / 1024) . 'Kb';

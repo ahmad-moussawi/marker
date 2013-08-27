@@ -183,6 +183,20 @@ class Content {
                 }
                 $html .="<marker:upload type=\"video\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id/video'></marker:upload>";
                 break;
+
+            case '5.3':
+                if (isset($attrs)) {
+                    if (isset($attrs->required) && $attrs->required) {
+                        $str .= ' required="true"';
+                    }
+                    if (isset($attrs->max) && $attrs->max) {
+                        $str .= ' max="' . $attrs->max . '"';
+                    } else {
+                        $str .= ' max="30"';
+                    }
+                }
+                $html .="<marker:upload type=\"audio\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id/audio'></marker:upload>";
+                break;
             case 6:break;
 
             case '7.1':
@@ -238,6 +252,10 @@ class Content {
             case '5.2':
                 $html .= "<div marker:video-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
                 break;
+
+            case '5.3':
+                $html .= "<div marker:audio-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
+                break;
             case 6:
             default:
                 $html .="{{item.$field->internaltitle}}";
@@ -281,6 +299,10 @@ class Content {
 
             case '5.2':
                 $html .= "<div marker:video-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
+                break;
+
+            case '5.3':
+                $html .= "<div marker:audio-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
                 break;
             case 6:
             default:

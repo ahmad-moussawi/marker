@@ -311,10 +311,14 @@ app.directive('markerUpload', ['$http', function($http) {
                                     result = parseInt(progress.loaded / progress.total * 100, 10);
                             return result;
                         };
-                        scope.$apply(function() {
-                            scope.queue.push(data);
-                        });
-                        data.submit();
+
+                        console.debug(data)
+                        if (data) {
+                            scope.$apply(function() {
+                                scope.queue.push(data);
+                            });
+                            data.submit();
+                        }
                     },
                     done: function(e, data) {
                         var result = data.response().result;
@@ -368,17 +372,55 @@ app.directive('markerVideoPreview', [function() {
                 ngModel: '='
             },
             link: function(scope, elm, attrs, ctrl) {
-                var model = angular.fromJson(scope.ngModel);
-                elm.attr('width', '300');
-                if (model && model[0] && model[0][0]) {
-                    if (Modernizr.video) {
-                        elm.html('<video src="../' + model[0][0].full_path + '" width="200"></video>');
-                    } else {
-                        elm.html('<i class="text-warning"><small>preview not supported</small></i>');
+                if (scope.ngModel && scope.ngModel.length > 0) {
+                    try {
+                        var model = angular.fromJson(scope.ngModel);
+                        elm.attr('width', '300');
+                        if (model && model[0] && model[0][0]) {
+                            if (Modernizr.video) {
+                                elm.html('<video controls src="../' + model[0][0].full_path + '" width="200"></video>');
+                            } else {
+                                elm.html('<i class="text-warning"><small>preview not supported</small></i>');
+                            }
+                            elm.after('<p><a target="_blank" href="../' + model[0][0].full_path + '">' + model[0][0].full_path.split('/').reverse()[0] + '</a></p>');
+                        } else {
+                            elm.html('<i class="text-info"><small>No video selected</small></i>');
+                        }
+                    } catch (ex) {
+                        elm.html('<i class="text-info"><small>No video selected</small></i>');
                     }
-                    elm.after('<p><a target="_blank" href="../' + model[0][0].full_path + '">' + model[0][0].full_path.split('/').reverse()[0] + '</a></p>');
                 } else {
                     elm.html('<i class="text-info"><small>No video selected</small></i>');
+                }
+            }
+        };
+    }]);
+
+app.directive('markerAudioPreview', [function() {
+        return {
+            restrict: 'A',
+            scope: {
+                ngModel: '='
+            },
+            link: function(scope, elm, attrs, ctrl) {
+                if (scope.ngModel && scope.ngModel.length > 0) {
+                    try {
+                        var model = angular.fromJson(scope.ngModel);
+                        if (model && model[0] && model[0][0]) {
+                            if (Modernizr.audio) {
+                                elm.html('<audio controls src="../' + model[0][0].full_path + '"></audio>');
+                            } else {
+                                elm.html('<i class="text-warning"><small>preview not supported</small></i>');
+                            }
+                            elm.after('<p><a target="_blank" href="../' + model[0][0].full_path + '">' + model[0][0].full_path.split('/').reverse()[0] + '</a></p>');
+                        } else {
+                            elm.html('<i class="text-info"><small>No audio selected</small></i>');
+                        }
+                    } catch (ex) {
+                        elm.html('<i class="text-info"><small>No audio selected</small></i>');
+                    }
+                } else {
+                    elm.html('<i class="text-info"><small>No audio selected</small></i>');
                 }
             }
         };
