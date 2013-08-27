@@ -115,6 +115,11 @@ class Content {
             case '1.5':
                 $html .="<input color-picker type=\"color\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;
+
+            case '1.6':
+                $html .="<input type=\"text\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                break;
+
             case 2:
                 $html .="<input type=\"number\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;
@@ -138,7 +143,7 @@ class Content {
                             $options[$row] = $row;
                         }
                     }
-                    $html .= form_dropdown($field->internaltitle, $options, false, "ng-model=\"$field->internaltitle\"");
+                    $html .= form_dropdown($field->internaltitle, $options, false, "ng-model=\"item.$field->internaltitle\"");
                 }
 
                 if ($attrs->type == 'internal') {
@@ -162,9 +167,40 @@ class Content {
                     }
                 }
 
-                $html .="<marker:upload ng-model='item.$field->internaltitle' path='uploads/upload/$field->id'></marker:upload>";
+                $html .="<marker:upload type=\"image\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id'></marker:upload>";
                 break;
-            case 6:
+
+            case '5.2':
+                if (isset($attrs)) {
+                    if (isset($attrs->required) && $attrs->required) {
+                        $str .= ' required="true"';
+                    }
+                    if (isset($attrs->max) && $attrs->max) {
+                        $str .= ' max="' . $attrs->max . '"';
+                    } else {
+                        $str .= ' max="30"';
+                    }
+                }
+                $html .="<marker:upload type=\"video\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id/video'></marker:upload>";
+                break;
+            case 6:break;
+
+            case '7.1':
+                $html .="<input date-picker type=\"date\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                break;
+
+            case '7.2':
+                $html .="<input datetime-picker type=\"datetime\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                break;
+
+            case '7.3':
+                $html .="<input month-picker type=\"month\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                break;
+
+            case '7.4':
+                $html .="<input year-picker type=\"year\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                break;
+
             default:
                 $html .="<input type=\"text\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
         }
@@ -179,6 +215,10 @@ class Content {
             case 1:
             case '1.5':
                 $html .="<span class=\"color-box\" style=\"border-color:{{item.$field->internaltitle}};\">{{item.$field->internaltitle}}</span>";
+                break;
+
+            case '1.6':
+                $html .="<div marker:barcode type=\"ean13\" ng-model=\"item.$field->internaltitle\"></div>";
                 break;
             case 2:
             case 3:
@@ -195,6 +235,8 @@ class Content {
             case '5.1':
                 $html .= "<div ng-bind-html-unsafe=\"item.{$field->internaltitle} | images_view:0:3\"></div>";
                 break;
+            case '5.2':
+                $html .= "<div marker:video-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
                 break;
             case 6:
             default:
@@ -215,6 +257,10 @@ class Content {
             case '1.5':
                 $html .="<span class=\"color-box\" style=\"border-color:{{item.$field->internaltitle}};\">{{item.$field->internaltitle}}</span>";
                 break;
+
+            case '1.6':
+                $html .="<div marker:barcode type=\"ean13\" ng-model=\"item.$field->internaltitle\"></div>";
+                break;
             case 2:
             case 3:
                 $html .="{{item.$field->internaltitle}}";
@@ -222,6 +268,8 @@ class Content {
             case '4.1':
                 if ($attrs->type == 'internal') {
                     $html .="{{item.__$field->internaltitle | field_view_41:'$attrs->type_internal_display'}}";
+                } else {
+                    $html .="{{item.$field->internaltitle}}";
                 }
                 break;
             case '4.4':
@@ -230,6 +278,9 @@ class Content {
             case '5.1':
                 $html .= "<div ng-bind-html-unsafe=\"item.{$field->internaltitle} | images_index\"></div>";
                 break;
+
+            case '5.2':
+                $html .= "<div marker:video-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
                 break;
             case 6:
             default:

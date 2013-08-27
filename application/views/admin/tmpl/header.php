@@ -32,8 +32,11 @@
         </script>
     </head>
     <body>
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <!--[if lt IE 8]>
+            <div class="alert alert-danger chromeframe">
+                <h2>Sorry :(, Browser outdated</h2>
+                You are using an outdated browser, Marker CMS works only on IE 8 and above, <a href="http://browsehappy.com/">Upgrade your browser today</a> to better experience this site.
+            </div>
         <![endif]-->
 
         <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
@@ -46,7 +49,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="#/index"><?php echo config_item('project_title') ?></a>
+                    <a class="brand" target="_blank" href="<?php echo site_url() ?>"><?php echo config_item('project_title') ?></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li><a href="#/index"></a></li>

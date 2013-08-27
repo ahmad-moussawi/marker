@@ -30,3 +30,14 @@ media
 
 files
 6.1	attachements
+
+INSERT INTO  `marker`.`fields_types` (
+`id` ,
+`reference` ,
+`type` ,
+`db_type` ,
+`category`
+)
+VALUES (
+NULL ,  '1.6',  'barcode',  '{"type":"VARCHAR","constraint":"128"}',  'text'
+);

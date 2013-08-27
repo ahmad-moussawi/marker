@@ -1,0 +1,47 @@
+<div>
+    <h4>Images Attributes</h4>
+    <dl class="dl-horizontal">
+        <dt>Maximum Number</dt>
+        <dd>
+            <input type="number" ng-required="true" ng-model="attrs.max" min="1" max="30" placeholder="30" />
+            <span class="help-block">The maximum number of images that can be uploaded for this field</span>
+        </dd>
+
+        <dt>Required</dt>
+        <dd>
+            <input type="checkbox" ng-model="attrs.required" />
+            <span class="help-block">Indicate this field as required</span>
+        </dd>
+
+        <dt>Prefix</dt>
+        <dd>
+            <input type="text" ng-model="attrs.prefix" />
+        </dd>
+
+        <dt>Suffix</dt>
+        <dd>
+            <input type="text" ng-model="attrs.suffix" />
+        </dd>
+
+        <dt>Path</dt>
+        <dd>
+            <div class="input-prepend">
+                <span class="add-on">uploads/</span>
+                <input class="span4"  type="text" ng-model="attrs.path" placeholder="" />
+            </div>
+        </dd>
+
+        <dt>Allowed Extension</dt>
+        <dd>
+            <input type="text" ng-model="attrs.allowed_types" placeholder="mp4" />
+        </dd>
+
+        <dt>Max Size</dt>
+        <dd>
+            <div class="input-append">
+                <input class="span4"  type="text" ng-model="attrs.max_size" placeholder="" />
+                <span class="add-on">Mb</span>
+            </div>
+        </dd>
+    </dl>
+</div>

@@ -271,7 +271,6 @@ app.directive('markerUpload', ['$http', function($http) {
                 ngModel: '='
             },
             link: function(scope, elm, attrs, ctrl) {
-                // Change this to the location of your server-side upload handler:
                 var url = path.ajax + attrs.path;
                 var $input = elm.find('input[type=file]');
 
@@ -287,6 +286,19 @@ app.directive('markerUpload', ['$http', function($http) {
                     }
                 }
 
+                var removeFrom = function(array, condition) {
+                    // remove from the queue
+                    var toRemove = [];
+                    angular.forEach(array, function(f, i) {
+                        if (condition(f)) {
+                            toRemove.push(i);
+                        }
+                    });
+
+                    angular.forEach(toRemove, function(index) {
+                        array.splice(index, 1);
+                    });
+                }
 
 
                 scope.queue = [];
@@ -306,32 +318,33 @@ app.directive('markerUpload', ['$http', function($http) {
                     },
                     done: function(e, data) {
                         var result = data.response().result;
-                        var fullpath = result.upload_data[0][0].full_path;
-                        scope.$apply(function() {
-                            // add to the model
+                        if (result.upload_data[0]) {
+                            var fullpath = result.upload_data[0][0].full_path;
+                            scope.$apply(function() {
+                                // add to the model
 
-                            if (!(scope.ngModel instanceof Array)) {
-                                scope.ngModel = [];
-                            }
-
-                            scope.ngModel.push(result.upload_data[0]);
-
-                            // remove from the queue
-                            var toRemove = [];
-                            angular.forEach(scope.queue, function(f, i) {
-                                if (f.response().result) {
-                                    var p1 = f.response().result.upload_data[0][0].full_path;
-                                    if (p1 === fullpath) {
-                                        toRemove.push(i);
-                                    }
+                                if (!(scope.ngModel instanceof Array)) {
+                                    scope.ngModel = [];
                                 }
-                            });
 
-                            angular.forEach(toRemove, function(index) {
-                                scope.queue.splice(index, 1);
-                            });
+                                scope.ngModel.push(result.upload_data[0]);
 
-                        });
+                                removeFrom(scope.queue, function(item) {
+                                    return !!item.response().result && item.response().result.upload_data[0][0].full_path == fullpath;
+                                });
+
+                            });
+                        } else {
+                            scope.$apply(function() {
+                                scope.errors = result.errors;
+                                removeFrom(scope.queue, function(item) {
+                                    //console.log(item);
+                                    //return !!item.response().result && item.response().result.upload_data[0][0].full_path == fullpath;
+                                });
+                            });
+                            // some error occured
+                            // TODO >> display the errors
+                        }
                     }
                 }).prop('disabled', !$.support.fileInput)
                         .parent().addClass($.support.fileInput ? undefined : 'disabled');
@@ -339,17 +352,48 @@ app.directive('markerUpload', ['$http', function($http) {
 
                 scope.removeFile = function(file) {
                     $http.post(path.ajax + 'uploads/remove', {file: angular.toJson(file)}).then(function(r) {
-                        var toRemove = [];
-                        angular.forEach(scope.ngModel, function(f, i) {
-                            if (f[0].full_path === file[0].full_path) {
-                                toRemove.push(i);
-                            }
-                        });
-                        angular.forEach(toRemove, function(index) {
-                            scope.ngModel.splice(index, 1);
+                        removeFrom(scope.ngModel, function(item) {
+                            return item[0].full_path === file[0].full_path;
                         });
                     });
                 };
+            }
+        };
+    }]);
+
+app.directive('markerVideoPreview', [function() {
+        return {
+            restrict: 'A',
+            scope: {
+                ngModel: '='
+            },
+            link: function(scope, elm, attrs, ctrl) {
+                var model = angular.fromJson(scope.ngModel);
+                elm.attr('width', '300');
+                if (model && model[0] && model[0][0]) {
+                    if (Modernizr.video) {
+                        elm.html('<video src="../' + model[0][0].full_path + '" width="200"></video>');
+                    } else {
+                        elm.html('<i class="text-warning"><small>preview not supported</small></i>');
+                    }
+                    elm.after('<p><a target="_blank" href="../' + model[0][0].full_path + '">' + model[0][0].full_path.split('/').reverse()[0] + '</a></p>');
+                } else {
+                    elm.html('<i class="text-info"><small>No video selected</small></i>');
+                }
+            }
+        };
+    }]);
+
+app.directive('markerBarcode', [function() {
+        return {
+            restrict: 'A',
+            scope: {
+                ngModel: '='
+            },
+            link: function(scope, elm, attrs, ctrl) {
+                if (scope.ngModel) {
+                    elm.barcode(scope.ngModel, attrs.type);
+                }
             }
         };
     }]);

@@ -11,16 +11,20 @@ app.filter('interpolate', ['version', function(version) {
     }]);
 app.filter('urlify', function() {
     return function(text) {
-        return text.replace(/(^\-+|[^a-zA-Z0-9\/_| -]+|\-+$)/g, '')
-                .toLowerCase()
-                .replace(/[\/_| -]+/g, '-');
+        if (text) {
+            return text.replace(/(^\-+|[^a-zA-Z0-9\/_| -]+|\-+$)/g, '')
+                    .toLowerCase()
+                    .replace(/[\/_| -]+/g, '-');
+        }
     };
 });
 app.filter('safetitle', function() {
     return function(text) {
-        return text.replace(/(^\-+|[^a-zA-Z0-9\/_| -]+|\-+$)/g, '')
-                .toLowerCase()
-                .replace(/[\/_| -]+/g, '');
+        if (text) {
+            return text.replace(/(^\-+|[^a-zA-Z0-9\/_| -]+|\-+$)/g, '')
+                    .toLowerCase()
+                    .replace(/[\/_| -]+/g, '');
+        }
     };
 });
 app.filter('checkmark', function() {

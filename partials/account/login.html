@@ -36,7 +36,7 @@
     </style>
 
 
-    <form name="form" class="form-signin" ng-submit="signin()" ng-controller="AccLoginCtrl">
+    <form name="form" class="form-signin" ng-submit="signin()" ng-controller="AccLoginCtrl" ng-cloak>
         <h2 class="form-signin-heading">Please sign in</h2>
         <div ng-show="errors.length > 0" class="alert alert-error">
             <div ng-repeat="error in errors">{{error}}</div>

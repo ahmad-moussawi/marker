@@ -28,6 +28,9 @@
         
         <!-- spectrum -->
          <?php echo Content::script('admin/js/spectrum/spectrum.js') ?>
+
+        <!-- Barcode -->
+        <?php echo Content::script('admin/js/barcode/jquery-barcode.min.js') ?>
         
         
         <?php echo Content::script('app/app.js' ,'/') ?>

@@ -1,7 +1,7 @@
 <input type="file" name="files" multiple />
 <table class="files table table-condensed">
-    <tr ng-repeat="data in ngModel">
-        <td>
+    <tr ng-repeat="data in ngModel" ng-switch="data[0].mime.indexOf('image') > -1">
+        <td ng-switch-when="true">
             <a class="file" target="_blank" ng-href="../{{data[0].full_path}}">
                 <img class="thumb" ng-src="../{{data[0].full_path}}" />
             </a>
@@ -9,7 +9,7 @@
         <td>
             <ul class="unstyled replications">
                 <li ng-repeat="replication in data">
-                    <a title="{{replication.size}}" href="../{{replication.full_path}}">{{replication.full_path | filename}}</a>
+                    <a title="{{replication.size}}" target="_blank" href="../{{replication.full_path}}">{{replication.mime}} {{replication.full_path | filename}}</a>
                 </li>
             </ul>
         </td>
@@ -35,3 +35,7 @@
         </td>
     </tr>
 </table>
+<ul class="upload-errors">
+    <li ng-repeat="error in errors">{{error}}</li>
+</ul>
+<pre>{{queue}}</pre>

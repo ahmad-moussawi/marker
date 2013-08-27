@@ -15,8 +15,8 @@ class Uploads extends CI_Controller {
         $this->load->database();
         $this->load->library(array('form_validation', 'my_upload'));
         $this->load->helper('array');
-        $this->upload_path = dirname(APPPATH) . '/uploads/';
-        header('Content-Type:application/json');
+        $this->upload_path = dirname(APPPATH) . '/uploads';
+        //header('Content-Type:application/json');
     }
 
     /**
@@ -34,18 +34,25 @@ class Uploads extends CI_Controller {
                 if (file_exists($file)) {
                     $result[] = unlink($file);
                 } else {
-                    $this->warnings[] = "file: $file not exists";
+                    $this->warnings[] = "file: $file does not exist";
                 }
             }
             return $this->json(NULL, $this->errors, $this->warnings);
         }
     }
 
-    function upload($fieldId = FALSE) {
+    function upload($fieldId, $type = 'image') {
+        if ($type === 'image') {
+            $this->uploadImage($fieldId);
+        } else if ($type === 'video') {
+            $this->uploadVideo($fieldId);
+        }
+    }
 
+    private function uploadImage($fieldId) {
         $field = $this->db->get_where('fields', array('id' => $fieldId), 1)->row();
         $attrs = json_decode($field->attrs);
-        
+
         $data['errors'] = array();
         $data['upload_data'] = array();
 
@@ -135,16 +142,74 @@ class Uploads extends CI_Controller {
         echo json_encode($data);
     }
 
-    function upload2() {
+    private function uploadVideo($fieldId) {
+        $field = $this->db->get_where('fields', array('id' => $fieldId), 1)->row();
+        $attrs = json_decode($field->attrs);
+
+        $data['errors'] = array();
+        $data['upload_data'] = array();
+
+        $config = $this->_conf($attrs);
+        $config['max_size'] = 10000 * 1024;
+        $config['allowed_types'] = 'mp4';
         
-        $config = $this->_conf();
-        
-        
+        if (isset($attrs->max) && count($_FILES) > $attrs->max) {
+            $data['errors'][] = "The maximum number of files is: $attrs->max";
+            echo json_encode($data);
+            die;
+        } else if (empty($_FILES)) {
+            $data['errors'][] = "No file selected";
+            echo json_encode($data);
+            die;
+        }
+
         foreach ($_FILES as $value) {
-            
             $this->my_upload->upload($value);
-            
-            
+            if ($this->my_upload->uploaded == true) {
+                $this->my_upload->allowed = array('video/*');
+                $this->my_upload->file_name_body_add = $config['suffix'];
+                $this->my_upload->file_name_body_pre = $config['prefix'];
+//                $this->my_upload->file_max_size = $config['max_size'];
+//                $this->my_upload->image_max_width = $config['max_width'];
+//                $this->my_upload->image_max_height = $config['max_height'];
+
+                if ($this->my_upload->file_src_size > $config['max_size']) {
+                    $data['errors'][] = 'Maximum size exceeded, the maximum is : ' . ceil($config['max_size'] / 1024) . 'Kb';
+                } else
+                if (!in_array($this->my_upload->file_src_name_ext, explode('|', $config['allowed_types']))) {
+                    $data['errors'][] = 'Extension unsuported, valid extensions are :' . $config['allowed_types'];
+                } else {
+                    $result = array();
+                    $this->my_upload->process($config['upload_path']);
+                    if ($this->my_upload->processed == true) {
+                        $result[] = array(
+                            //'name' => $this->my_upload->file_dst_name,
+                            'full_path' => ltrim(str_replace('\\', '/', $this->my_upload->file_dst_pathname), './'),
+                            //'ext' => $this->my_upload->file_dst_name_ext,
+                            'mime' => $this->my_upload->file_src_mime,
+                            'size' => $this->my_upload->file_src_size,
+                        );
+                    }
+                    $this->my_upload->clean();
+                    $data['upload_data'][] = $result;
+                }
+            } else {
+                $data['errors'][] = $this->my_upload->error;
+            }
+        }
+        echo json_encode($data);
+    }
+
+    function upload2() {
+
+        $config = $this->_conf();
+
+
+        foreach ($_FILES as $value) {
+
+            $this->my_upload->upload($value);
+
+
             if ($this->my_upload->uploaded == true) {
                 $result = array();
                 $this->my_upload->process($config['upload_path']);
@@ -160,7 +225,7 @@ class Uploads extends CI_Controller {
                 }
             }
         }
-        
+
         return $this->json($result);
     }
 
@@ -244,5 +309,8 @@ class Uploads extends CI_Controller {
         return $config;
     }
 
+    private function resolvePath($path){
+        
+    }
 }
 
