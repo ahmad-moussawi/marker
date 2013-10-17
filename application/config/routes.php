@@ -43,6 +43,7 @@ $route['404_override'] = '';
 
 $route['admin'] = 'admin/index';
 $route['admin/(:any)'] = 'admin/$1';
+$route['api/(:any)'] = 'api/$1';
 
 // Route all default request to the SITE controllers
 $route['(:any)'] = 'site/$1';

@@ -1,42 +1,53 @@
-<div class="navbar">
-    <div class="navbar-inner">
-        <a class="brand" href="#">Lists Module</a>
-        <ul class="nav">
-            <li><a href="#/lists/create">New list</a></li>
-        </ul>
+<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title">Lists</h3>
+        </div>
     </div>
+
+    <ul class="page-breadcrumb breadcrumb">
+        <li class="pull-right"><input type="text" ng-model="searchText.title" placeholder="Search ..." /></li>
+        <li>
+            <i class="icon-home"></i>
+            <a href="#/index">Dashboard</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>Lists</li>
+    </ul>
+
+    <a href="#/lists/create" class="btn green">
+        Add New <i class="icon-plus"></i>
+    </a>
+    
+    <p></p>
+
+    <table class="table table-hover">
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Mapped Table</th>
+            <th>Published ?</th>
+            <th>Actions</th>
+        </tr>
+
+        <tr ng-repeat="list in lists | filter:searchText">
+            <td>{{list.id}}</td>
+            <td>{{list.title}}</td>
+            <td>{{list.mapped_table}}</td>
+            <td>{{list.ispublished | checkmark}}</td>
+            <td>
+                <a class="btn" href="#/lists/view/{{list.id}}" >View</a>
+                <a class="btn" href="#/modules/{{list.id}}/index" >View Module</a>
+                <a class="btn btn-sucess" target="_blank" href="../api/get/{{list.internaltitle}}" >JSON Api</a>
+                <span ng-switch="list.protected">
+                    <a ng-switch-when="0" class="btn" href="#/lists/edit/{{list.id}}" >Edit</a>
+                </span>
+                <span ng-switch="list.protected">
+                    <a ng-switch-when="0" class="btn btn-danger" href="#/lists/delete/{{list.id}}" >Delete</a>
+                </span>
+            </td>
+        </tr>
+
+    </table>
 </div>
-
-<p>
-    Search Lists :
-    <input type="text" ng-model="searchText.title" placeholder="Search ..." class="pull-right" />
-</p>
-
-<table class="table table-hover">
-    <tr>
-        <th>Id</th>
-        <th>Title</th>
-        <th>Mapped Table</th>
-        <th>Published ?</th>
-        <th>Created By</th>
-        <th>Actions</th>
-    </tr>
-
-    <tr ng-repeat="list in lists | filter:searchText">
-        <td>{{list.id}}</td>
-        <td>{{list.title}}</td>
-        <td>{{list.mapped_table}}</td>
-        <td>{{list.ispublished | checkmark}}</td>
-        <td>{{list.createdby}}</td>
-        <td>
-            <a class="btn" href="#/lists/view/{{list.id}}" >View</a>
-            <span ng-switch="list.protected">
-                <a ng-switch-when="0" class="btn" href="#/lists/edit/{{list.id}}" >Edit</a>
-            </span>
-            <span ng-switch="list.protected">
-                <a ng-switch-when="0" class="btn btn-danger" href="#/lists/delete/{{list.id}}" >Delete</a>
-            </span>
-        </td>
-    </tr>
-
-</table>

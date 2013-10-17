@@ -25,11 +25,11 @@ class Modules extends CI_Controller {
         try {
             $module = $this->queries->getModuleMetadata($moduleId);
         } catch (Exception $exc) {
-            if($exc->getCode() === 404){
-                return $this->json('Exception', array('NotFoundException'));
+            if ($exc->getCode() === 404) {
+                return $this->json(FALSE, new Exception('NotFoundException'));
             }
         }
-        
+
         $data = $this->db->from($module->mapped_table);
 
         if ($this->input->get('select')) {
@@ -63,9 +63,7 @@ class Modules extends CI_Controller {
                         }
 
                         $data = $data->join(
-                                "$list `$alias`", 
-                                "$alias.id = $module->mapped_table.$field->internaltitle",
-                                'left'
+                                "$list `$alias`", "$alias.id = $module->mapped_table.$field->internaltitle", 'left'
                         );
                     }
                 }
@@ -75,46 +73,38 @@ class Modules extends CI_Controller {
         $data = $data->get()->result_array();
 
         $data = $this->convertData($data);
-        
-        if ($id) {
-            $data = $data[0];
-        }
 
-        return $this->json($data, $this->errors);
+        if ($id) {
+            return $this->json(TRUE, array('row' => $data[0], 'errors' => $this->errors));
+        } else {
+            return $this->json(TRUE, array('rows' => $data, 'errors' => $this->errors));
+        }
     }
 
     function set($moduleId, $id = FALSE) {
-
-        $response = FALSE;
-
         $module = $this->queries->getModuleMetadata($moduleId);
 
-        $data = elements($module->fields_array, $this->input->post());
-        
+        $data = elements($module->fields_array, Request::Post());
+
         // transform Array to JSON
-        
-        foreach($data as &$row){
-            if(is_array($row)){
+
+        foreach ($data as &$row) {
+            if (is_array($row)) {
                 $row = json_encode($row);
             }
         }
-        
+
         //return $this->json($data);
-        
+
         if (!$id) {
 // create
-
             $this->db->insert($module->mapped_table, $data);
-            $id = $this->db->insert_id();
-            $response = $id;
+            return $this->json(TRUE, array($this->db->insert_id(), $data));
         } else {
 // update
             $this->db->update($module->mapped_table, $data, array('id' => $id));
-            $response = $this->db->affected_rows();
+            return $this->json($this->db->affected_rows() > 0);
         }
-
-// Todo updates columns
-        return $this->json(array($response, $data));
     }
 
     function delete($moduleId, $id) {
@@ -125,7 +115,7 @@ class Modules extends CI_Controller {
         } catch (Exception $exc) {
             $response = FALSE;
         }
-        echo json_encode($response);
+        return $this->json($response);
     }
 
     function fieldInternalDataLookup($moduleId) {
@@ -157,7 +147,7 @@ class Modules extends CI_Controller {
             $data2[] = $newrow;
         }
 
-        return $this->json(array('rows' => $data2, 'map' => $map), $this->errors);
+        return $this->json(TRUE, array('rows' => $data2, 'map' => $map));
     }
 
     function renderView($viewName = FALSE, $moduleId = FALSE) {
@@ -168,12 +158,12 @@ class Modules extends CI_Controller {
 
         $this->load->helper('inflector');
         $data['module'] = $this->db->get_where('lists', array('id' => $moduleId), 1)->row();
-        
-        if(empty($data['module'])){
+
+        if (empty($data['module'])) {
             echo '<div class="alert alert-danger">Module not found</div>';
             return;
         }
-        
+
         $data['fields'] = $this->db->get_where('fields', array('listid' => $moduleId))->result();
         $data['term'] = singular($data['module']->title);
         $this->load->view('admin/modules/' . $viewName, $data);

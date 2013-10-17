@@ -309,7 +309,7 @@ class Uploads extends CI_Controller {
 
             if (isset($attrs->path) && strlen($attrs->path) > 0) {
                 $attrs->path = trim($attrs->path, '/');
-                $config['upload_path'] = $config['path'] . $attrs->path;
+                $config['upload_path'] = $config['path'] . '/' . $attrs->path;
             }
 
             if (isset($attrs->max_size)) {
@@ -340,7 +340,7 @@ class Uploads extends CI_Controller {
 
             if (isset($attrs->thumb_path) && strlen($attrs->thumb_path) > 0) {
                 $attrs->thumb_path = trim($attrs->thumb_path, '/');
-                $config['thumb_upload_path'] = $config['path'] . $attrs->thumb_path;
+                $config['thumb_upload_path'] = $config['path'] . '/' . $attrs->thumb_path;
             }
 
             if (isset($attrs->thumb_prefix)) {

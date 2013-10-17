@@ -47,7 +47,7 @@ class Content {
                     }
                 }
 
-                $html .="<input $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                $html .="<input class=\"form-control\" $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;
 
             case '1.2':
@@ -75,7 +75,7 @@ class Content {
                     }
                 }
 
-                $html .="<textarea $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
+                $html .="<textarea class=\"form-control\" $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
                 break;
 
             case '1.3':
@@ -93,7 +93,7 @@ class Content {
                     }
                 }
 
-                $html .="<textarea ck-editor $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
+                $html .="<textarea class=\"form-control\" ck-editor $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
                 break;
 
             case '1.4':
@@ -113,18 +113,27 @@ class Content {
                 $html .="<div class=\"editor\" data-ace=\"\" data-ng-model=\"item.$field->internaltitle\"></div>";
                 break;
             case '1.5':
-                $html .="<input color-picker type=\"color\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                 if (isset($attrs)) {
+                    if (isset($attrs->required) && $attrs->required) {
+                        $str = ' required="required"';
+                    }
+
+                    if (isset($attrs->default) && $attrs->default) {
+                        $str .= " default=\"$attrs->default\"";
+                    }
+                }
+                $html .="<input $str color-picker type=\"color\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;
 
             case '1.6':
-                $html .="<input type=\"text\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                $html .="<input class=\"form-control\" type=\"text\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;
 
             case 2:
-                $html .="<input type=\"number\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                $html .="<input class=\"form-control\" type=\"number\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;
             case 3:
-                $html .="<textarea name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
+                $html .="<textarea class=\"form-control\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
                 break;
 
             case '4.1':
@@ -147,7 +156,7 @@ class Content {
                 }
 
                 if ($attrs->type == 'internal') {
-                    $html .= "<select name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" field:internal=\"$attrs->type_internal\" field:display=\"$attrs->type_internal_display\"></select>";
+                    $html .= "<select class=\"form-control\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" field:internal=\"$attrs->type_internal\" field:display=\"$attrs->type_internal_display\"></select>";
                 }
 
                 break;
@@ -216,7 +225,7 @@ class Content {
                 break;
 
             default:
-                $html .="<input type=\"text\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                $html .="<input class=\"form-control\" type=\"text\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
         }
 
         return $html;

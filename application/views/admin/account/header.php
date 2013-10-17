@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html ng-app="myApp" class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title><?php echo isset($title) ? $title : config_item('project_title') ?></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-        <base href="<?php echo site_url('admin') ?>/" />
-        <?php echo Content::link('admin/css/bootstrap.css') ?>
-        <?php echo Content::link('admin/css/bootstrap-responsive.css') ?>
-        <?php echo Content::link('admin/css/main.css') ?>
+<!--[if IE 8]> <html ng-app="myApp" lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html ng-app="myApp" lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!--> <html ng-app="myApp" lang="en" class="no-js"> <!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+	<meta charset="utf-8" />
+        <base href="<?php echo site_url() ?>/" />
+	<title><?php echo isset($title) ? $title : config_item('project_title') ?></title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+	<meta name="MobileOptimized" content="320">
+	<!-- BEGIN GLOBAL MANDATORY STYLES --> 
+	<?php echo Content::link('admin/assets/plugins/font-awesome/css/font-awesome.min.css') ?>
+	<?php echo Content::link('admin/assets/plugins/bootstrap/css/bootstrap.min.css') ?>
+	<!-- END GLOBAL MANDATORY STYLES -->
+	<!-- BEGIN THEME STYLES --> 
+	<?php echo Content::link('admin/assets/css/style-metronic.css') ?>
+	<?php echo Content::link('admin/assets/css/style.css') ?>
+	<?php echo Content::link('admin/assets/css/style-responsive.css') ?>
+	<?php echo Content::link('admin/assets/css/pages/login.css') ?>
+	<!-- END THEME STYLES -->
+	<link rel="shortcut icon" href="favicon.ico" />
         <script>
             var site = {name: '<?php echo config_item('project_title') ?>'};
             var path = {
@@ -22,10 +32,13 @@
                 partials : '<?php echo site_url('partials') ?>/'
             };
         </script>
-    </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
-        <![endif]-->
-        <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
-            <div class = "container">
+</head>
+<!-- BEGIN BODY -->
+<body class="login">
+	<!-- BEGIN LOGO -->
+	<div class="logo">
+		MARKER<!--<img src="assets/img/logo-big.png" alt="" />--> 
+	</div>
+	<!-- END LOGO -->
+	<!-- BEGIN LOGIN -->
+	<div class="content">

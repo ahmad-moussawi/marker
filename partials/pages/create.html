@@ -1,3 +1,6 @@
+<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<div class="page-content">
+    
 <ul class="breadcrumb">
     <li><a href="#/index">Home</a> <span class="divider">/</span></li>
     <li><a href="#/pages/index">Pages</a> <span class="divider">/</span></li>
@@ -34,13 +37,6 @@
         <div class="span7">
             <strong>Page content</strong>
             <textarea ck-editor ng-model="page.body" rows="10"></textarea>
-
-
-            <hr/>
-            <p>
-                <strong>Picture</strong>
-            </p>
-            <div form="form" working="working" doupload="alert('do upload')"  max="10" upload="http://demo/ci/admin/uploads/upload/32" property="page.images" fieldid="32" name="images">upload</div>
         </div>
     </div>
 
@@ -50,3 +46,5 @@
         <a href="#/pages/index" class="btn">Back</a>
     </p>
 </form>
+    
+</div>

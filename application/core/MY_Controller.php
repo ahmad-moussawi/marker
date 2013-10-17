@@ -63,17 +63,20 @@ class CI_Controller {
         $this->load->view("$area/tmpl/footer", $data);
     }
 
-    public function json($data, $errors = NULL,$warnings=NULL, $status = NULL) {
+    /**
+     * 
+     * @param type $status
+     * @param type $data
+     * @param type $message
+     * @return type
+     */
+    public function json($status = FALSE, $data = array(), $message = '') {
         header('Content-Type:application/json');
-        if ($status === NULL) {
-            $status = empty($errors);
-        }
 
         $response = array(
+            'status' => $status,
+            'message' => $message,
             'data' => $data,
-            'errors' => $errors,
-            'warnings' => $warnings,
-            'status' => $status
         );
         echo json_encode($response);
         return $response;

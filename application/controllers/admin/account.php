@@ -8,7 +8,6 @@ class Account extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->database();
-        header('Content-Type:application/json');
 
         if (!isset($_SESSION)) {
             session_start();
@@ -21,29 +20,27 @@ class Account extends CI_Controller {
 
     function auth() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_decode(new Exception('Unauthorized access', '403'));
-            die;
+            return $this->json(FALSE, new Exception('Unauthorized access', '403'));
         }
-
         $member = $this->db->select('id,login,description')->get_where($this->members_table, array(
-                    'login' => $this->input->post('login'),
-                    'password' => $this->input->post('password'),
+                    'login' => Request::Post('login'),
+                    'password' => Request::Post('password'),
                         ), 1
                 )->row();
 
         if (!empty($member)) {
             $_SESSION['login'] = $member;
-            echo json_encode($member);
+            return $this->json(TRUE, $member);
         } else {
-            echo json_encode(FALSE);
+            return $this->json(FALSE);
         }
     }
 
     function is_authenticated() {
         if (empty($_SESSION['login'])) {
-            echo json_encode(FALSE);
+           return $this->json(FALSE);
         } else {
-            echo json_encode($_SESSION['login']);
+            return $this->json(TRUE, $_SESSION['login']);
         }
     }
 
@@ -54,21 +51,18 @@ class Account extends CI_Controller {
 
     function in_role() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            echo json_decode(new Exception('Unauthorized access', '403'));
-            die;
+            return $this->json(FALSE, new Exception('Unauthorized access', '403'));
         }
 
         if (empty($_SESSION['login'])) {
-            echo json_decode(new Exception('Unauthorized access', '403'));
-            die;
+            return $this->json(FALSE, new Exception('Unauthorized access', '403'));
         }
 
         $role = $this->input->post('role');
         $where = array("$this->roles_table.role" => $role, "$this->members_roles_table.memberid" => $_SESSION['login']->id);
         $success = $this->db->join($this->roles_table, "$this->roles_table.id = $this->members_roles_table.roleid")
                         ->where($where)->count_all_results() === 1;
-
-        echo json_encode($success);
+        return $this->json($success);
     }
 
 }

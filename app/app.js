@@ -4,6 +4,7 @@ var routes = [
     //Admin
     ['/index', path.partials + 'index/index.html', 'IndexCtrl'],
     ['/test', path.partials + 'index/test.html', 'Test2Ctrl'],
+    ['/demo', path.partials + 'index/demo.html', 'TableCtrl'],
     // Modules
     ['/modules/:id/index', path.partials + 'modules/blank.html', 'ModulesIndexCtrl'],
     ['/modules/:id/create', path.partials + 'modules/blank.html', 'ModulesCreateCtrl'],
@@ -28,24 +29,38 @@ var routes = [
     ['/pages/edit/:pageId', path.partials + 'pages/edit.html', 'PagesEditCtrl'],
     ['/pages/delete/:pageId', path.partials + 'pages/delete.html', 'PagesDeleteCtrl'],
     ['/pages/create', path.partials + 'pages/create.html', 'PagesCreateCtrl'],
-    // Members
-    ['/members/index', path.partials + 'members/index.html', 'MembersIndexCtrl'],
-    ['/members/create', path.partials + 'members/create.html', 'MembersCreateCtrl'],
-    ['/members/edit/:userId', path.partials + 'members/edit.html', 'MembersEditCtrl'],
-    ['/members/view/:userId', path.partials + 'members/view.html', 'MembersViewCtrl'],
-    ['/members/delete/:userId', path.partials + 'members/delete.html', 'MembersDeleteCtrl']
+    
+    // Users
+    ['/users/index', path.partials + 'users/index.html', 'UsersIndexCtrl'],
+    ['/users/create', path.partials + 'users/create.html', 'UsersCreateCtrl'],
+    ['/users/edit/:userId', path.partials + 'users/edit.html', 'UsersEditCtrl'],
+    ['/users/view/:userId', path.partials + 'users/view.html', 'UsersViewCtrl'],
+    ['/users/delete/:userId', path.partials + 'users/delete.html', 'UsersDeleteCtrl'],
+    
+    //Settings
+    ['/settings', path.partials + 'settings/index.html', 'SettingsIndexCtrl']
 
 ];
 
 // Declare app level module which depends on filters, and services
-angular.module('myApp', ['ngSanitize', 'myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers']).
+angular.module('myApp', 
+    [
+        'ngRoute',
+        'ngSanitize', 
+        'myApp.filters', 
+        'myApp.services', 
+        'myApp.directives', 
+        'myApp.controllers',
+        'LoadingIndicator',
+        'ngTable'
+    ]).
         config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
-        $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-        $httpProvider.defaults.transformRequest = function(data) {
-            if (data) {
-                return $.param(data);
-            }
-        };
+//        $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+//        $httpProvider.defaults.transformRequest = function(data) {
+//            if (data) {
+//                return $.param(data);
+//            }
+//        };
         routes.forEach(function(route) {
             $routeProvider.when(route[0], {templateUrl: route[1], controller: route[2]});
         });

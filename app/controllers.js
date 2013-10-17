@@ -110,25 +110,87 @@ app.controller('TestCtrl', ['$scope', '$http', function(scope, $http) {
     }]);
 
 app.controller('IndexCtrl', ['$scope', '$http', function($scope, $http) {
-        $scope.working = true;
         // 1 is the dashboard link modules
         $http.get(path.ajax + 'modules/get/1').success(function(r) {
-            $scope.links = r.data;
-            $scope.working = false;
+            $scope.links = r.data.rows;
         });
     }]);
 
-app.controller('ModulesIndexCtrl', ['$scope', '$http', '$routeParams', '$route', '$compile', function($scope, $http, $routeParams, $route, $compile) {
+app.controller('ModulesIndexCtrl', ['$scope', '$http', '$routeParams', '$route',
+    '$compile', '$filter', 'ngTableParams',
+    function($scope, $http, $routeParams, $route, $compile, $filter, ngTableParams) {
         $scope.working = true;
+
+
+
         $route.current.templateUrl = path.ajax + 'modules/renderView/index/' + $routeParams.id;
         $http.get($route.current.templateUrl).success(function(data) {
             $http.get(path.ajax + 'modules/get/' + $routeParams.id).success(function(r) {
-                $scope.items = r.data;
+                //$scope.items = r.data.rows;
+                console.log(r.data.rows.length);
+
+            $scope.tableParams = new ngTableParams({
+                page: 1,            // show first page
+                count: 10,          // count per page
+                sorting: {
+                    //id: 'asc'     // initial sorting
+                }
+            }, {
+                total: r.data.rows.length, // length of data
+                getData: function($defer, params) {
+                    // use build-in angular filter
+                    var orderedData = params.sorting() ?
+                                        $filter('orderBy')(r.data.rows, params.orderBy()) :
+                                        r.data.rows;
+                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                }
+            });
+
+
                 $('#view').html($compile(data)($scope));
                 $scope.working = false;
             });
         });
     }]);
+
+app.controller('TableCtrl', function($scope, $filter, ngTableParams) {
+     var data = [{name: "Moroni", age: 50},
+                        {name: "Tiancum", age: 43},
+                        {name: "Jacob", age: 27},
+                        {name: "Nephi", age: 29},
+                        {name: "Enos", age: 34},
+                        {name: "Tiancum", age: 43},
+                        {name: "Jacob", age: 27},
+                        {name: "Nephi", age: 29},
+                        {name: "Enos", age: 34},
+                        {name: "Tiancum", age: 43},
+                        {name: "Jacob", age: 27},
+                        {name: "Nephi", age: 29},
+                        {name: "Enos", age: 34},
+                        {name: "Tiancum", age: 43},
+                        {name: "Jacob", age: 27},
+                        {name: "Nephi", age: 29},
+                        {name: "Enos", age: 34}];
+
+            $scope.tableParams = new ngTableParams({
+                page: 1,            // show first page
+                count: 10,          // count per page
+                sorting: {
+                    name: 'asc'     // initial sorting
+                }
+            }, {
+                total: data.length, // length of data
+                getData: function($defer, params) {
+                    // use build-in angular filter
+                    var orderedData = params.sorting() ?
+                                        $filter('orderBy')(data, params.orderBy()) :
+                                        data;
+
+                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                }
+            });
+});
+
 app.controller('ModulesCreateCtrl', ['$scope', '$http', '$routeParams', '$route', '$compile', '$location', function($scope, $http, $routeParams, $route, $compile, $location) {
         $scope.working = true;
         $scope.attachedfiles = [];
@@ -153,7 +215,7 @@ app.controller('ModulesViewCtrl', ['$scope', '$http', '$routeParams', '$route', 
         $route.current.templateUrl = path.ajax + 'modules/renderView/view/' + $routeParams.id;
         $http.get($route.current.templateUrl).success(function(data) {
             $http.get(path.ajax + 'modules/get/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
-                $scope.item = r.data;
+                $scope.item = r.data.row;
                 $('#view').html($compile(data)($scope));
                 $scope.working = false;
             });
@@ -164,7 +226,7 @@ app.controller('ModulesEditCtrl', ['$scope', '$http', '$routeParams', '$route', 
         $route.current.templateUrl = path.ajax + 'modules/renderView/edit/' + $routeParams.id;
         $http.get($route.current.templateUrl).success(function(data) {
             $http.get(path.ajax + 'modules/get/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
-                $scope.item = r.data;
+                $scope.item = r.data.row;
                 $('#view').html($compile(data)($scope));
                 $scope.working = false;
             });
@@ -184,13 +246,13 @@ app.controller('ModulesDeleteCtrl', ['$scope', '$http', '$routeParams', '$route'
         $route.current.templateUrl = path.ajax + 'modules/renderView/delete/' + $routeParams.id;
         $http.get($route.current.templateUrl).success(function(data) {
             $http.get(path.ajax + 'modules/get/' + $routeParams.id + '/' + $routeParams.rowId).success(function(r) {
-                $scope.item = r.data;
+                $scope.item = r.data.row;
                 $('#view').html($compile(data)($scope));
                 $scope.working = false;
             });
         });
 
-        $scope.remove= function() {
+        $scope.remove = function() {
             $http.post(path.ajax + 'modules/delete/' + $routeParams.id + '/' + $routeParams.rowId, $scope.item).success(function(r) {
                 $location.path('/modules/' + $routeParams.id + '/index');
             });
@@ -248,7 +310,7 @@ app.controller('ListsDeleteCtrl', ['$scope', '$http', '$routeParams', '$location
             $scope.working = false;
         });
 
-        $scope.remove= function() {
+        $scope.remove = function() {
             $http.get(path.ajax + 'lists/delete/' + $routeParams.id).success(function(r) {
                 $scope.working = false;
                 $location.path('/lists/index');
@@ -365,7 +427,7 @@ app.controller('ListsDeleteFieldCtrl', ['$scope', '$http', '$routeParams', '$fil
         $http.get(path.ajax + 'lists/getField/' + $routeParams.fieldId).success(function(r) {
             $scope.field = r;
         });
-        $scope.remove= function() {
+        $scope.remove = function() {
             $http.post(path.ajax + 'lists/deleteField/' + $routeParams.fieldId).success(function(r) {
                 $location.path('/lists/edit/' + $routeParams.id);
             });
@@ -374,18 +436,15 @@ app.controller('ListsDeleteFieldCtrl', ['$scope', '$http', '$routeParams', '$fil
 
 
 ///////////////
-// Members
+// Users
 ///////////////
-app.controller('MembersIndexCtrl', '$http', ['$scope', function($scope, $http) {
-        $scope.working = true;
-        $scope.members = [];
-        $http.get(path.ajax + 'members/get').success(function(r) {
-            $scope.members = r;
-            $scope.working = false;
+app.controller('UsersIndexCtrl', ['$scope', '$http', function($scope, $http) {
+        $scope.users = [];
+        $http.get(path.ajax + 'users/get').success(function(r) {
+            $scope.users = r.data;
         });
     }]);
-app.controller('MembersCreateCtrl', ['$scope', '$http', function($scope, $http) {
-        $scope.working = true;
+app.controller('UsersCreateCtrl', ['$scope', '$http', function($scope, $http) {
         $scope.success = false;
 
         $scope.roles = [];
@@ -394,57 +453,62 @@ app.controller('MembersCreateCtrl', ['$scope', '$http', function($scope, $http) 
         };
 
         //get roles
-        $http.get(path.ajax + 'members/getroles').success(function(r) {
-            $scope.roles = r;
-            $scope.working = false;
+        $http.get(path.ajax + 'users/getroles').success(function(r) {
+            $scope.roles = r.data;
         });
 
         $scope.save = function() {
             $scope.working = true;
-            $http.post(path.ajax + 'members/set', $scope.member).success(function(r) {
+            $http.post(path.ajax + 'users/set', $scope.member).success(function(r) {
                 $scope.success = true;
             });
         };
 
     }]);
-app.controller('MembersEditCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
-        $scope.working = true;
+app.controller('UsersEditCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
         $scope.success = false;
-
         //get roles
-        $http.get(path.ajax + 'members/getroles').success(function(r) {
-            $scope.roles = r;
-
+        $http.get(path.ajax + 'users/getroles').success(function(r) {
+            $scope.roles = r.data;
             //get member
-            $http.get(path.ajax + 'members/get/' + $routeParams.userId).success(function(r) {
-                $scope.member = r;
-                $scope.working = false;
+            $http.get(path.ajax + 'users/get/' + $routeParams.userId).success(function(r) {
+                $scope.user = r.data;
             });
         });
 
 
 
         $scope.save = function() {
-            $scope.working = true;
-            $http.post(path.ajax + 'members/set/' + $routeParams.userId, $scope.member).success(function(r) {
+            $http.post(path.ajax + 'users/set/' + $routeParams.userId, $scope.member).success(function(r) {
                 $scope.success = true;
             });
         };
 
     }]);
-app.controller('MembersViewCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
-        $scope.working = true;
-
+app.controller('UsersViewCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
         //get roles
-        $http.get(path.ajax + 'members/getroles').success(function(r) {
-            $scope.roles = r;
-
-            //get member
-            $http.get(path.ajax + 'members/get/' + $routeParams.userId).success(function(r) {
-                $scope.member = r;
-                $scope.working = false;
+        $http.get(path.ajax + 'users/getroles').success(function(r) {
+            $scope.roles = r.data;
+            $http.get(path.ajax + 'users/get/' + $routeParams.userId).success(function(r) {
+                $scope.user = r.data;
             });
         });
+    }]);
+
+app.controller('UsersDeleteCtrl', ['$scope', '$http', '$routeParams', '$location', function($scope, $http, $routeParams, $location) {
+        //get roles
+        $http.get(path.ajax + 'users/getroles').success(function(r) {
+            $scope.roles = r.data;
+            $http.get(path.ajax + 'users/get/' + $routeParams.userId).success(function(r) {
+                $scope.user = r.data;
+            });
+        });
+
+        $scope.remove = function() {
+            $http.post(path.ajax + 'users/delete/' + $routeParams.userId).success(function(r) {
+                $location.path('/users/index');
+            });
+        };
     }]);
 
 
@@ -496,7 +560,7 @@ app.controller('PagesDeleteCtrl', ['$scope', '$routeParams', '$http', '$location
             $scope.page = r.data.page;
         });
 
-        $scope.remove= function() {
+        $scope.remove = function() {
             $http.post(path.ajax + 'pages/delete', {id: $scope.page.id}).success(function(r) {
                 $location.path('/pages/index');
             });
@@ -523,4 +587,10 @@ app.controller('PagesEditCtrl', ['$scope', '$routeParams', '$http', '$filter', '
                 $scope.working = false;
             });
         };
+    }]);
+
+app.controller('SettingsIndexCtrl', ['$scope', '$http', function($scope, $http) {
+        $scope.settings = [
+            {title: 'Dashboard', link: 'modules/1/index', description: 'Manage the Items that appear on the dashboard', icon: 'cogs'}
+        ];
     }]);

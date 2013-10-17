@@ -1,0 +1,44 @@
+<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<div class="page-content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title">Users</h3>
+        </div>
+    </div>
+
+    <ul class="page-breadcrumb breadcrumb">
+        <li class="pull-right"><input type="text" ng-model="searchText.title" placeholder="Search ..." /></li>
+        <li>
+            <i class="icon-home"></i>
+            <a href="#/index">Dashboard</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>Users</li>
+    </ul>
+
+    <a href="#/users/create" class="btn green">
+        Add New <i class="icon-plus"></i>
+    </a>
+
+    <p></p>
+
+    <table class="table table-hover">
+        <tr>
+            <th>Id</th>
+            <th>Login</th>
+            <th>Actions</th>
+        </tr>
+
+        <tr ng-repeat="user in users | filter:searchText">
+            <td>{{user.id}}</td>
+            <td>{{user.login}}</td>
+            <td>
+                <a class="btn" href="#/users/view/{{user.id}}" >View</a>
+                <a class="btn" href="#/users/edit/{{user.id}}" >Edit</a>
+                <a class="btn btn-danger" href="#/users/delete/{{user.id}}" >Delete</a>
+            </td>
+        </tr>
+
+    </table>
+</div>

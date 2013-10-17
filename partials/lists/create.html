@@ -1,6 +1,8 @@
+<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<div class="page-content">
 <ul class="breadcrumb">
-    <li><a href="#/">Home</a> <span class="divider">/</span></li>
-    <li><a href="#/lists/index">Lists</a> <span class="divider">/</span></li>
+    <li><a href="#/">Home</a></li>
+    <li><a href="#/lists/index">Lists</a></li>
     <li class="active">{{list.internaltitle}} - [{{list.title}}]</li>
 </ul>
 
@@ -42,3 +44,4 @@
         <a ng-disabled="working" class="btn" href="#/lists/index">Back</a>
     </p>
 </form>
+</div>

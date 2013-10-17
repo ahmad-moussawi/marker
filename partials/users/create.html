@@ -1,0 +1,57 @@
+<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<div class="page-content">
+    
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title">New User</h3>
+        </div>
+    </div>
+
+    <ul class="page-breadcrumb breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="#/index">Dashboard</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>
+            <a href="#/users/index">Users</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>New</li>
+    </ul>
+
+<div class="alert alert-success" ng-show="success">
+    <strong>User saved</strong>
+</div>
+
+<form name="form">
+    <div class="row-fluid">
+        <div class="span5">
+            <dl class="dl-horizontal">
+                <dt>Login</dt>
+                <dd>
+                    <input type="text" ng-required="true" ng-model="member.login" />
+                </dd>
+                <dt>Password</dt>
+                <dd>
+                    <input type="password" ng-required="true" ng-model="member.password" />
+                </dd>
+                <dt>Description</dt>
+                <dd><textarea ng-model="member.description" ></textarea></dd>
+            </dl>
+        </div>
+        <div class="span7">
+            <strong>Member Of:</strong>
+            <select ng-model="member.roles" multiple="multiple">
+                <option value="{{role.id}}" ng-repeat="role in roles">{{role.role}}</option>
+            </select>
+        </div>
+    </div>
+
+    <hr/>
+    <p class="pull-right">
+        <button type="button" ng-click="save()" class="btn btn-primary">save</button>
+        <a href="#/members/index" class="btn">Back</a>
+    </p>
+</form>
+</div>

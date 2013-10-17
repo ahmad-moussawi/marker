@@ -34,7 +34,8 @@ app.directive('ckEditor', function() {
                                 ]
                                 ,
                         height: '290px',
-                        width: '99%'
+                        width: '99%',
+                        allowedContent: true
                     }
             );
 
@@ -113,9 +114,9 @@ app.directive('authCheck', ['$rootScope', '$http', '$location', 'AuthService', f
                     if (!auth.isLogged) {
 
                         $http.post(path.ajax + 'account/is_authenticated').success(function(r) {
-                            if (r) {
+                            if (r.status) {
                                 auth.isLogged = true;
-                                auth.member = r;
+                                auth.member = r.data;
                             } else {
                                 auth.isLogged = false;
                                 auth.member = false;
@@ -134,6 +135,7 @@ app.directive('authCheck', ['$rootScope', '$http', '$location', 'AuthService', f
 
 app.directive('authMenu', ['$rootScope', '$http', '$location', 'AuthService', function($root, $http, $location, auth) {
         return {
+            restrict: 'EA',
             templateUrl: path.partials + 'directives/auth/menu.html',
             replace: true,
             link: function(scope, elem, attrs, ctrl) {
@@ -252,8 +254,10 @@ app.directive('colorPicker', [function() {
             },
             link: function(scope, elm, attrs) {
                 elm.spectrum({
-                    color: scope.ngModel,
+                    color: scope.ngModel || attrs.default || '000',
                     showInput: true,
+                    showPalette:true,
+                    palette:['fff', '000'],
                     change: function(color) {
                         scope.$apply(function() {
                             scope.ngModel = color.toHexString(); // #ff0000
@@ -263,6 +267,7 @@ app.directive('colorPicker', [function() {
             }
         };
     }]);
+
 app.directive('markerUpload', ['$http', function($http) {
         return {
             restrict: 'E',

@@ -32,7 +32,7 @@ class Lists extends CI_Controller {
 
         $response = FALSE;
 
-        $data = elements(array('title', 'internaltitle', 'mapped_table', 'description', 'ispublished'), $this->input->post());
+        $data = elements(array('title', 'internaltitle', 'mapped_table', 'description', 'ispublished'), Request::Post());
 
 
         if (!$id) {
@@ -96,7 +96,7 @@ class Lists extends CI_Controller {
 
     function AddField($listId) {
         $list = $this->db->where(array('id' => $listId))->limit(1)->get($this->table)->row();
-        $field = elements(array('title', 'internaltitle', 'ispublished', 'type', 'description', 'attrs'), $this->input->post());
+        $field = elements(array('title', 'internaltitle', 'ispublished', 'type', 'description', 'attrs'), Request::Post());
 
         // Create new column in the table
         $this->dbforge->add_column($list->mapped_table, array(

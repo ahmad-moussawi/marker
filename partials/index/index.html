@@ -1,21 +1,24 @@
-<div class="row">
-    <div class="span3 visible-desktop">
-        <div ng-include src="'../partials/controls/side.html'"></div>
-    </div>
-    <div class="span9">
-		<h3>Administration Panel</h3>
-		<p>Click on the modules that you want to manage</p>
-        <div class="row-fluid">
-            <ul class="unstyled modules">
-                <li ng-repeat="item in links" class="module">
-                    <a href="#/{{item.link}}" class="thumbnail">
-                        <div class="caption">
-                            <h4>{{item.title}}</h4>
-                            <p>{{item.description}}</p>
-                        </div>
-                    </a>
-                </li>
-            </ul>
+<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+            <h3 class="page-title">
+                Available Modules <small>manage your app</small>
+            </h3>
+            <!-- END PAGE TITLE & BREADCRUMB-->
         </div>
+    </div>
+
+    <div class="tiles">
+        <a href="#/{{item.link}}" ng-repeat="item in links" class="tile bg-green">
+            <div class="tile-body">
+                <i class="icon-paperclip"></i>
+            </div>
+            <div class="tile-object">
+                <div class="name">{{item.title}}</div>
+                <!--<div class="number">12</div>-->
+            </div>
+        </a>
     </div>
 </div>
