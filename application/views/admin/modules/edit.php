@@ -44,7 +44,7 @@
         <hr/>
         <p class="pull-right">
             <button ng-disabled="working" type="submit" class="btn btn-primary">Save</button>
-            <a ng-disabled="working" class="btn" href="#/modules/<?php echo $module->id ?>/index">Back</a>
+            <a ng-disabled="working" class="btn" href="#/modules/<?php echo $module->id ?>/view/{{item.id}}">Back</a>
         </p>
     </form>
 

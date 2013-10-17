@@ -72,11 +72,11 @@ module.factory('LoadingIndicatorHandler', function()
                     //.height(4)
                     .fadeIn(200);
                 $progress.removeClass('progress-bar-danger').addClass('progress-bar-info')
-                    .width(5).animate({ width: '100%' }, 'fast', function () {
+                    .width('5%').animate({ width: '100%' }, 'slow', function () {
                     timer = setTimeout(function () {
                         //$element.animate({ height: 6 }, 200);
                         $progress.removeClass('progress-bar-info').addClass('progress-bar-danger');
-                    },500)
+                    },500);
                 });
             }
         },

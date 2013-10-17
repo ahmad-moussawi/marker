@@ -69,7 +69,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
                 <!-- END LOGO -->
                 <!-- BEGIN RESPONSIVE MENU TOGGLER --> 
                 <a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <img src="assets/img/menu-toggler.png" alt="" />
+                    <img src="<?php echo base_url('assets/admin/assets/img/menu-toggler.png') ?>" alt="" />
                 </a> 
                 <!-- END RESPONSIVE MENU TOGGLER -->
                 <!-- BEGIN TOP NAVIGATION MENU -->

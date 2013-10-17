@@ -113,7 +113,7 @@ class Content {
                 $html .="<div class=\"editor\" data-ace=\"\" data-ng-model=\"item.$field->internaltitle\"></div>";
                 break;
             case '1.5':
-                 if (isset($attrs)) {
+                if (isset($attrs)) {
                     if (isset($attrs->required) && $attrs->required) {
                         $str = ' required="required"';
                     }
@@ -256,7 +256,8 @@ class Content {
                 $html .="{{item.$field->internaltitle | checkmark}}";
                 break;
             case '5.1':
-                $html .= "<div ng-bind-html-unsafe=\"item.{$field->internaltitle} | images_view:0:3\"></div>";
+                //$html .= "<div ng-bind-html-unsafe=\"item.{$field->internaltitle} | images_view:0:3\"></div>";
+                $html .= "<div marker:image-preview limit=\"3\" max-width=\"130\"  ng-model=\"item.{$field->internaltitle}\"></div>";
                 break;
             case '5.2':
                 $html .= "<div marker:video-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
@@ -303,7 +304,8 @@ class Content {
                 $html .="{{item.$field->internaltitle | checkmark}}";
                 break;
             case '5.1':
-                $html .= "<div ng-bind-html-unsafe=\"item.{$field->internaltitle} | images_index\"></div>";
+                //$html .= "<div ng-bind-html-unsafe=\"item.{$field->internaltitle} | images_index\"></div>";
+                $html .= "<div marker:image-preview limit=\"0\" ng-model=\"item.{$field->internaltitle}\"></div>";
                 break;
 
             case '5.2':

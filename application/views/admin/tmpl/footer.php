@@ -22,8 +22,13 @@
    
    <!-- MARKER -->
         <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>-->
-        <script>window.jQuery || document.write('<script src="<?php echo site_url('assets/admin/js/vendor/jquery-1.8.1.min.js') ?>"><\/script>')</script>
+        <!--<script>window.jQuery || document.write('<script src="<?php echo site_url('assets/admin/js/vendor/jquery-1.8.1.min.js') ?>"><\/script>')</script>-->
         <?php //echo Content::script('admin/js/jquery.validation.min.js') ?>
+   
+        <?php echo Content::script('admin/assets/plugins/jquery-1.10.2.min.js') ?>
+        <?php echo Content::script('admin/assets/plugins/jquery-migrate-1.2.1.min.js') ?>
+        <?php echo Content::script('admin/assets/plugins/bootstrap/js/bootstrap.min.js') ?>
+   
         <?php echo Content::script('admin/js/vendor/ckeditor/ckeditor.js') ?>
         <?php echo Content::script('admin/js/vendor/ace/ace.js') ?>
         <?php echo Content::script('admin/js/vendor/bootstrap.min.js') ?>
@@ -54,6 +59,9 @@
         <!-- Barcode -->
         <?php echo Content::script('admin/js/barcode/jquery-barcode.min.js') ?>
         
+        
+        <?php echo Content::script('admin/js/jquery.elevateZoom-3.0.3.min.js') ?>
+        
         <?php echo Content::script('admin/js/angular/ng-loadingindicator.js') ?>
         <?php echo Content::script('admin/js/angular/ng-table.js') ?>
         
@@ -66,24 +74,13 @@
         
    <!-- //MARKER -->
    
-   <?php echo Content::script('admin/assets/plugins/jquery-1.10.2.min.js') ?>
-   <?php echo Content::script('admin/assets/plugins/jquery-migrate-1.2.1.min.js') ?>
-   <?php echo Content::script('admin/assets/plugins/bootstrap/js/bootstrap.min.js') ?>
+
    <?php echo Content::script('admin/assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js') ?>
    <?php echo Content::script('admin/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js') ?>
    <?php echo Content::script('admin/assets/plugins/jquery.blockui.min.js') ?>
    <?php echo Content::script('admin/assets/plugins/jquery.cookie.min.js') ?>
    <?php echo Content::script('admin/assets/plugins/uniform/jquery.uniform.min.js') ?>
    
-   
-   <!--<script src="assets/plugins/jquery-1.10.2.min.js" type="text/javascript"></script>-->
-   <!--<script src="assets/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>-->     
-   <!--<script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>-->
-   <!--<script src="assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js" type="text/javascript" ></script>-->
-   <!--<script src="assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>-->
-   <!--<script src="assets/plugins/jquery.blockui.min.js" type="text/javascript"></script>-->  
-   <!--<script src="assets/plugins/jquery.cookie.min.js" type="text/javascript"></script>-->
-   <!--<script src="assets/plugins/uniform/jquery.uniform.min.js" type="text/javascript" ></script>-->
    <!-- END CORE PLUGINS -->
    <!--<script src="assets/scripts/app.js"></script>-->  
       <?php echo Content::script('admin/assets/scripts/app.js') ?>

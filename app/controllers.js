@@ -116,79 +116,80 @@ app.controller('IndexCtrl', ['$scope', '$http', function($scope, $http) {
         });
     }]);
 
-app.controller('ModulesIndexCtrl', ['$scope', '$http', '$routeParams', '$route',
-    '$compile', '$filter', 'ngTableParams',
-    function($scope, $http, $routeParams, $route, $compile, $filter, ngTableParams) {
-        $scope.working = true;
+app.controller('ModulesIndexCtrl',
+        ['$scope', '$http', '$routeParams', '$route', '$compile', '$filter', 'ngTableParams',
+            function($scope, $http, $routeParams, $route, $compile, $filter, ngTableParams) {
+                $scope.working = true;
 
-
-
-        $route.current.templateUrl = path.ajax + 'modules/renderView/index/' + $routeParams.id;
-        $http.get($route.current.templateUrl).success(function(data) {
-            $http.get(path.ajax + 'modules/get/' + $routeParams.id).success(function(r) {
-                //$scope.items = r.data.rows;
-                console.log(r.data.rows.length);
-
-            $scope.tableParams = new ngTableParams({
-                page: 1,            // show first page
-                count: 10,          // count per page
-                sorting: {
-                    //id: 'asc'     // initial sorting
-                }
-            }, {
-                total: r.data.rows.length, // length of data
-                getData: function($defer, params) {
-                    // use build-in angular filter
-                    var orderedData = params.sorting() ?
+                $route.current.templateUrl = path.ajax + 'modules/renderView/index/' + $routeParams.id;
+                $http.get($route.current.templateUrl).success(function(data) {
+                    $http.get(path.ajax + 'modules/get/' + $routeParams.id).success(function(r) {
+                        
+                        $scope.tableParams = new ngTableParams({
+                            page: 1,
+                            count: 10
+//                    sorting: {
+//                        id: 'asc'     // initial sorting
+//                    }
+//                    ,
+//                    filter: {
+//                        title: 'M'       // initial filter
+//                    }
+                        },
+                        {
+                            total: r.data.rows.length,
+                            getData: function($defer, params) {
+                                // use build-in angular filter
+                                var orderedData = params.sorting() ?
                                         $filter('orderBy')(r.data.rows, params.orderBy()) :
                                         r.data.rows;
-                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                }
-            });
 
+                                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+                            }
+                        });
 
-                $('#view').html($compile(data)($scope));
-                $scope.working = false;
-            });
-        });
-    }]);
+                        $('#view').html($compile(data)($scope));
+                        $scope.working = false;
+                    });
+                });
+            }]);
 
 app.controller('TableCtrl', function($scope, $filter, ngTableParams) {
-     var data = [{name: "Moroni", age: 50},
-                        {name: "Tiancum", age: 43},
-                        {name: "Jacob", age: 27},
-                        {name: "Nephi", age: 29},
-                        {name: "Enos", age: 34},
-                        {name: "Tiancum", age: 43},
-                        {name: "Jacob", age: 27},
-                        {name: "Nephi", age: 29},
-                        {name: "Enos", age: 34},
-                        {name: "Tiancum", age: 43},
-                        {name: "Jacob", age: 27},
-                        {name: "Nephi", age: 29},
-                        {name: "Enos", age: 34},
-                        {name: "Tiancum", age: 43},
-                        {name: "Jacob", age: 27},
-                        {name: "Nephi", age: 29},
-                        {name: "Enos", age: 34}];
+    var data = [{name: "Moroni", age: 50},
+        {name: "Tiancum", age: 43},
+        {name: "Jacob", age: 27},
+        {name: "Nephi", age: 29},
+        {name: "Enos", age: 34},
+        {name: "Tiancum", age: 43},
+        {name: "Jacob", age: 27},
+        {name: "Nephi", age: 29},
+        {name: "Enos", age: 34},
+        {name: "Tiancum", age: 43},
+        {name: "Jacob", age: 27},
+        {name: "Nephi", age: 29},
+        {name: "Enos", age: 34},
+        {name: "Tiancum", age: 43},
+        {name: "Jacob", age: 27},
+        {name: "Nephi", age: 29},
+        {name: "Enos", age: 34}];
 
-            $scope.tableParams = new ngTableParams({
-                page: 1,            // show first page
-                count: 10,          // count per page
-                sorting: {
-                    name: 'asc'     // initial sorting
-                }
-            }, {
-                total: data.length, // length of data
-                getData: function($defer, params) {
-                    // use build-in angular filter
-                    var orderedData = params.sorting() ?
-                                        $filter('orderBy')(data, params.orderBy()) :
-                                        data;
+    $scope.tableParams = new ngTableParams({
+        page: 1, // show first page
+        count: 10, // count per page
+        sorting: {
+            name: 'asc'     // initial sorting
+        }
+    }, {
+        total: data.length, // length of data
+        getData: function($defer, params) {
+            // use build-in angular filter
+            var orderedData = params.sorting() ?
+                    $filter('orderBy')(data, params.orderBy()) :
+                    data;
 
-                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-                }
-            });
+            $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+        }
+    });
 });
 
 app.controller('ModulesCreateCtrl', ['$scope', '$http', '$routeParams', '$route', '$compile', '$location', function($scope, $http, $routeParams, $route, $compile, $location) {

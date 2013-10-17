@@ -60,6 +60,8 @@ marker\:upload .file{width:100px;min-height: 80px;}
     background-color: #bfb;
 }
 
+.header li.dropdown.user{padding-top: 10px;}
+
 
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
