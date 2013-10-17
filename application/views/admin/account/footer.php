@@ -7,8 +7,9 @@
     <!-- END COPYRIGHT -->
 
     <!-- Marker -->
-        <?php echo Content::script('admin/js/angular.js') ?>
+        <?php echo Content::script('admin/js/angular/angular.js') ?>
         <?php echo Content::script('app/account.js' ,'/') ?>
+        <?php echo Content::script('app/services.js' ,'/') ?>
     <!-- Marker -->
 </body>
 <!-- END BODY -->

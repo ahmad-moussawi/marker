@@ -28,11 +28,11 @@ class Account extends CI_Controller {
                         ), 1
                 )->row();
 
-        if (!empty($member)) {
+        if (empty($member)) {
+            return $this->json(FALSE);
+        } else {
             $_SESSION['login'] = $member;
             return $this->json(TRUE, $member);
-        } else {
-            return $this->json(FALSE);
         }
     }
 

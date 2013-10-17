@@ -46,6 +46,7 @@ var routes = [
 angular.module('myApp', 
     [
         'ngRoute',
+        'ngAuth',
         'ngSanitize', 
         'myApp.filters', 
         'myApp.services', 
