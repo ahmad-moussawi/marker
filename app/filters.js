@@ -1,7 +1,6 @@
 'use strict';
 
 /* Filters */
-
 var app = angular.module('myApp.filters', []);
 
 app.filter('interpolate', ['version', function(version) {
@@ -32,6 +31,20 @@ app.filter('checkmark', function() {
         return Number(input) ? '\u2713' : '\u2718';
     };
 });
+
+// camelCase To Human Filter
+// ---------------------
+// Converts a camelCase string to a human readable string.
+// i.e. myVariableName => My Variable Name
+
+
+app.filter('camelCaseToHuman', function() {
+    return function(input) {
+        return input.charAt(0).toUpperCase() + input.substr(1).replace(/[A-Z]/g, ' $&');
+    };
+});
+
+
 app.filter('label', function() {
     return function(input, type, text) {
         return input ? '<span class="label label-' + type + '">' + text + '</span>' : '';

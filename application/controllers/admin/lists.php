@@ -3,6 +3,7 @@
 class Lists extends CI_Controller {
 
     private $table = 'lists';
+    private $internalTables = array('ci_sessions', 'fields', 'fields_types', 'lists', 'members', 'membersinroles', 'roles', 'pages');
 
     public function __construct() {
         parent::__construct();
@@ -14,8 +15,6 @@ class Lists extends CI_Controller {
     }
 
     function Get($id = FALSE) {
-
-
         if ($id) {
             $data = $this->_getList($id);
         } else {
@@ -24,17 +23,12 @@ class Lists extends CI_Controller {
                 $row->ispublished = !!$row->ispublished;
             }
         }
-
         echo json_encode($data);
     }
 
     function Set($id = FALSE) {
-
         $response = FALSE;
-
         $data = elements(array('title', 'internaltitle', 'mapped_table', 'description', 'ispublished'), Request::Post());
-
-
         if (!$id) {
             // create
 
@@ -66,7 +60,7 @@ class Lists extends CI_Controller {
             $list = $this->_getList($id, FALSE, FALSE);
             $this->db->delete('fields', array('listid' => $id));
             $this->db->delete($this->table, array('id' => $id));
-            $this->dbforge->drop_table($list->mapped_table);
+            //$this->dbforge->drop_table($list->mapped_table);
             $response = TRUE;
         } catch (Exception $exc) {
             $response = FALSE;
@@ -74,11 +68,40 @@ class Lists extends CI_Controller {
         echo json_encode($response);
     }
 
-    function setTitleField($fieldId, $listId){
+    function createFromExisting() {
+        $list = Request::Post('list');
+
+
+        // Add the list
+        $data = elements(array('title', 'internaltitle', 'mapped_table', 'description', 'ispublished'), (array) $list);
+        $data['created'] = date('Y-m-d');
+        $data['createdby'] = Auth::is_authenticated()->login;
+        $data['identity'] = $this->_getIdentityFieldTitle($list->fields);
+        
+        $this->db->insert($this->table, $data);
+        $list->id = $this->db->insert_id();
+
+        // Add fields
+        foreach ($list->fields as &$field) {
+            if (!$field->primary_key) {
+                $fieldData = elements(array('title', 'internaltitle', 'ispublished', 'description', 'attrs'), (array) $field);
+                $fieldData['internaltitle'] = $field->name;
+                $fieldData['type'] = $field->typeref;
+                $fieldData['listid'] = $list->id;
+                $this->db->insert('fields', $fieldData);
+                $field->id = $this->db->insert_id();
+            }
+        }
+
+
+        return $this->json(TRUE, $list);
+    }
+
+    function setTitleField($fieldId, $listId) {
         $this->db->update('fields', array('istitle' => 1), array('id' => $fieldId));
         $this->db->update('fields', array('istitle' => 0), array('listid' => $listId));
 
-        return $this->json(array('field' => $this->db->get_where('fields', array('id' => $fieldId) , 1)->row() ));
+        return $this->json(array('field' => $this->db->get_where('fields', array('id' => $fieldId), 1)->row()));
     }
 
     /**
@@ -86,7 +109,7 @@ class Lists extends CI_Controller {
      * @param int or string $id the list id or internal name
      */
     function GetFields($id) {
-        $data = $this->db->get_where('fields',array('listid' => $id))->result();
+        $data = $this->db->get_where('fields', array('listid' => $id))->result();
         echo json_encode($data);
     }
 
@@ -124,6 +147,32 @@ class Lists extends CI_Controller {
         echo json_encode($this->_getField($fieldId));
     }
 
+    function getTables() {
+        try {
+            $tables = $this->db->list_tables();
+            $tables = array_values(array_diff($tables, $this->internalTables));
+            return $this->json(TRUE, $tables);
+        } catch (Exception $exc) {
+            return $this->json(FALSE, $exc, $exc->getTraceAsString());
+        }
+    }
+
+    function getTableFields($table) {
+        try {
+
+            if (!$this->db->table_exists($table)) {
+                return $this->json(FALSE, NULL, 'Table not found');
+            } else if (in_array($table, $this->internalTables)) {
+                return $this->json(FALSE, NULL, 'Table protected!, You cannot select this table');
+            }
+
+            $fields = $this->db->field_data($table);
+            return $this->json(TRUE, $fields);
+        } catch (Exception $exc) {
+            return $this->json(FALSE, $exc, $exc->getTraceAsString());
+        }
+    }
+
     private function _getField($fieldId) {
         $field = $this->db->get_where('fields', array('id' => $fieldId), 1)->row();
         $field->list = $this->db->get_where($this->table, array('id' => $field->listid), 1)->row();
@@ -155,6 +204,15 @@ class Lists extends CI_Controller {
 
     private function _getFieldDBType($reference) {
         return json_decode($this->_getFieldType($reference)->db_type);
+    }
+    
+    private function _getIdentityFieldTitle($fields){
+        foreach($fields as $field){
+            if($field->primary_key){
+                return $field->name;
+            }
+        }
+        return 'id';
     }
 
 }

@@ -14,15 +14,19 @@ var routes = [
     // Account
     ['/account/login', path.partials + 'account/login.html', 'AccLoginCtrl'],
     ['/account/logout', path.partials + 'account/logout.html', 'AccLogoutCtrl'],
+    
     // Lists
     ['/lists/index', path.partials + 'lists/index.html', 'ListsIndexCtrl'],
     ['/lists/view/:id', path.partials + 'lists/view.html', 'ListsViewCtrl'],
     ['/lists/edit/:id', path.partials + 'lists/edit.html', 'ListsEditCtrl'],
     ['/lists/delete/:id', path.partials + 'lists/delete.html', 'ListsDeleteCtrl'],
     ['/lists/create', path.partials + 'lists/create.html', 'ListsCreateCtrl'],
+    ['/lists/existing', path.partials + 'lists/create_existing.html', 'ListsCreateFromExistingCtrl'],
+    ['/lists/existingfields', path.partials + 'lists/create_existing_fields.html', 'ListsCreateFromExistingFieldsCtrl'],
     ['/lists/:id/newfield', path.partials + 'lists/newfield.html', 'ListsCreateFieldCtrl'],
     ['/lists/:id/editfield/:fieldId', path.partials + 'lists/editfield.html', 'ListsEditFieldCtrl'],
     ['/lists/:id/deletefield/:fieldId', path.partials + 'lists/deletefield.html', 'ListsDeleteFieldCtrl'],
+    
     // Pages
     ['/pages/index', path.partials + 'pages/index.html', 'PagesIndexCtrl'],
     ['/pages/view/:pageId', path.partials + 'pages/view.html', 'PagesViewCtrl'],
@@ -52,8 +56,12 @@ angular.module('myApp',
         'myApp.services', 
         'myApp.directives', 
         'myApp.controllers',
+        'webStorageModule',
         'LoadingIndicator',
-        'ngTable'
+        'ngTable',
+        
+        'marker.modules',
+        'marker.lists'
     ]).
         config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
 //        $httpProvider.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";

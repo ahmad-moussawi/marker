@@ -64,6 +64,7 @@
 
 <?php echo Content::script('admin/js/jquery.elevateZoom-3.0.3.min.js') ?>
 
+<?php echo Content::script('admin/js/angular/angular-webstorage.js') ?>
 <?php echo Content::script('admin/js/angular/ng-loadingindicator.js') ?>
 <?php echo Content::script('admin/js/angular/ng-table.js') ?>
 <?php echo Content::script('admin/js/angular/ng-auth.js') ?>
@@ -73,6 +74,8 @@
 <?php echo Content::script('app/directives.js', '/') ?>
 <?php echo Content::script('app/filters.js', '/') ?>
 <?php echo Content::script('app/services.js', '/') ?>
+<?php echo Content::script('app/modules/marker.modules.js', '/') ?>
+<?php echo Content::script('app/modules/marker.lists.js', '/') ?>
 
 
 <!-- //MARKER -->

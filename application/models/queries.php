@@ -1,18 +1,31 @@
 <?php
+
 class Queries extends CI_Model {
 
     private static $listsId = NULL;
     private static $InternalTitlesId = NULL;
 
-    public function getModuleMetadata($moduleId) {
-        $data = $this->db->from('lists')->where(array('id' => $moduleId))->get()->row();
-        
-        if(empty($data)){
+    public function getListMetadata($listId) {
+
+        if (((int) $listId) > 0) {
+            $where = array('id' => $listId);
+        } else {
+            $where = array('internaltitle' => $listId);
+        }
+        $data = $this->db->from('lists')->where($where)->get()->row();
+
+        if (empty($data)) {
             throw new Exception('Module not found', 404);
         }
-        
+
         $data->ispublished = !!$data->ispublished;
-        $data->fields = $this->db->where(array('listid' => $moduleId))->get('fields')->result();
+
+        // set the identity column to 'id' in case of empty
+        if (empty($data->identity)) {
+            $data->identity = 'id';
+        }
+
+        $data->fields = $this->db->where(array('listid' => $listId))->get('fields')->result();
         $data->table_exists = !!$this->db->table_exists($data->mapped_table);
 
         $data->fields_array = array();
@@ -63,7 +76,5 @@ class Queries extends CI_Model {
         }
         return self::$InternalTitlesId[$id];
     }
-
-    
 
 }

@@ -3,7 +3,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h3 class="page-title"><?php echo $module->title ?></h3>
+            <h3 class="page-title"><?php echo $list->title ?></h3>
         </div>
     </div>
 
@@ -15,10 +15,10 @@
             <a href="#/index">Dashboard</a> 
             <i class="icon-angle-right"></i>
         </li>
-        <li><?php echo $module->title ?></li>
+        <li><?php echo $list->title ?></li>
     </ul>
 
-    <a href="#/modules/<?php echo $module->id ?>/create" class="btn green">
+    <a href="#/modules/<?php echo $list->id ?>/create" class="btn green">
         Add New <i class="icon-plus"></i>
     </a>
 
@@ -26,8 +26,8 @@
 
     <table ng-table="tableParams" show-filter="false" class="table table-hover">
         <tr ng-repeat="item in $data | filter:searchText" >
-            <td sortable="id" data-title="'id'">{{item.id}}</td>
-            <?php foreach ($fields as $field) : ?>
+            <td sortable="<?php echo $list->identity ?>" data-title="'id'">{{item.<?php echo $list->identity ?>}}</td>
+            <?php foreach ($list->fields as $field) : ?>
                 <td 
                 <?php if ( strpos($field->type, '5.') === FALSE ): ?>
                         filter="{ '<?php echo $field->internaltitle ?>': 'text' }" 
@@ -36,9 +36,9 @@
                     data-title="'<?php echo $field->title ?>'"><?php echo Content::renderIndexField($field) ?></td>
                 <?php endforeach ?>
             <td data-title="''">
-                <a class="btn btn-danger" href="#/modules/<?php echo $module->id ?>/delete/{{item.id}}" >Delete</a>
-                <a class="btn" href="#/modules/<?php echo $module->id ?>/view/{{item.id}}" >View</a>
-                <a class="btn btn-primary" href="#/modules/<?php echo $module->id ?>/edit/{{item.id}}" >Edit</a>
+                <a class="btn btn-danger" href="#/modules/<?php echo $list->id ?>/delete/{{item.<?php echo $list->identity ?>}}" >Delete</a>
+                <a class="btn" href="#/modules/<?php echo $list->id ?>/view/{{item.<?php echo $list->identity ?>}}" >View</a>
+                <a class="btn btn-primary" href="#/modules/<?php echo $list->id ?>/edit/{{item.<?php echo $list->identity ?>}}" >Edit</a>
             </td>
         </tr>
 

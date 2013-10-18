@@ -5,10 +5,10 @@
 
 // Demonstrate how to register services
 // In this case it is a simple value service.
-angular.module('myApp.services', []).
-        value('version', '0.1')
+var app = angular.module('myApp.services', []).
+        value('version', '0.1');
 
-        .factory('AuthService', [function() {
+app.factory('AuthService', [function() {
         return {
             isLogged: false,
             member: null

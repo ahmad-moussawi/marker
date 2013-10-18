@@ -23,7 +23,7 @@ class Modules extends CI_Controller {
     function get($moduleId, $id = FALSE) {
 
         try {
-            $module = $this->queries->getModuleMetadata($moduleId);
+            $module = $this->queries->getListMetadata($moduleId);
         } catch (Exception $exc) {
             if ($exc->getCode() === 404) {
                 return $this->json(FALSE, new Exception('NotFoundException'));
@@ -39,7 +39,7 @@ class Modules extends CI_Controller {
 
 
         if ($id) {
-            $data = $data->where(array("$module->mapped_table.id" => $id))->limit(1);
+            $data = $data->where(array("$module->mapped_table.$module->identity" => $id))->limit(1);
         }
 
         foreach ($module->fields as $field) {
@@ -63,7 +63,7 @@ class Modules extends CI_Controller {
                         }
 
                         $data = $data->join(
-                                "$list `$alias`", "$alias.id = $module->mapped_table.$field->internaltitle", 'left'
+                                "$list `$alias`", "$alias.$module->identity = $module->mapped_table.$field->internaltitle", 'left'
                         );
                     }
                 }
@@ -82,7 +82,7 @@ class Modules extends CI_Controller {
     }
 
     function set($moduleId, $id = FALSE) {
-        $module = $this->queries->getModuleMetadata($moduleId);
+        $module = $this->queries->getListMetadata($moduleId);
 
         $data = elements($module->fields_array, Request::Post());
 
@@ -102,15 +102,15 @@ class Modules extends CI_Controller {
             return $this->json(TRUE, array($this->db->insert_id(), $data));
         } else {
 // update
-            $this->db->update($module->mapped_table, $data, array('id' => $id));
+            $this->db->update($module->mapped_table, $data, array($module->identity => $id));
             return $this->json($this->db->affected_rows() > 0);
         }
     }
 
     function delete($moduleId, $id) {
         try {
-            $module = $this->queries->getModuleMetadata($moduleId);
-            $this->db->delete($module->mapped_table, array('id' => $id));
+            $module = $this->queries->getListMetadata($moduleId);
+            $this->db->delete($module->mapped_table, array($module->identity => $id));
             $response = TRUE;
         } catch (Exception $exc) {
             $response = FALSE;
@@ -119,7 +119,7 @@ class Modules extends CI_Controller {
     }
 
     function fieldInternalDataLookup($moduleId) {
-        $module = $this->queries->getModuleMetadata($moduleId);
+        $module = $this->queries->getListMetadata($moduleId);
         $data = $this->db->from($module->mapped_table);
         $map = $inverse = array();
 
@@ -150,22 +150,12 @@ class Modules extends CI_Controller {
         return $this->json(TRUE, array('rows' => $data2, 'map' => $map));
     }
 
-    function renderView($viewName = FALSE, $moduleId = FALSE) {
-        if (!$viewName) {
-            echo '';
-            return;
-        }
-
-        $this->load->helper('inflector');
-        $data['module'] = $this->db->get_where('lists', array('id' => $moduleId), 1)->row();
-
-        if (empty($data['module'])) {
+    function renderView($viewName, $listId) {
+        $data['list'] = $this->queries->getListMetadata($listId) ;
+        if (empty($data['list'])) {
             echo '<div class="alert alert-danger">Module not found</div>';
             return;
         }
-
-        $data['fields'] = $this->db->get_where('fields', array('listid' => $moduleId))->result();
-        $data['term'] = singular($data['module']->title);
         $this->load->view('admin/modules/' . $viewName, $data);
     }
 

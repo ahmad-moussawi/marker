@@ -21,6 +21,8 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
         <meta content="" name="author" />
         <meta name="MobileOptimized" content="320">
         <!-- BEGIN GLOBAL MANDATORY STYLES -->
+        <?php echo Content::link('admin/js/spectrum/spectrum.css') ?>
+        
         <?php echo Content::link('admin/assets/plugins/font-awesome/css/font-awesome.min.css') ?>
         <?php echo Content::link('admin/assets/plugins/bootstrap/css/bootstrap.min.css') ?>
         <?php echo Content::link('admin/assets/plugins/uniform/css/uniform.default.css') ?>
@@ -33,6 +35,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
         <?php echo Content::link('admin/assets/css/pages/about-us.css') ?>
         <?php echo Content::link('admin/assets/css/themes/default.css') ?>
         <?php echo Content::link('admin/assets/css/custom.css') ?>
+        
         <!-- END THEME STYLES -->
         <?php echo Content::link('admin/css/main.css') ?>
         <link rel="shortcut icon" href="favicon.ico" />

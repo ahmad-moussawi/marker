@@ -10,7 +10,7 @@ app.controller('AccLoginCtrl', ['$scope', '$http','AuthService', function($scope
                     console.log(r);
                     auth.isLogged = true;
                     auth.member = r.data;
-                    window.location= path.admin + '#/index';
+                    window.location.href = path.admin + '#/index';
                 } else {
                     $scope.errors = ['Login failed (' + (++$scope.trial) + ')'];
                     $scope.model.password = '';

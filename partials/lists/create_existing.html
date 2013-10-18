@@ -3,7 +3,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h3 class="page-title">New List <small>Create a new datasource table</small></h3>
+            <h3 class="page-title">New List <small>Create a new datasource based on an existing table</small></h3>
         </div>
     </div>
 
@@ -18,7 +18,7 @@
             <a href="#/lists/index">Lists</a> 
             <i class="icon-angle-right"></i>
         </li>
-        <li>New</li>
+        <li>New <i>From Existing Table</i></li>
     </ul>
 
     <div class="alert alert-warning" ng-show="working">
@@ -29,8 +29,12 @@
         <strong>List saved</strong>
     </div>
 
-    <form name="form" role="form" ng-submit="save()">
+    <form name="form" role="form" ng-submit="next()">
         <div class="form-body">
+            <div class="form-group">
+                <label>Table</label>
+                <select ng-required="true" ng-model="list.mapped_table" class="form-control" ng-options="v for v in tables" ></select>
+            </div>
             <div class="form-group">
                 <label>Title</label>
                 <input type="text" ng-required="true" ng-model="list.title" class="form-control" />
@@ -38,10 +42,6 @@
             <div class="form-group">
                 <label>Internal Title</label>
                 <input type="text" ng-model="list.internaltitle" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>Mapped Table</label>
-                <input type="text" value="lists_{{list.internaltitle}}" class="form-control" disabled="disabled" />
             </div>
             <div class="form-group">
                 <label>Description</label>
@@ -54,7 +54,7 @@
         </div>
         <hr/>
         <p class="pull-right">
-            <button ng-disabled="working || !form.$valid" type="submit" class="btn btn-primary">Save</button>
+            <button ng-disabled="working || !form.$valid" type="submit" class="btn btn-primary">Next</button>
             <a ng-disabled="working" class="btn" href="#/lists/index">Back</a>
         </p>
     </form>
