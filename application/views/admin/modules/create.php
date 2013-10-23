@@ -1,5 +1,5 @@
 <ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
-<div class="page-content">
+<div class="page-content <?php echo $list->attrs->cssClass ?>">
 
     <div class="row">
         <div class="col-md-12">
@@ -32,25 +32,24 @@
     <form name="form" ng-submit="save()">
        <div class="form-body">
 
-            <?php foreach ($list->fields as $field): ?>
-                <?php if ($field->type < 5 && $field->type != '1.3') : ?>
+            <?php foreach ($list->published_fields as $field): ?>
+                <?php if ($field->typeref < 5 && $field->typeref != '1.3') : ?>
                     <div class="form-group">
                         <label for="field_<?php echo $field->id ?>"><?php echo $field->title ?></label>
-                        <?php echo Content::renderEditField($field) ?>
+                        <?php echo Content::renderEditField($field, TRUE) ?>
                     </div>
                 <?php endif ?>
             <?php endforeach ?>
 
-            <?php foreach ($list->fields as $field): ?>
-                <?php if ($field->type > 5 || $field->type == '1.3') : ?>
+            <?php foreach ($list->published_fields as $field): ?>
+                <?php if ($field->typeref > 5 || $field->typeref == '1.3') : ?>
                      <div class="form-group">
                         <label for="field_<?php echo $field->id ?>"><?php echo $field->title ?></label>
-                        <?php echo Content::renderEditField($field) ?>
+                        <?php echo Content::renderEditField($field, TRUE) ?>
                     </div>
                 <?php endif ?>
             <?php endforeach ?>
         </div>
-        <hr/>
         <p class="pull-right">
             <button ng-disabled="working || !form.$valid" type="submit" class="btn btn-primary">Save</button>
             <a ng-disabled="working" class="btn" href="#/modules/<?php echo $list->id ?>/index">Back</a>

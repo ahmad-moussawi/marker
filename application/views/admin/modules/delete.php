@@ -1,5 +1,5 @@
 <ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
-<div class="page-content">
+<div class="page-content <?php echo $list->attrs->cssClass ?>">
 
     
     <div class="row">
@@ -29,7 +29,7 @@
         <div class="row-fluid">
             <div class="span5">
                 <dl class="dl-horizontal">
-                    <?php foreach ($list->fields as $field): ?>
+                    <?php foreach ($list->published_fields as $field): ?>
                         <dt><?php echo $field->title ?></dt>
                         <dd><?php echo Content::renderViewField($field) ?></dd>
                     <?php endforeach ?>

@@ -10,6 +10,7 @@ class Lists extends CI_Controller {
         Auth::validate_request();
         $this->load->database();
         $this->load->helper('array');
+//        $this->load->model('queries');
         $this->load->dbforge();
         header('Content-Type:application/json');
     }
@@ -28,7 +29,7 @@ class Lists extends CI_Controller {
 
     function Set($id = FALSE) {
         $response = FALSE;
-        $data = elements(array('title', 'internaltitle', 'mapped_table', 'description', 'ispublished'), Request::Post());
+        $data = elements(array('title', 'internaltitle', 'mapped_table', 'description', 'ispublished', 'attrs'), Request::Post());
         if (!$id) {
             // create
 
@@ -39,6 +40,7 @@ class Lists extends CI_Controller {
             $this->dbforge->create_table($data['mapped_table']);
 
             $data['created'] = date('Y-m-d');
+            $data['attrs'] = json_encode($data['attrs']);
             $data['createdby'] = Auth::is_authenticated()->login;
             $this->db->insert($this->table, $data);
             $id = $this->db->insert_id();
@@ -46,7 +48,20 @@ class Lists extends CI_Controller {
         } else {
             // update
             $data['modified'] = date('Y-m-d');
+            $data['attrs'] = json_encode($data['attrs']);
+            
+            $fields = Request::Post('fields');
+            //Update the fields
+            $i = 0;
+            foreach ($fields as $field) {
+                $fieldData = elements(array('title', 'typeref', 'ispublished', 'description', 'attrs'), (array) $field);
+                $fieldData['roworder'] = $i++;
+                $this->db->update('fields', $fieldData, array('id' => $field->id));
+            }
+
+            // Update the list
             $this->db->update($this->table, $data, array('id' => $id));
+
             $response = $this->db->affected_rows();
         }
 
@@ -57,7 +72,7 @@ class Lists extends CI_Controller {
 
     function Delete($id) {
         try {
-            $list = $this->_getList($id, FALSE, FALSE);
+            //$list = $this->_getList($id, FALSE, FALSE);
             $this->db->delete('fields', array('listid' => $id));
             $this->db->delete($this->table, array('id' => $id));
             //$this->dbforge->drop_table($list->mapped_table);
@@ -73,20 +88,20 @@ class Lists extends CI_Controller {
 
 
         // Add the list
-        $data = elements(array('title', 'internaltitle', 'mapped_table', 'description', 'ispublished'), (array) $list);
+        $data = elements(array('title', 'internaltitle', 'mapped_table', 'description', 'ispublished', 'attrs'), (array) $list);
         $data['created'] = date('Y-m-d');
         $data['createdby'] = Auth::is_authenticated()->login;
         $data['identity'] = $this->_getIdentityFieldTitle($list->fields);
-        
+        $data['attrs'] = json_encode($data['attrs']);
+
         $this->db->insert($this->table, $data);
         $list->id = $this->db->insert_id();
 
         // Add fields
         foreach ($list->fields as &$field) {
             if (!$field->primary_key) {
-                $fieldData = elements(array('title', 'internaltitle', 'ispublished', 'description', 'attrs'), (array) $field);
+                $fieldData = elements(array('title', 'internaltitle', 'typeref', 'ispublished', 'description', 'attrs'), (array) $field);
                 $fieldData['internaltitle'] = $field->name;
-                $fieldData['type'] = $field->typeref;
                 $fieldData['listid'] = $list->id;
                 $this->db->insert('fields', $fieldData);
                 $field->id = $this->db->insert_id();
@@ -113,17 +128,13 @@ class Lists extends CI_Controller {
         echo json_encode($data);
     }
 
-    function GetTypes() {
-        echo json_encode($this->db->get('fields_types')->result());
-    }
-
     function AddField($listId) {
         $list = $this->db->where(array('id' => $listId))->limit(1)->get($this->table)->row();
-        $field = elements(array('title', 'internaltitle', 'ispublished', 'type', 'description', 'attrs'), Request::Post());
+        $field = elements(array('title', 'internaltitle', 'ispublished', 'typeref', 'description', 'attrs'), Request::Post());
 
         // Create new column in the table
         $this->dbforge->add_column($list->mapped_table, array(
-            $field['internaltitle'] => (array) $this->_getFieldDBType($field['type'])
+            $field['internaltitle'] => (array) $this->_getFieldDBType($field['typeref'])
         ));
 
         $field['listid'] = $listId;
@@ -205,10 +216,10 @@ class Lists extends CI_Controller {
     private function _getFieldDBType($reference) {
         return json_decode($this->_getFieldType($reference)->db_type);
     }
-    
-    private function _getIdentityFieldTitle($fields){
-        foreach($fields as $field){
-            if($field->primary_key){
+
+    private function _getIdentityFieldTitle($fields) {
+        foreach ($fields as $field) {
+            if ($field->primary_key) {
                 return $field->name;
             }
         }

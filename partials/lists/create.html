@@ -29,33 +29,70 @@
         <strong>List saved</strong>
     </div>
 
-    <form name="form" role="form" ng-submit="save()">
-        <div class="form-body">
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" ng-required="true" ng-model="list.title" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>Internal Title</label>
-                <input type="text" ng-model="list.internaltitle" class="form-control" />
-            </div>
-            <div class="form-group">
-                <label>Mapped Table</label>
-                <input type="text" value="lists_{{list.internaltitle}}" class="form-control" disabled="disabled" />
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea type="text" ng-model="list.description" class="form-control"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Is Published ?</label>
-                <input name="ispublished" ng-model="list.ispublished" ng-checked="list.ispublished" type="checkbox"/>
-            </div>
+    <div class="row">
+        <div class="col-md-8">
+            <form name="form" role="form" ng-submit="save()">
+                <div class="form-body">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" ng-required="true" ng-model="list.title" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Internal Title</label>
+                        <input type="text" ng-model="list.internaltitle" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Mapped Table</label>
+                        <input type="text" value="lists_{{list.internaltitle}}" class="form-control" disabled="disabled" />
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea type="text" ng-model="list.description" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Is Published ?</label>
+                        <input name="ispublished" ng-model="list.ispublished" ng-checked="list.ispublished" type="checkbox"/>
+                    </div>
+                </div>
+                <div class="form-actions right">
+                    <button ng-disabled="working || !form.$valid" type="submit" class="btn btn-primary">Save</button>
+                    <a ng-disabled="working" class="btn" href="#/lists/index">Back</a>
+                </div>
+            </form>
         </div>
-        <hr/>
-        <p class="pull-right">
-            <button ng-disabled="working || !form.$valid" type="submit" class="btn btn-primary">Save</button>
-            <a ng-disabled="working" class="btn" href="#/lists/index">Back</a>
-        </p>
-    </form>
+        <div class="col-md-4">
+            <div class="portlet box blue">
+                  <div class="portlet-title">
+                     <div class="caption">
+                        <i class="icon-reorder"></i> Attributes
+                     </div>
+                  </div>
+                  <div class="portlet-body form">
+                      <form role="form">
+                        <div class="form-body">
+                           <div class="form-group">
+                              <label>Css Class Name</label>
+                              <input type="text" class="form-control" ng-model="list.attrs.cssClass" />
+                           </div>
+                           <div class="form-group">
+                              <label class="">Available Views:</label>
+                              <div class="checkbox-list">
+                                 <label>
+                                     <span checkbox ng-model="list.attrs.view_create"></span> Create
+                                 </label>
+                                 <label>
+                                     <span checkbox ng-model="list.attrs.view_edit"></span> Edit
+                                 </label>
+                                 <label>
+                                     <span checkbox ng-model="list.attrs.view_delete"></span> Delete
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+        </div>
+    </div>
+
 </div>

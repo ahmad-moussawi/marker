@@ -24,7 +24,7 @@
                     <div class="bar" style="width:{{data.getProgress()}}%"></div>
                 </div>
                 <div ng-switch-when="resolved">
-                    <img class="thumb" ng-src="../{{data.response().result.upload_data[0][0].full_path}}" />
+                    <img class="thumb" src="../assets/admin/assets/img/ajax-loading.gif" ng-src="../{{data.response().result.upload_data[0][0].full_path}}" />
                 </div>
             </a>
         </td>

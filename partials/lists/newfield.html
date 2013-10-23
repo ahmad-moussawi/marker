@@ -30,8 +30,8 @@
 
                 <dt>Type</dt>
                 <dd>
-                    <select ng-model="field.type" 
-                    ng-options="row.reference as row.type group by row.category for row in types"></select>
+                    <select ng-model="field.typeref" 
+                    ng-options="row.reference as row.type group by row.category for row in typesref"></select>
                 </dd>
 
                 
@@ -39,17 +39,16 @@
                 <dd><textarea ng-model="field.description" ></textarea></dd>
                 
                 <dt>Is Published ?</dt>
-                <dd><input name="ispublished" ng-checked="page.ispublished" type="checkbox"/></dd>
+                <dd><span checkbox ng-model="field.ispublished"></span></dd>
             </dl>
         </div>
-        <div class="span7" ng-switch="field.type > 0">
+        <div class="span7" ng-switch="field.typeref > 0">
             <div ng-switch-when="true">
-                <div ng-include src="'../partials/controls/fields/' + field.type + '.html'"></div>
+                <div ng-include src="'../partials/controls/fields/' + field.typeref + '.html'"></div>
             </div>
         </div>
     </div>
     <pre>{{attrs}}</pre>
-
 
     <hr/>
     <p class="pull-right">

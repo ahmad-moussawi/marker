@@ -26,6 +26,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
         <?php echo Content::link('admin/assets/plugins/font-awesome/css/font-awesome.min.css') ?>
         <?php echo Content::link('admin/assets/plugins/bootstrap/css/bootstrap.min.css') ?>
         <?php echo Content::link('admin/assets/plugins/uniform/css/uniform.default.css') ?>
+        <?php echo Content::link('admin/assets/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.css') ?>
         <!-- END GLOBAL MANDATORY STYLES -->
         <!-- BEGIN THEME STYLES --> 
         <?php echo Content::link('admin/assets/css/style-metronic.css') ?>

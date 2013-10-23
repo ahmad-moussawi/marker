@@ -13,7 +13,7 @@ class Content {
         return '<script src="' . site_url($base . $src) . '" type="text/javascript"></script>';
     }
 
-    public static function renderEditField($field) {
+    public static function renderEditField($field, $createMode = false) {
         $html = '';
         $str = '';
 
@@ -21,7 +21,7 @@ class Content {
             $attrs = json_decode($field->attrs);
         }
 
-        switch ($field->type) {
+        switch ($field->typeref) {
             case '1.1':
                 if (isset($attrs)) {
                     if (isset($attrs->required) && $attrs->required) {
@@ -69,10 +69,14 @@ class Content {
                     if (isset($attrs->min_len) && $attrs->min_len > 0) {
                         $str .= ' minlength="' . $attrs->min_len . '"';
                     }
-
-                    if (isset($attrs->default) && $attrs->default) {
-                        $str .= " ng-init=\"item.$field->internaltitle='$attrs->default'\"";
+                                        
+                    if ($createMode) {
+                        if (!isset($attrs->default) || !$attrs->default) {
+                            $attrs->default = '';
+                        }
+                        $html .= "<span ng-init=\"item.$field->internaltitle='$attrs->default'\"></span>";
                     }
+                    
                 }
 
                 $html .="<textarea class=\"form-control\" $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
@@ -84,12 +88,15 @@ class Content {
                         $str = ' required="required"';
                     }
 
-                    if (isset($attrs->default) && $attrs->default) {
-                        $str .= " ng-init=\"item.$field->internaltitle='$attrs->default'\"";
-                    }
-
                     if (isset($attrs->theme) && $attrs->theme > 0) {
                         $str .= ' theme="' . $attrs->theme . '"';
+                    }
+                    
+                    if ($createMode) {
+                        if (!isset($attrs->default) || !$attrs->default) {
+                            $attrs->default = '';
+                        }
+                        $html .= "<span ng-init=\"item.$field->internaltitle='$attrs->default'\"></span>";
                     }
                 }
 
@@ -102,24 +109,31 @@ class Content {
                         $str = ' required="required"';
                     }
 
-                    if (isset($attrs->default) && $attrs->default) {
-                        $str .= " ng-init=\"item.$field->internaltitle='$attrs->default'\"";
-                    }
-
                     if (isset($attrs->theme) && $attrs->theme > 0) {
                         $str .= ' theme="' . $attrs->theme . '"';
                     }
+
+                    if ($createMode) {
+                        if (!isset($attrs->default) || !$attrs->default) {
+                            $attrs->default = '/* Write your code here */';
+                        }
+                        $html .= "<span ng-init=\"item.$field->internaltitle='$attrs->default'\"></span>";
+                    }
                 }
-                $html .="<div class=\"editor\" data-ace=\"\" data-ng-model=\"item.$field->internaltitle\"></div>";
+                $html .="<div $str class=\"editor\" data-ace=\"\" ng-model=\"item.$field->internaltitle\"></div>";
                 break;
             case '1.5':
                 if (isset($attrs)) {
                     if (isset($attrs->required) && $attrs->required) {
                         $str = ' required="required"';
                     }
-
-                    if (isset($attrs->default) && $attrs->default) {
-                        $str .= " default=\"$attrs->default\"";
+                    if ($createMode) {
+                        if (isset($attrs->default) && $attrs->default) {
+                            $default = $attrs->default;
+                        } else {
+                            $default = '#000000';
+                        }
+                        $html .="<span ng-init=\"item.$field->internaltitle='$default'\"></span>";
                     }
                 }
                 $html .="<input $str color-picker type=\"color\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
@@ -234,7 +248,7 @@ class Content {
     public static function renderViewField($field) {
         $html = '';
         $attrs = json_decode($field->attrs);
-        switch ($field->type) {
+        switch ($field->typeref) {
             case 1:
             case '1.5':
                 $html .="<span class=\"color-box\" style=\"border-color:{{item.$field->internaltitle}};\">{{item.$field->internaltitle}}</span>";
@@ -277,7 +291,7 @@ class Content {
     public static function renderIndexField($field) {
         $html = '';
         $attrs = json_decode($field->attrs);
-        switch ($field->type) {
+        switch ($field->typeref) {
             case 1:
             case '1.3':
                 $html .= "<span ng-bind-html-unsafe=\"item.$field->internaltitle | truncate:100\"></span>";

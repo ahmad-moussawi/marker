@@ -43,7 +43,7 @@ class Modules extends CI_Controller {
         }
 
         foreach ($module->fields as $field) {
-            if ($field->type == '4.1') {
+            if ($field->typeref == '4.1') {
                 $attrs = json_decode($field->attrs);
                 if ($attrs->type == 'internal') {
 
@@ -81,28 +81,27 @@ class Modules extends CI_Controller {
         }
     }
 
-    function set($moduleId, $id = FALSE) {
-        $module = $this->queries->getListMetadata($moduleId);
+    function set($listId, $id = FALSE) {
+        $list = $this->queries->getListMetadata($listId);
 
-        $data = elements($module->fields_array, Request::Post());
+        $data = elements($list->published_fields_array, Request::Post());
 
-        // transform Array to JSON
-
-        foreach ($data as &$row) {
-            if (is_array($row)) {
-                $row = json_encode($row);
-            }
-        }
-
-        //return $this->json($data);
 
         if (!$id) {
 // create
-            $this->db->insert($module->mapped_table, $data);
+            if (!$list->attrs->view_create) {
+                return $this->json(FALSE, NULL, 'Operation failed, Create permission is disabled for this list');
+            }
+
+            $this->db->insert($list->mapped_table, $data);
             return $this->json(TRUE, array($this->db->insert_id(), $data));
         } else {
 // update
-            $this->db->update($module->mapped_table, $data, array($module->identity => $id));
+            if (!$list->attrs->view_edit) {
+                return $this->json(FALSE, NULL, 'Operation failed, Edit permission is disabled for this list');
+            }
+            
+            $this->db->update($list->mapped_table, $data, array($list->identity => $id));
             return $this->json($this->db->affected_rows() > 0);
         }
     }
@@ -110,6 +109,9 @@ class Modules extends CI_Controller {
     function delete($moduleId, $id) {
         try {
             $module = $this->queries->getListMetadata($moduleId);
+            if (!$module->attrs->view_delete) {
+                return $this->json(FALSE, NULL, 'Operation failed, Create permission is disabled for this list');
+            }
             $this->db->delete($module->mapped_table, array($module->identity => $id));
             $response = TRUE;
         } catch (Exception $exc) {
@@ -151,7 +153,23 @@ class Modules extends CI_Controller {
     }
 
     function renderView($viewName, $listId) {
-        $data['list'] = $this->queries->getListMetadata($listId) ;
+        $data['list'] = $this->queries->getListMetadata($listId);
+        
+        if($viewName == 'create' && !$data['list']->attrs->view_create){
+            echo '<div class="alert alert-danger">You cannot create a new item on this list</div>';
+            return;
+        }
+
+        if($viewName == 'edit' && !$data['list']->attrs->view_edit){
+            echo '<div class="alert alert-danger">You cannot edit items on this list</div>';
+            return;
+        }
+        
+        if($viewName == 'delete' && !$data['list']->attrs->view_delete){
+            echo '<div class="alert alert-danger">You cannot delete items on this list</div>';
+            return;
+        }
+
         if (empty($data['list'])) {
             echo '<div class="alert alert-danger">Module not found</div>';
             return;

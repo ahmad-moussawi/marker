@@ -39,10 +39,12 @@
 <?php echo Content::script('admin/js/angular/angular.js') ?>
 <?php echo Content::script('admin/js/angular/angular-sanitize.js') ?>
 <?php echo Content::script('admin/js/angular/angular-route.js') ?>
+<?php echo Content::script('admin/assets/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js') ?>
+
 
 
 <!-- Upload -->
-<?php echo Content::script('admin/js/fileupload/vendor/jquery.ui.widget.js') ?>
+<?php //echo Content::script('admin/js/fileupload/vendor/jquery.ui.widget.js') ?>
 <?php echo Content::script('admin/js/fileupload/load-image.min.js') ?>
 <?php echo Content::script('admin/js/fileupload/canvas-to-blob.min.js') ?>
 <?php echo Content::script('admin/js/fileupload/jquery.iframe-transport.js') ?>
@@ -81,19 +83,19 @@
 <!-- //MARKER -->
 
 
-<?php echo Content::script('admin/assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js') ?>
-<?php echo Content::script('admin/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js') ?>
-<?php echo Content::script('admin/assets/plugins/jquery.blockui.min.js') ?>
+<?php //echo Content::script('admin/assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js') ?>
+<?php //echo Content::script('admin/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js') ?>
+<?php //echo Content::script('admin/assets/plugins/jquery.blockui.min.js') ?>
 <?php echo Content::script('admin/assets/plugins/jquery.cookie.min.js') ?>
-<?php echo Content::script('admin/assets/plugins/uniform/jquery.uniform.min.js') ?>
+<?php //echo Content::script('admin/assets/plugins/uniform/jquery.uniform.min.js') ?>
 
 <!-- END CORE PLUGINS -->
 <!--<script src="assets/scripts/app.js"></script>-->  
-<?php echo Content::script('admin/assets/scripts/app.js') ?>
+<?php //echo Content::script('admin/assets/scripts/app.js') ?>
 <script>
-    jQuery(document).ready(function() {
-        App.init();
-    });
+//    jQuery(document).ready(function() {
+//        //App.init();
+//    });
 </script>
 <!-- END JAVASCRIPTS -->
 </body>

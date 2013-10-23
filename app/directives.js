@@ -431,7 +431,7 @@ app.directive('markerAudioPreview', [function() {
         };
     }]);
 
-app.directive('markerImagePreview', [function() {
+app.directive('markerImagePreview', ['$rootScope', function($root) {
         return {
             restrict: 'A',
             scope: {
@@ -440,54 +440,61 @@ app.directive('markerImagePreview', [function() {
             //template:'<img ng-repeat="img in images" ng-src="{{\'../\' + img[0].full_path}}" />',
             link: function(scope, elm, attrs, ctrl) {
                 if (scope.ngModel && scope.ngModel.length > 0) {
-                    try {
-                        var maxWidth = attrs.maxWidth || 350;
-                        var maxHeight = attrs.maxHeight || 200;
-                        var limit = attrs.limit || -1; // limit the images to this number 
-                        var showRemaining = attrs.showRemaining || true;
-                        
+                    var maxWidth = attrs.maxWidth || 350;
+                    var maxHeight = attrs.maxHeight || 200;
+                    var limit = attrs.limit || -1; // limit the images to this number 
+                    var showRemaining = attrs.showRemaining || true;
 
+                    try {
                         var model = angular.fromJson(scope.ngModel);
                         scope.images = model;
-                        
-                        for(var i=0; i<model.length; i++){
-                            if(i == limit) break;
-
-                            var image = model[i];
-                            var imgSrc = image[0].full_path,
-                                thumbSrc = image[1] !== undefined ? image[1].full_path:imgSrc;
-                            var img = $('<img/>').attr({
-                                src: '../' + thumbSrc,
-                                'data-zoom-image':'../' + imgSrc
-                            }).css({
-                                maxWidth: maxWidth,
-                                maxHeight: maxHeight
-                            });
-                            elm.append(img);
-                            img.elevateZoom({scrollZoom : true});
-                            
-                        };
-                        
-                        if(showRemaining && limit < model.length && limit > 0){
-                            var remaining = model.length - limit;
-                            if(remaining === 1){
-                                elm.append('<p>and one more image.</p>');
-                            }else{
-                                elm.append('<p>and ' + remaining + ' images.</p>');
-                            }
-                        }else if(limit == 0){
-                            if(model === undefined || !model || model.length === 0){
-                                alm.append('<i>No images</i>');
-                            }else if(model.length == 1){
-                                elm.append('One image');
-                            }else if(model.length > 1){
-                                elm.append(model.length + ' images');
-                            }
-                        }
-
                     } catch (ex) {
                         elm.html('<i class="text-info"><small>No Image(s)</small></i>');
+                        return false;
                     }
+
+                    // remove the instances from DOM
+                    $root.$on('$routeChangeStart', function(event, currRoute, prevRoute) {
+                        $('.zoomContainer').remove();
+                    });
+
+                    for (var i = 0; i < model.length; i++) {
+                        if (i == limit)
+                            break;
+
+                        var image = model[i];
+                        var imgSrc = image[0].full_path,
+                                thumbSrc = image[1] !== undefined ? image[1].full_path : imgSrc;
+                        var img = $('<img/>').attr({
+                            src: '../' + thumbSrc,
+                            'data-zoom-image': '../' + imgSrc
+                        }).css({
+                            maxWidth: maxWidth,
+                            maxHeight: maxHeight
+                        });
+                        elm.append(img);
+                        img.elevateZoom({scrollZoom: true});
+
+                    }
+                    ;
+
+                    if (showRemaining && limit < model.length && limit > 0) {
+                        var remaining = model.length - limit;
+                        if (remaining === 1) {
+                            elm.append('<p>and one more image.</p>');
+                        } else {
+                            elm.append('<p>and ' + remaining + ' images.</p>');
+                        }
+                    } else if (limit == 0) {
+                        if (model === undefined || !model || model.length === 0) {
+                            elm.append('<i>No images</i>');
+                        } else if (model.length == 1) {
+                            elm.append('<i>One image</i>');
+                        } else if (model.length > 1) {
+                            elm.append('<i>' + model.length + ' images</i>');
+                        }
+                    }
+
                 } else {
                     elm.html('<i class="text-info"><small>No Image(s)</small></i>');
                 }
@@ -535,6 +542,23 @@ app.directive('markerBarcode', [function() {
                 if (scope.ngModel) {
                     elm.barcode(scope.ngModel, attrs.type);
                 }
+            }
+        };
+    }]);
+
+app.directive('checkbox', [function() {
+        return {
+            restrict: 'A',
+            template: '<div class="checker"><span ng-class="{checked:ngModel}"><input type="checkbox" ng-checked="ngModel" /></span></div>',
+            scope: {
+                ngModel: '='
+            },
+            link: function(scope, elm, attrs) {
+                elm.click(function() {
+                    scope.$apply(function() {
+                        scope.ngModel = !scope.ngModel;
+                    });
+                });
             }
         };
     }]);

@@ -12,28 +12,43 @@ class Queries extends CI_Model {
         } else {
             $where = array('internaltitle' => $listId);
         }
-        $data = $this->db->from('lists')->where($where)->get()->row();
+        $list = $this->db->from('lists')->where($where)->limit(1)->get()->row();
 
-        if (empty($data)) {
+        if (empty($list)) {
             throw new Exception('Module not found', 404);
         }
 
-        $data->ispublished = !!$data->ispublished;
+        $list->ispublished = !!$list->ispublished;
 
         // set the identity column to 'id' in case of empty
-        if (empty($data->identity)) {
-            $data->identity = 'id';
+        if (empty($list->identity)) {
+            $list->identity = 'id';
+        }
+        
+        // set the default attributes
+        $default = array(
+            'cssClass' => '',
+            'view_edit' => FALSE,
+            'view_delete' => FALSE,
+            'view_create' => FALSE,
+        );
+        
+        $list->attrs = (object) array_merge($default, (array)json_decode($list->attrs));
+
+        // Manage the list fields
+        $list->fields = $this->db->where(array('listid' => $listId))->order_by('roworder')->get('fields')->result();
+        $list->table_exists = !!$this->db->table_exists($list->mapped_table);
+
+        $list->fields_array = $list->published_fields_array = $list->published_fields = array();
+        foreach ($list->fields as $field) {
+            $list->fields_array[] = $field->internaltitle;
+            if($field->ispublished){
+                $list->published_fields[] = $field;
+                $list->published_fields_array[] = $field->internaltitle;
+            }
         }
 
-        $data->fields = $this->db->where(array('listid' => $listId))->get('fields')->result();
-        $data->table_exists = !!$this->db->table_exists($data->mapped_table);
-
-        $data->fields_array = array();
-        foreach ($data->fields as $field) {
-            $data->fields_array[] = $field->internaltitle;
-        }
-
-        return $data;
+        return $list;
     }
 
     public function getFieldTitle($fieldId, Array $fields) {

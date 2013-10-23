@@ -475,9 +475,10 @@ var App = function () {
             return;
         }
         var test = $("input[type=checkbox]:not(.toggle), input[type=radio]:not(.toggle, .star)");
+        console.log(test.length);
         if (test.size() > 0) {
             test.each(function () {
-                if ($(this).parents(".checker").size() == 0) {
+                if ($(this).parents(".checker").size() === 0) {
                     $(this).show();
                     $(this).uniform();
                 }
