@@ -11,7 +11,7 @@ class Uploads extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        Auth::validate_request();
+        Auth::ValidateRequest();
         $this->load->database();
         $this->load->library(array('form_validation', 'my_upload'));
         $this->load->helper('array');

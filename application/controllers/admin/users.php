@@ -4,7 +4,7 @@ class Users extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        Auth::validate_request();
+        Auth::ValidateRequest();
         $this->load->database();
         $this->load->helper('array');
         header('Content-Type:application/json');
@@ -53,7 +53,7 @@ class Users extends CI_Controller {
         // update roles
         $this->db->delete('membersinroles', array('memberid' => $id));
 
-        foreach ($this->input->post('roles') as $role) {
+        foreach (Request::post('roles') as $role) {
             $this->db->insert('membersinroles', array('roleid' => $role, 'memberid' => $id));
         }
 

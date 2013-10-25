@@ -12,7 +12,11 @@
  */
 class Auth {
 
-    public static function is_authenticated() {
+    private static $members_table = 'members';
+    private static $roles_table = 'roles';
+    private static $members_roles_table = 'membersinroles';
+
+    public static function IsAuthenticated() {
         if (!isset($_SESSION)) {
             session_start();
         };
@@ -24,12 +28,32 @@ class Auth {
         }
     }
 
-    public static function validate_request() {
+    public static function IsUserInRole($role, $userId = FALSE) {
+        if (!isset($_SESSION)) {
+            session_start();
+        };
+        if (!$userId && isset($_SESSION['login']) && isset($_SESSION['login']->id)) {
+            $userId = $_SESSION['login']->id;
+        } else {
+            return FALSE;
+        }
+        $CI = & get_instance();
+        $CI->load->database();
+        $where = array(
+            self::$roles_table . '.role' => $role,
+            self::$members_roles_table . '.memberid' => $userId
+        );
+        $success = $CI->db->from(self::$roles_table)->join(self::$members_roles_table, self::$roles_table . '.id = ' . self::$members_roles_table . '.roleid')
+                        ->where($where)->count_all_results() === 1;
+        return $success;
+    }
+
+    public static function ValidateRequest() {
         if (!isset($_SESSION)) {
             session_start();
         };
 
-        if (!self::is_authenticated()) {
+        if (!self::IsAuthenticated()) {
             http_response_code(401);
             echo json_encode(array('Exception' => 'Unauthorized access'));
             die;

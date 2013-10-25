@@ -1,3 +1,4 @@
+<?php if (Auth::IsUserInRole('super')): ?>
 <!-- BEGIN SIDEBAR -->
 <div class="page-sidebar navbar-collapse collapse">
     <!-- BEGIN SIDEBAR MENU -->        
@@ -35,3 +36,4 @@
     <!-- END SIDEBAR MENU -->
 </div>
 <!-- END SIDEBAR -->
+<?php endif ?>

@@ -7,17 +7,17 @@ class Lists extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        Auth::validate_request();
+        Auth::ValidateRequest();
         $this->load->database();
         $this->load->helper('array');
-//        $this->load->model('queries');
+        $this->load->model('queries');
         $this->load->dbforge();
         header('Content-Type:application/json');
     }
-
+    
     function Get($id = FALSE) {
         if ($id) {
-            $data = $this->_getList($id);
+            $data = $this->queries->getListMetadata($id);
         } else {
             $data = $this->db->from($this->table)->get()->result();
             foreach ($data as $row) {
@@ -41,7 +41,7 @@ class Lists extends CI_Controller {
 
             $data['created'] = date('Y-m-d');
             $data['attrs'] = json_encode($data['attrs']);
-            $data['createdby'] = Auth::is_authenticated()->login;
+            $data['createdby'] = Auth::IsAuthenticated()->login;
             $this->db->insert($this->table, $data);
             $id = $this->db->insert_id();
             $response = $id;
@@ -49,12 +49,13 @@ class Lists extends CI_Controller {
             // update
             $data['modified'] = date('Y-m-d');
             $data['attrs'] = json_encode($data['attrs']);
-            
+
             $fields = Request::Post('fields');
             //Update the fields
-            $i = 0;
+            $i = 1;
             foreach ($fields as $field) {
                 $fieldData = elements(array('title', 'typeref', 'ispublished', 'description', 'attrs'), (array) $field);
+                $fieldData['attrs'] = json_encode($fieldData['attrs']);
                 $fieldData['roworder'] = $i++;
                 $this->db->update('fields', $fieldData, array('id' => $field->id));
             }
@@ -90,7 +91,7 @@ class Lists extends CI_Controller {
         // Add the list
         $data = elements(array('title', 'internaltitle', 'mapped_table', 'description', 'ispublished', 'attrs'), (array) $list);
         $data['created'] = date('Y-m-d');
-        $data['createdby'] = Auth::is_authenticated()->login;
+        $data['createdby'] = Auth::IsAuthenticated()->login;
         $data['identity'] = $this->_getIdentityFieldTitle($list->fields);
         $data['attrs'] = json_encode($data['attrs']);
 
@@ -191,6 +192,7 @@ class Lists extends CI_Controller {
     }
 
     private function _getList($listId, $getFields = TRUE, $checkIfTableExists = TRUE) {
+        
         $data = $this->db->from($this->table)->where(array('id' => $listId))->get()->row();
         $data->ispublished = !!$data->ispublished;
 
@@ -199,11 +201,17 @@ class Lists extends CI_Controller {
 
             foreach ($data->fields as &$row) {
                 $row->ispublished = !!$row->ispublished;
+                $row->attrs = json_decode($row->attrs);
             }
         }
 
         if ($checkIfTableExists) {
-            $data->table_exists = !!$this->db->table_exists($data->mapped_table);
+            if (stripos(php_uname('s'), 'win') !== FALSE) {
+                // windows
+                $data->table_exists = !!$this->db->table_exists(strtolower($data->mapped_table));
+            } else {
+                $data->table_exists = !!$this->db->table_exists($data->mapped_table);
+            }
         }
 
         return $data;

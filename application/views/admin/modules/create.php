@@ -1,4 +1,4 @@
-<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
 <div class="page-content <?php echo $list->attrs->cssClass ?>">
 
     <div class="row">
@@ -18,24 +18,36 @@
             <a href="#/index"><?php echo $list->title ?></a> 
             <i class="icon-angle-right"></i>
         </li>
-        <li>New</li>
+        <li>Item <small class="muted">(New)</small></li>
     </ul>
 
-    <div class="alert alert-warning" ng-show="working">
-        Working ... 
+    <div class="ng-cloak">
+        <div class="alert alert-warning" ng-show="working">
+            Working ... 
+        </div>
+
+        <div class="alert alert-success" ng-show="saved">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+            <strong>Item saved</strong>
+        </div>
+
+        <div class="alert alert-danger alert-dismissable" ng-show="errors.length">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+            <strong>Oops!</strong>
+            <ul>
+                <li ng-repeat="error in errors">{{error}}</li>
+            </ul>
+        </div>
     </div>
 
-    <div class="alert alert-success" ng-show="saved">
-        <strong>Item saved</strong>
-    </div>
 
     <form name="form" ng-submit="save()">
-       <div class="form-body">
+        <div class="form-body">
 
             <?php foreach ($list->published_fields as $field): ?>
                 <?php if ($field->typeref < 5 && $field->typeref != '1.3') : ?>
-                    <div class="form-group">
-                        <label for="field_<?php echo $field->id ?>"><?php echo $field->title ?></label>
+                    <div class="form-group" ng-class="{'has-error': form.<?php echo $field->internaltitle ?>.$invalid}">
+                        <label  class="control-label" for="field_<?php echo $field->id ?>"><?php echo $field->title ?></label>
                         <?php echo Content::renderEditField($field, TRUE) ?>
                     </div>
                 <?php endif ?>
@@ -43,8 +55,8 @@
 
             <?php foreach ($list->published_fields as $field): ?>
                 <?php if ($field->typeref > 5 || $field->typeref == '1.3') : ?>
-                     <div class="form-group">
-                        <label for="field_<?php echo $field->id ?>"><?php echo $field->title ?></label>
+                    <div class="form-group" ng-class="{'has-error': form.<?php echo $field->internaltitle ?>.$invalid}">
+                        <label  class="control-label" for="field_<?php echo $field->id ?>"><?php echo $field->title ?></label>
                         <?php echo Content::renderEditField($field, TRUE) ?>
                     </div>
                 <?php endif ?>

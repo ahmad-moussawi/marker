@@ -1,4 +1,4 @@
-<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
 <div class="page-content <?php echo $list->attrs->cssClass ?>">
 
     <div class="row">
@@ -15,15 +15,17 @@
 
 
     <ul class="page-breadcrumb breadcrumb">
-        <li class="btn-group">
-            <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
-                <span>Actions</span> <i class="icon-angle-down"></i>
-            </button>
-            <ul class="dropdown-menu pull-right" role="menu">
-                <li><a target="_blank" href="../api/get/<?php echo $list->internaltitle ?>">JSON Api</a></li>
-                <li><a href="#/lists/edit/<?php echo $list->id ?>">Edit list</a></li>
-            </ul>
-        </li>
+        <?php if (Auth::IsUserInRole('super')): ?>
+            <li class="btn-group">
+                <button type="button" class="btn blue dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="1000" data-close-others="true">
+                    <span>Actions</span> <i class="icon-angle-down"></i>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                    <li><a target="_blank" href="../api/get/<?php echo $list->internaltitle ?>">JSON Api</a></li>
+                    <li><a href="#/lists/edit/<?php echo $list->id ?>">Edit list</a></li>
+                </ul>
+            </li>
+        <?php endif ?>
         <li>
             <i class="icon-home"></i>
             <a href="#/index">Dashboard</a> 

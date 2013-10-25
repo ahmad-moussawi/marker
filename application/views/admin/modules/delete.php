@@ -1,13 +1,13 @@
-<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
 <div class="page-content <?php echo $list->attrs->cssClass ?>">
 
-    
+
     <div class="row">
         <div class="col-md-12">
             <h3 class="page-title"><?php echo $list->title ?></h3>
         </div>
     </div>
-    
+
     <ul class="page-breadcrumb breadcrumb">
         <li>
             <i class="icon-home"></i>
@@ -21,9 +21,24 @@
         <li>{{item.title}} <small class="muted">(Delete)</small></li>
     </ul>
 
-    <div class="alert alert-danger">
-        <strong>Delete Item</strong> Are you sure you want to delete this item ?
+    <div class="ng-cloak">
+        <div class="alert alert-danger alert-dismissable" ng-show="errors.length">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+            <strong>Oops!</strong>
+            <ul>
+                <li ng-repeat="error in errors">{{error}}</li>
+            </ul>
+        </div>
     </div>
+
+
+    <div class="note note-danger">
+        <h4 class="block">Delete!</h4>
+        <p>
+            Are you sure you want to delete this item ?
+        </p>
+    </div>
+
 
     <form ng-submit="save()">
         <div class="row-fluid">

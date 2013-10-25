@@ -9,7 +9,7 @@ class Modules extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        Auth::validate_request();
+        Auth::ValidateRequest();
         $this->load->database();
         $this->load->helper('array');
         $this->load->model('queries');
@@ -44,7 +44,7 @@ class Modules extends CI_Controller {
 
         foreach ($module->fields as $field) {
             if ($field->typeref == '4.1') {
-                $attrs = json_decode($field->attrs);
+                $attrs = $field->attrs;
                 if ($attrs->type == 'internal') {
 
                     // get the list internal title to make a join
@@ -63,7 +63,7 @@ class Modules extends CI_Controller {
                         }
 
                         $data = $data->join(
-                                "$list `$alias`", "$alias.$module->identity = $module->mapped_table.$field->internaltitle", 'left'
+                                "$list `$alias`", "$alias.id = $module->mapped_table.$field->internaltitle", 'left'
                         );
                     }
                 }
@@ -72,7 +72,7 @@ class Modules extends CI_Controller {
         $this->db->select("$module->mapped_table.*");
         $data = $data->get()->result_array();
 
-        $data = $this->convertData($data);
+        $data = $this->_convertData($data);
 
         if ($id) {
             return $this->json(TRUE, array('row' => $data[0], 'errors' => $this->errors));
@@ -86,6 +86,12 @@ class Modules extends CI_Controller {
 
         $data = elements($list->published_fields_array, Request::Post());
 
+        // transform Array to JSON
+        foreach ($data as &$row) {
+            if (is_array($row)) {
+                $row = json_encode($row);
+            }
+        }
 
         if (!$id) {
 // create
@@ -100,7 +106,7 @@ class Modules extends CI_Controller {
             if (!$list->attrs->view_edit) {
                 return $this->json(FALSE, NULL, 'Operation failed, Edit permission is disabled for this list');
             }
-            
+
             $this->db->update($list->mapped_table, $data, array($list->identity => $id));
             return $this->json($this->db->affected_rows() > 0);
         }
@@ -152,20 +158,85 @@ class Modules extends CI_Controller {
         return $this->json(TRUE, array('rows' => $data2, 'map' => $map));
     }
 
+    function validateCount($listId, $fieldName, $val, $skipRowId = FALSE) {
+        $list = $this->queries->getListMetadata($listId);
+        if (empty($list)) {
+            return $this->json(FALSE, array('Exception' => 'ListNotFound'), 'List not found');
+        } else {
+            $fieldFound = FALSE;
+            foreach ($list->fields as $field) {
+                if ($field->internaltitle === $fieldName) {
+                    $fieldFound = TRUE;
+                    break;
+                }
+            }
+
+            if (!$fieldFound) {
+                return $this->json(FALSE, array('Exception' => 'FieldNotFound'), 'Field not found');
+            }
+        }
+
+        if ($skipRowId) {
+            $this->db->where(array($list->identity . ' !=' => $skipRowId));
+        }
+
+        $count = $this->db->where(array($fieldName => $val))->count_all_results($list->mapped_table);
+        return $this->json(TRUE, $count);
+    }
+
+    function validateGroup() {
+        $params = Request::post();
+
+
+        if (empty($params['fields']) || empty($params['fields'][0])) {
+            return $this->json(FALSE, array('Exception' => 'FieldsNotProvided'), 'Fields not provided');
+        }
+
+        if (count($params['fields']) !== count($params['values'])) {
+            return $this->json(FALSE, array('Exception' => 'FieldsAndValuesCount'), 'The fields count must match the values fields');
+        }
+
+        $listId = explode(',', $params['fields'][0]);
+        $listId = $listId[0];
+
+        $list = $this->queries->getListMetadata($listId);
+        if (empty($list)) {
+            return $this->json(FALSE, array('Exception' => 'ListNotFound'), 'List not found');
+        }
+
+        for ($i = 0; $i < count($params['fields']); $i++) {
+            $fieldName = explode('.', $params['fields'][$i]);
+            $fieldName = $fieldName[1];
+            $this->db->where($fieldName, $params['values'][$i]);
+        }
+
+        if (!empty($params['skip'])) {
+            $this->db->where(array($list->identity . ' !=' => $params['skip']));
+        }
+
+        $count = $this->db->count_all_results($list->mapped_table);
+        return $this->json(TRUE, $count);
+    }
+
     function renderView($viewName, $listId) {
         $data['list'] = $this->queries->getListMetadata($listId);
-        
-        if($viewName == 'create' && !$data['list']->attrs->view_create){
+
+        // Add the list reference for the fields
+        foreach ($data['list']->fields as $field) {
+            $field->list = $data['list'];
+        }
+
+        if ($viewName == 'create' && !$data['list']->attrs->view_create) {
             echo '<div class="alert alert-danger">You cannot create a new item on this list</div>';
             return;
         }
 
-        if($viewName == 'edit' && !$data['list']->attrs->view_edit){
+        if ($viewName == 'edit' && !$data['list']->attrs->view_edit) {
             echo '<div class="alert alert-danger">You cannot edit items on this list</div>';
             return;
         }
-        
-        if($viewName == 'delete' && !$data['list']->attrs->view_delete){
+
+        if ($viewName == 'delete' && !$data['list']->attrs->view_delete) {
             echo '<div class="alert alert-danger">You cannot delete items on this list</div>';
             return;
         }
@@ -177,7 +248,11 @@ class Modules extends CI_Controller {
         $this->load->view('admin/modules/' . $viewName, $data);
     }
 
-    private function convertData($data) {
+    function getView($viewName) {
+        $this->load->view('admin/modules/tmpl/' . $viewName);
+    }
+
+    private function _convertData($data) {
         foreach ($data as &$row) {
             foreach ($row as $key => $field) {
                 if (strpos($key, self::$complexSeperator)) {

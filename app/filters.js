@@ -110,8 +110,6 @@ app.filter('field_view_41', function() {
 });
 
 
-
-
 /**
  * Truncate Filter
  * @Param text

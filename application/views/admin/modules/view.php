@@ -1,4 +1,4 @@
-<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
 <div class="page-content <?php echo $list->attrs->cssClass ?>">
 
     <div class="row">
@@ -17,7 +17,7 @@
             <a href="#/modules/<?php echo $list->id ?>/index"><?php echo $list->title ?></a> 
             <i class="icon-angle-right"></i>
         </li>
-        <li>{{item.title}}</li>
+        <li>Item <small class="muted">(View)</small></li>
     </ul>
 
     <form ng-submit="save()">

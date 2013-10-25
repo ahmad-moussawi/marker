@@ -142,6 +142,7 @@ app.controller('ListsEditCtrl', ['$scope', '$http', '$filter', '$routeParams', '
             $scope.working = true;
             $scope.list.ispublished = +$scope.list.ispublished;
             var list = angular.copy($scope.list);
+            console.log(list);
             $http.post(path.ajax + 'lists/set/' + $routeParams.id, list).success(function(r) {
                 $scope.working = false;
                 $scope.saved = true;

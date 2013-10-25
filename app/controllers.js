@@ -190,7 +190,7 @@ app.controller('UsersCreateCtrl', ['$scope', '$http', function($scope, $http) {
         $scope.success = false;
 
         $scope.roles = [];
-        $scope.member = {
+        $scope.user = {
             roles: []
         };
 
@@ -201,7 +201,7 @@ app.controller('UsersCreateCtrl', ['$scope', '$http', function($scope, $http) {
 
         $scope.save = function() {
             $scope.working = true;
-            $http.post(path.ajax + 'users/set', $scope.member).success(function(r) {
+            $http.post(path.ajax + 'users/set', $scope.user).success(function(r) {
                 $scope.success = true;
             });
         };
@@ -221,7 +221,7 @@ app.controller('UsersEditCtrl', ['$scope', '$http', '$routeParams', function($sc
 
 
         $scope.save = function() {
-            $http.post(path.ajax + 'users/set/' + $routeParams.userId, $scope.member).success(function(r) {
+            $http.post(path.ajax + 'users/set/' + $routeParams.userId, $scope.user).success(function(r) {
                 $scope.success = true;
             });
         };

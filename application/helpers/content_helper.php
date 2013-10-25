@@ -18,12 +18,15 @@ class Content {
         $str = '';
 
         if (!empty($field->attrs)) {
-            $attrs = json_decode($field->attrs);
+            $attrs = $field->attrs;
+        } else {
+            $attrs = new stdClass;
         }
 
         switch ($field->typeref) {
             case '1.1':
                 if (isset($attrs)) {
+                    $str = '';
                     if (isset($attrs->required) && $attrs->required) {
                         $str = ' required="required"';
                     }
@@ -42,16 +45,38 @@ class Content {
                         $str .= ' minlength="' . $attrs->min_len . '"';
                     }
 
-                    if (isset($attrs->default) && $attrs->default) {
-                        //$str .= " ng-init=\"item.$field->internaltitle = '$attrs->default'\"";
+                    if (isset($attrs->unique) && $attrs->unique) {
+                        $attrs->unique = $attrs->unique === TRUE ? 1 : $attrs->unique;
+                        $str .= " marker-unique=\"$field->listid.$field->internaltitle\" max-count=\"$attrs->unique\"";
+                        if (!$createMode) {
+                            $str .=" skip=\"{{item.{$field->list->identity}}}\"";
+                        }
+                    }
+
+                    if (isset($attrs->unique_group)) {
+
+                        foreach ($field->list->fields as $field) {
+                            var_dump($field->attrs);
+                        }
+
+                        $str .= " marker-unique-group=\"$attrs->unique_group\" fields=\"$field->listid.$field->internaltitle\"";
+                        if (!$createMode) {
+                            $str .=" skip=\"{{item.{$field->list->identity}}}\"";
+                        }
+                    }
+
+                    if ($createMode && isset($attrs->default) && $attrs->default) {
+                        $str .= " ng-init=\"item.$field->internaltitle = '$attrs->default'\"";
                     }
                 }
 
-                $html .="<input class=\"form-control\" $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                $html .="<input class=\"form-control\" $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />" .
+                        '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.unique">Value already exist</span>' .
+                        '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatingunique">Checking the new value ...</span>';
                 break;
-
             case '1.2':
                 if (isset($attrs)) {
+                    $str = '';
                     if (isset($attrs->required) && $attrs->required) {
                         $str = ' required="required"';
                     }
@@ -69,21 +94,20 @@ class Content {
                     if (isset($attrs->min_len) && $attrs->min_len > 0) {
                         $str .= ' minlength="' . $attrs->min_len . '"';
                     }
-                                        
+
                     if ($createMode) {
                         if (!isset($attrs->default) || !$attrs->default) {
                             $attrs->default = '';
                         }
                         $html .= "<span ng-init=\"item.$field->internaltitle='$attrs->default'\"></span>";
                     }
-                    
                 }
 
                 $html .="<textarea class=\"form-control\" $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
                 break;
-
             case '1.3':
                 if (isset($attrs)) {
+                    $str = '';
                     if (isset($attrs->required) && $attrs->required) {
                         $str = ' required="required"';
                     }
@@ -91,7 +115,7 @@ class Content {
                     if (isset($attrs->theme) && $attrs->theme > 0) {
                         $str .= ' theme="' . $attrs->theme . '"';
                     }
-                    
+
                     if ($createMode) {
                         if (!isset($attrs->default) || !$attrs->default) {
                             $attrs->default = '';
@@ -102,9 +126,9 @@ class Content {
 
                 $html .="<textarea class=\"form-control\" ck-editor $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
                 break;
-
             case '1.4':
                 if (isset($attrs)) {
+                    $str = '';
                     if (isset($attrs->required) && $attrs->required) {
                         $str = ' required="required"';
                     }
@@ -124,8 +148,15 @@ class Content {
                 break;
             case '1.5':
                 if (isset($attrs)) {
+                    $str = '';
                     if (isset($attrs->required) && $attrs->required) {
                         $str = ' required="required"';
+                    }
+
+                    if (isset($attrs->mode)) {
+                        $str .= "mode=\"{$attrs->mode}\"";
+                    } else {
+                        $str .= "mode=\"hex\"";
                     }
                     if ($createMode) {
                         if (isset($attrs->default) && $attrs->default) {
@@ -136,24 +167,70 @@ class Content {
                         $html .="<span ng-init=\"item.$field->internaltitle='$default'\"></span>";
                     }
                 }
-                $html .="<input $str color-picker type=\"color\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                $html .="<div><input $str color-picker type=\"color\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" /> <span class=\"label label-default\">{{item.$field->internaltitle}}</span></div>";
                 break;
-
             case '1.6':
                 $html .="<input class=\"form-control\" type=\"text\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;
-
             case 2:
                 $html .="<input class=\"form-control\" type=\"number\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
                 break;
             case 3:
                 $html .="<textarea class=\"form-control\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" ></textarea>";
                 break;
+            case '3.1':
+
+                if (isset($attrs)) {
+                    $str = '';
+                    if (isset($attrs->required) && $attrs->required) {
+                        $str .= ' required="required"';
+                    }
+
+                    if (isset($attrs->unique) && $attrs->unique) {
+                        $attrs->unique = $attrs->unique === TRUE ? 1 : $attrs->unique;
+                        $str .= " marker-unique=\"$field->listid.$field->internaltitle\" max-count=\"$attrs->unique\"";
+                        if (!$createMode) {
+                            $str .=" skip=\"{{item.{$field->list->identity}}}\"";
+                        }
+                    }
+
+                    if (isset($attrs->unique_group)) {
+
+                        $fields = array();
+                        $values = array();
+                        $titles = array();
+                        foreach ($field->list->fields as $otherfield) {
+                            if (isset($otherfield->attrs) && isset($otherfield->attrs->unique_group) && $otherfield->attrs->unique_group == $attrs->unique_group
+                            ) {
+                                $titles[] = $otherfield->title;
+                                $fields[] = $field->listid . '.' . $otherfield->internaltitle;
+                                $values[] = '{{item.' . $otherfield->internaltitle . '}}';
+                            }
+                        }
+
+                        $str .= " marker-unique-group=\"$attrs->unique_group\"";
+                        $str .= 'fields="' . implode(',', $fields) . '"';
+                        $str .= 'values="' . implode('__markersep__', $values) . '"';
+                        if (!$createMode) {
+                            $str .=" skip=\"{{item.{$field->list->identity}}}\"";
+                        }
+                    }
+                }
+                $html .="<input $str class=\"form-control\" type=\"number\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                if (isset($attrs->unique_group)) {
+                    $html .='<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.unique">Value already exists</span>' .
+                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatingunique">Checking the new value ...</span>' .
+                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.uniquegroup">The combination '. implode(', ', $titles) .' already exists</span>' .
+                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatinguniquegroup">Checking the new values ...</span>';
+                }
+                break;
+
 
             case '4.1':
-                $attrs_str = array();
+
+                $str = '';
                 if (isset($attrs->required) && $attrs->required) {
-                    $attrs_str['required'] = 'required';
+                    $str .= ' required="required"';
                 }
 
                 if ($attrs->type == 'static') {
@@ -166,7 +243,7 @@ class Content {
                             $options[$row] = $row;
                         }
                     }
-                    $html .= form_dropdown($field->internaltitle, $options, false, "ng-model=\"item.$field->internaltitle\"");
+                    $html .= form_dropdown($field->internaltitle, $options, false, "ng-model=\"item.$field->internaltitle\" $str");
                 }
 
                 if ($attrs->type == 'internal') {
@@ -175,7 +252,7 @@ class Content {
 
                 break;
             case '4.4':
-                $html .="<input type=\"checkbox\" ng-model=\"item.$field->internaltitle\" ng-true-value=\"1\" ng-false-value=\"0\"/>";
+                $html .="<span checkbox ng-model=\"item.$field->internaltitle\"></span>";
                 break;
             case '5.1':
 
@@ -190,7 +267,7 @@ class Content {
                     }
                 }
 
-                $html .="<marker:upload type=\"image\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id'></marker:upload>";
+                $html .="<marker-upload type=\"image\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id'></marker-upload>";
                 break;
 
             case '5.2':
@@ -204,7 +281,7 @@ class Content {
                         $str .= ' max="30"';
                     }
                 }
-                $html .="<marker:upload type=\"video\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id/video'></marker:upload>";
+                $html .="<marker-upload type=\"video\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id/video'></marker-upload>";
                 break;
 
             case '5.3':
@@ -218,7 +295,7 @@ class Content {
                         $str .= ' max="30"';
                     }
                 }
-                $html .="<marker:upload type=\"audio\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id/audio'></marker:upload>";
+                $html .="<marker-upload type=\"audio\" ng-model='item.$field->internaltitle' path='uploads/upload/$field->id/audio'></marker-upload>";
                 break;
             case 6:break;
 
@@ -247,7 +324,7 @@ class Content {
 
     public static function renderViewField($field) {
         $html = '';
-        $attrs = json_decode($field->attrs);
+        $attrs = $field->attrs;
         switch ($field->typeref) {
             case 1:
             case '1.5':
@@ -255,7 +332,7 @@ class Content {
                 break;
 
             case '1.6':
-                $html .="<div marker:barcode type=\"ean13\" ng-model=\"item.$field->internaltitle\"></div>";
+                $html .="<div marker-barcode type=\"ean13\" ng-model=\"item.$field->internaltitle\"></div>";
                 break;
             case 2:
             case 3:
@@ -264,6 +341,8 @@ class Content {
             case '4.1':
                 if ($attrs->type == 'internal') {
                     $html .="{{item.__$field->internaltitle | field_view_41:'$attrs->type_internal_display'}}";
+                } else {
+                    $html .="{{item.$field->internaltitle}}";
                 }
                 break;
             case '4.4':
@@ -271,14 +350,14 @@ class Content {
                 break;
             case '5.1':
                 //$html .= "<div ng-bind-html-unsafe=\"item.{$field->internaltitle} | images_view:0:3\"></div>";
-                $html .= "<div marker:image-preview limit=\"3\" max-width=\"130\"  ng-model=\"item.{$field->internaltitle}\"></div>";
+                $html .= "<div marker-image-preview limit=\"3\" max-width=\"130\"  ng-model=\"item.{$field->internaltitle}\"></div>";
                 break;
             case '5.2':
-                $html .= "<div marker:video-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
+                $html .= "<div marker-video-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
                 break;
 
             case '5.3':
-                $html .= "<div marker:audio-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
+                $html .= "<div marker-audio-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
                 break;
             case 6:
             default:
@@ -290,9 +369,12 @@ class Content {
 
     public static function renderIndexField($field) {
         $html = '';
-        $attrs = json_decode($field->attrs);
+        $attrs = $field->attrs;
         switch ($field->typeref) {
             case 1:
+            case '1.2':
+                $html .= "<span>{{item.$field->internaltitle | truncate:100}}</span>";
+                break;
             case '1.3':
                 $html .= "<span ng-bind-html-unsafe=\"item.$field->internaltitle | truncate:100\"></span>";
                 break;
@@ -301,7 +383,7 @@ class Content {
                 break;
 
             case '1.6':
-                $html .="<div marker:barcode type=\"ean13\" ng-model=\"item.$field->internaltitle\"></div>";
+                $html .="<div marker-barcode type=\"ean13\" ng-model=\"item.$field->internaltitle\"></div>";
                 break;
             case 2:
             case 3:
@@ -319,15 +401,15 @@ class Content {
                 break;
             case '5.1':
                 //$html .= "<div ng-bind-html-unsafe=\"item.{$field->internaltitle} | images_index\"></div>";
-                $html .= "<div marker:image-preview limit=\"0\" ng-model=\"item.{$field->internaltitle}\"></div>";
+                $html .= "<div marker-image-preview limit=\"0\" ng-model=\"item.{$field->internaltitle}\"></div>";
                 break;
 
             case '5.2':
-                $html .= "<div marker:video-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
+                $html .= "<div marker-video-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
                 break;
 
             case '5.3':
-                $html .= "<div marker:audio-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
+                $html .= "<div marker-audio-preview ng-model=\"item.{$field->internaltitle}\">rendering...</div>";
                 break;
             case 6:
             default:

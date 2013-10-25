@@ -24,7 +24,7 @@ class Queries extends CI_Model {
         if (empty($list->identity)) {
             $list->identity = 'id';
         }
-        
+
         // set the default attributes
         $default = array(
             'cssClass' => '',
@@ -32,17 +32,24 @@ class Queries extends CI_Model {
             'view_delete' => FALSE,
             'view_create' => FALSE,
         );
-        
-        $list->attrs = (object) array_merge($default, (array)json_decode($list->attrs));
+
+        $list->attrs = (object) array_merge($default, (array) json_decode($list->attrs));
 
         // Manage the list fields
-        $list->fields = $this->db->where(array('listid' => $listId))->order_by('roworder')->get('fields')->result();
-        $list->table_exists = !!$this->db->table_exists($list->mapped_table);
+        $list->fields = $this->db->where(array('listid' => $list->id))->order_by('roworder')->get('fields')->result();
+        if (stripos(php_uname('s'), 'win') !== FALSE) {
+            $list->table_exists = !!$this->db->table_exists(strtolower($list->mapped_table));
+        } else {
+            $list->table_exists = !!$this->db->table_exists($list->mapped_table);
+        }
 
         $list->fields_array = $list->published_fields_array = $list->published_fields = array();
-        foreach ($list->fields as $field) {
+        foreach ($list->fields as &$field) {
+            
+            $field->ispublished = !!$field->ispublished;
+            $field->attrs = json_decode($field->attrs);
             $list->fields_array[] = $field->internaltitle;
-            if($field->ispublished){
+            if ($field->ispublished) {
                 $list->published_fields[] = $field;
                 $list->published_fields_array[] = $field->internaltitle;
             }

@@ -7,7 +7,7 @@ class Pages extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        Auth::validate_request();
+        Auth::ValidateRequest();
         $this->load->database();
         $this->load->library('form_validation');
         $this->load->helper('array');
@@ -58,7 +58,7 @@ class Pages extends CI_Controller {
             $form['urlpath'] = $this->_getValidUrlPath( url_title($form['urlpath']) );
             
             $form['created'] = date('Y-m-d H:i:s');
-            $form['createdby'] = Auth::is_authenticated()->login;
+            $form['createdby'] = Auth::IsAuthenticated()->login;
             $this->db->insert('pages', $form);
             $form['id'] = $this->db->insert_id();
 

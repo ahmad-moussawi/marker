@@ -253,15 +253,41 @@ app.directive('colorPicker', [function() {
                 ngModel: '='
             },
             link: function(scope, elm, attrs) {
+
+                // minirgb : 255,0,1
+                // rgb : rgb(255,0,1)
+                // hex : #ff000a
+
+                var mode = attrs.mode || 'hex';
+                var defaultval = {
+                    minirgb: '0,0,0',
+                    hex: '#000000',
+                    rgb: 'rgb(0,0,0)'
+                };
+                var color = scope.ngModel || attrs.default || defaultval[mode]; //default
+
+
+                if (mode === 'minirgb') {
+                    color = 'rgb(' + scope.ngModel + ')';
+                }
+
                 elm.spectrum({
-                    color: scope.ngModel || attrs.default || '000',
+                    color: color,
                     showInput: true,
+                    clickoutFiresChange: true,
+                    showButtons: false,
                     showPalette: true,
                     palette: ['fff', '000'],
                     change: function(color) {
                         scope.$apply(function() {
-                            scope.ngModel = color.toHexString(); // #ff0000
-                        })
+                            if (mode === 'rgb') {
+                                scope.ngModel = color.toRgbString();
+                            } else if (mode === 'minirgb') {
+                                scope.ngModel = color.toRgbString().replace('rgb(', '').replace(')', '');
+                            } else {
+                                scope.ngModel = color.toHexString(); // #ff0000
+                            }
+                        });
                     }
                 });
             }
@@ -559,6 +585,159 @@ app.directive('checkbox', [function() {
                         scope.ngModel = !scope.ngModel;
                     });
                 });
+            }
+        };
+    }]);
+
+/** Backward Compatibility **/
+app.directive('ngBindHtmlUnsafe', ['$sce', function($sce) {
+        return {
+            scope: {
+                ngBindHtmlUnsafe: '=',
+            },
+            template: "<div ng-bind-html='trustedHtml'></div>",
+            link: function($scope, iElm, iAttrs, controller) {
+                $scope.updateView = function() {
+                    $scope.trustedHtml = $sce.trustAsHtml($scope.ngBindHtmlUnsafe);
+                }
+
+                $scope.$watch('ngBindHtmlUnsafe', function(newVal, oldVal) {
+                    $scope.updateView(newVal);
+                });
+            }
+        };
+    }]);
+
+/** Form Validation : markerUnique **/
+/* Directives */
+app.directive('markerUnique', ['$http', function($http) {
+        return {
+            require: 'ngModel',
+            link: function(scope, elem, attrs, ctrl) {
+                var val = elem.val();
+                elem.on('focus', function() {
+                    val = elem.val();
+                });
+                elem.on('blur', function(evt) {
+                    // skip if their is no value or value is not changed;
+                    if (!elem.val().length || elem.val() === val)
+                        return;
+
+                    scope.$apply(function() {
+                        elem.addClass('spinner');
+                        var uniqueAttr = attrs.markerUnique.replace('.', '/');
+                        var maxCount = attrs.maxCount || 1;
+
+                        ctrl.$setValidity('unique', true);
+                        ctrl.$setValidity('validatingunique', false);
+                        $http.get(path.ajax + 'modules/validateCount/' + uniqueAttr + '/' + elem.val() + '/' + (attrs.skip || ''))
+                                .success(function(r, status, headers, config) {
+                            ctrl.$setValidity('validatingunique', true);
+                            ctrl.$setValidity('unique', r.data < maxCount);
+                            elem.removeClass('spinner');
+                        }).error(function() {
+                            ctrl.$setValidity('validatingunique', true);
+                            elem.removeClass('spinner');
+                        });
+                    });
+                });
+            }
+        }
+    }]);
+
+/** Form Validation : markerUniqueGroup **/
+/* Directives */
+app.directive('markerUniqueGroup', ['$http', function($http) {
+        return {
+            require: 'ngModel',
+            link: function(scope, elem, attrs, ctrl) {
+                var oldVal = elem.val();
+                elem.on('focus', function() {
+                    oldVal = elem.val();
+                });
+                
+                elem.on('blur', function(evt) {
+                    // skip if their is no value or value is not changed;
+                    if (!elem.val().length || elem.val() === oldVal)
+                        return;
+
+                    scope.$apply(function() {
+                        elem.addClass('spinner');
+                        var params = {
+                            fields :attrs.fields.split(','),
+                            values :attrs.values.split('__markersep__'),
+                            skip :attrs.skip || ''
+                        };
+
+                        ctrl.$setValidity('uniquegroup', true);
+                        ctrl.$setValidity('validatinguniquegroup', false);
+                        $http.post(path.ajax + 'modules/validateGroup', params)
+                                .success(function(r, status, headers, config) {
+                            ctrl.$setValidity('validatinguniquegroup', true);
+                            ctrl.$setValidity('uniquegroup', r.data === 0);
+                            elem.removeClass('spinner');
+                        }).error(function() {
+                            ctrl.$setValidity('validatinguniquegroup', true);
+                            elem.removeClass('spinner');
+                        });
+                    });
+                });
+            }
+        }
+    }]);
+
+app.directive('markerParseattrs', ['$filter', function($filter) {
+        return {
+            require: 'ngModel',
+            link: function(scope, elm, attrs, ctrl) {
+
+                var inFocus = false;
+                var oldValue = {};
+                elm.focus(function() {
+                    inFocus = true;
+                    oldValue = ctrl.$viewValue;
+                });
+                // view -> model
+                elm.on('blur', function() {
+                    inFocus = false;
+                    scope.$apply(function() {
+                        var newValue;
+                        try {
+                            newValue = angular.fromJson(elm.val());
+                        } catch (e) {
+                            newValue = oldValue;
+                        }
+                        ctrl.$setViewValue(newValue);
+                    });
+                });
+
+                // model -> view
+                ctrl.$render = function() {
+                    if (ctrl.$viewValue) {
+                        //console.log(ctrl.$viewValue, typeof ctrl.$viewValue);
+                        if(typeof ctrl.$viewValue === 'string'){
+                            try{
+                                ctrl.$viewValue = angular.fromJson(ctrl.$viewValue);
+                            }catch(e){
+                                ctrl.$viewValue = {};
+                            }
+                        }
+                        elm.val($filter('json')(ctrl.$viewValue));
+                    }
+                };
+
+                scope.$watch(attrs.ngModel, function() {
+                    if (!inFocus) {
+                        ctrl.$render();
+                    }
+                }, true);
+
+                // load init value from DOM
+                //elm.blur();
+                //ctrl.$render();
+                 //ctrl.$setViewValue(elm.val());
+                 //elm.blur();
+                
             }
         };
     }]);

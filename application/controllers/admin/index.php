@@ -8,7 +8,7 @@ class Index extends CI_Controller {
     }
 
     function Index() {
-        if (!Auth::is_authenticated()) {
+        if (!Auth::IsAuthenticated()) {
 //           redirect('admin/index/auth');
             $data = array();
             $this->load->view('admin/account/header', $data);

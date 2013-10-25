@@ -53,7 +53,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
     </head>
     <!-- END HEAD -->
     <!-- BEGIN BODY -->
-    <body class="page-header-fixed">
+    <body class="page-header-fixed <?php echo Auth::IsUserInRole('super')?'':'page-sidebar-closed' ?>">
 
         <div id="loading-indicator" class="progress progress-striped active">
             <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">

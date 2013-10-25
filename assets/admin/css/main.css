@@ -92,3 +92,6 @@ input[type=number]::-webkit-outer-spin-button {
 .nav .open>a, .nav .open>a:hover, .nav .open>a:focus .username{color:#000!important}
 
 
+/** validation **/
+
+/*.ng-invalid{border:1px solid red}*/

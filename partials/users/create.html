@@ -1,4 +1,4 @@
-<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
 <div class="page-content">
     
     <div class="row">
@@ -30,19 +30,19 @@
             <dl class="dl-horizontal">
                 <dt>Login</dt>
                 <dd>
-                    <input type="text" ng-required="true" ng-model="member.login" />
+                    <input type="text" ng-required="true" ng-model="user.login" />
                 </dd>
                 <dt>Password</dt>
                 <dd>
-                    <input type="password" ng-required="true" ng-model="member.password" />
+                    <input type="password" ng-required="true" ng-model="user.password" />
                 </dd>
                 <dt>Description</dt>
-                <dd><textarea ng-model="member.description" ></textarea></dd>
+                <dd><textarea ng-model="user.description" ></textarea></dd>
             </dl>
         </div>
         <div class="span7">
             <strong>Member Of:</strong>
-            <select ng-model="member.roles" multiple="multiple">
+            <select ng-model="user.roles" multiple="multiple">
                 <option value="{{role.id}}" ng-repeat="role in roles">{{role.role}}</option>
             </select>
         </div>

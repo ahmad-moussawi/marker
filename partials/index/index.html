@@ -1,4 +1,4 @@
-<ng-include src="'../partials/tmpl/sidebar.html'"></ng-include>
+<ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
 <div class="page-content">
     <div class="row">
         <div class="col-md-12">
@@ -11,9 +11,9 @@
     </div>
 
     <div class="tiles">
-        <a href="#/{{item.link}}" ng-repeat="item in links" class="tile bg-green">
+        <a href="#/{{item.link}}" ng-repeat="item in links" class="tile bg-green" title="{{item.description}}" style="background-color: {{item.bgcolor}}!important;border-color:{{item.bgcolor}}!important">
             <div class="tile-body">
-                <i class="icon-paperclip"></i>
+                <i class="{{item.iconclass}}"></i>
             </div>
             <div class="tile-object">
                 <div class="name">{{item.title}}</div>
