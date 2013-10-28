@@ -51,6 +51,10 @@ app.directive('ckEditor', function() {
             ck.on('pasteState', function() {
                 scope.$apply(function() {
                     ngModel.$setViewValue(ck.getData());
+
+                    // fix the error on chrome :'An invalid form control with name='Text' is not focusable' 
+                    // due to required attribute.
+                    elm.val(ck.getData());
                 });
             });
 
@@ -283,7 +287,7 @@ app.directive('colorPicker', [function() {
                             if (mode === 'rgb') {
                                 scope.ngModel = color.toRgbString();
                             } else if (mode === 'minirgb') {
-                                scope.ngModel = color.toRgbString().replace('rgb(', '').replace(')', '');
+                                scope.ngModel = color.toRgbString().replace('rgb(', '').replace(')', '').replace(/,\s/g, ',');
                             } else {
                                 scope.ngModel = color.toHexString(); // #ff0000
                             }
@@ -304,6 +308,8 @@ app.directive('markerUpload', ['$http', function($http) {
             link: function(scope, elm, attrs, ctrl) {
                 var url = path.ajax + attrs.path;
                 var $input = elm.find('input[type=file]');
+
+                scope.id = attrs.id;
 
                 if (scope.ngModel === null || scope.ngModel === undefined) {
                     scope.ngModel = [];
@@ -342,8 +348,6 @@ app.directive('markerUpload', ['$http', function($http) {
                                     result = parseInt(progress.loaded / progress.total * 100, 10);
                             return result;
                         };
-
-                        console.debug(data)
                         if (data) {
                             scope.$apply(function() {
                                 scope.queue.push(data);
@@ -353,7 +357,7 @@ app.directive('markerUpload', ['$http', function($http) {
                     },
                     done: function(e, data) {
                         var result = data.response().result;
-                        if (result.upload_data[0]) {
+                        if (result.upload_data[0] && result.upload_data[0][0]) {
                             var fullpath = result.upload_data[0][0].full_path;
                             scope.$apply(function() {
                                 // add to the model
@@ -395,6 +399,14 @@ app.directive('markerUpload', ['$http', function($http) {
             }
         };
     }]);
+
+app.directive('colorbox', function() {
+    return {
+        link: function(scope, elm, attrs) {
+            elm.colorbox({maxWidth: '90%', maxHeight: '80%', rel: attrs.id});
+        }
+    }
+})
 
 app.directive('markerVideoPreview', [function() {
         return {
@@ -468,9 +480,13 @@ app.directive('markerImagePreview', ['$rootScope', function($root) {
                 if (scope.ngModel && scope.ngModel.length > 0) {
                     var maxWidth = attrs.maxWidth || 350;
                     var maxHeight = attrs.maxHeight || 200;
-                    var limit = attrs.limit || -1; // limit the images to this number 
+                    var limit = attrs.limit; // limit the images to this number 
                     var showRemaining = attrs.showRemaining || true;
 
+                    if(limit !== '0' && !limit){
+                        limit = -1;
+                    }
+                    
                     try {
                         var model = angular.fromJson(scope.ngModel);
                         scope.images = model;
@@ -484,9 +500,7 @@ app.directive('markerImagePreview', ['$rootScope', function($root) {
                         $('.zoomContainer').remove();
                     });
 
-                    for (var i = 0; i < model.length; i++) {
-                        if (i == limit)
-                            break;
+                    for (var i = 0; i < model.length, i< limit; i++) {
 
                         var image = model[i];
                         var imgSrc = image[0].full_path,
@@ -498,9 +512,11 @@ app.directive('markerImagePreview', ['$rootScope', function($root) {
                             maxWidth: maxWidth,
                             maxHeight: maxHeight
                         });
-                        elm.append(img);
+                        var $a = $('<a href="../' + imgSrc + '" />');
+                        $a.append(img);
+                        $a.colorbox({maxWidth: '90%', maxHeight: '90%'});
+                        elm.append($a);
                         img.elevateZoom({scrollZoom: true});
-
                     }
                     ;
 
@@ -513,11 +529,25 @@ app.directive('markerImagePreview', ['$rootScope', function($root) {
                         }
                     } else if (limit == 0) {
                         if (model === undefined || !model || model.length === 0) {
-                            elm.append('<i>No images</i>');
+                            elm.append('<i class="text-info"><small>No Image(s)</small></i>');
                         } else if (model.length == 1) {
-                            elm.append('<i>One image</i>');
+                            var $a = $('<a href="../' + model[0][0].full_path + '">One image</a>');
+                            elm.append($a);
+                            $a.colorbox({maxWidth:'90%', maxHeight:'90%'});
                         } else if (model.length > 1) {
-                            elm.append('<i>' + model.length + ' images</i>');
+                            
+                            var $container = $('<div style="display:none">');
+                            angular.forEach(model, function(img, index) {
+                                var $a = $('<a href="../' + img[0].full_path + '"></a>');
+                                $container.append($a);
+                            });
+                            elm.append($container);
+                            var $launcher = $('<a href="#">'+ model.length + ' Images</a>');
+                            elm.append($launcher);
+                            $launcher.click(function(){
+                                $container.children('a').colorbox({maxWidth:'90%', maxHeight:'90%', rel:attrs.ngModel, open:true});
+                                return false;
+                            })
                         }
                     }
 
@@ -655,8 +685,8 @@ app.directive('markerUniqueGroup', ['$http', function($http) {
                 elem.on('focus', function() {
                     oldVal = elem.val();
                 });
-                
-                elem.on('blur', function(evt) {
+
+                elem.on('change', function(evt) {
                     // skip if their is no value or value is not changed;
                     if (!elem.val().length || elem.val() === oldVal)
                         return;
@@ -664,9 +694,9 @@ app.directive('markerUniqueGroup', ['$http', function($http) {
                     scope.$apply(function() {
                         elem.addClass('spinner');
                         var params = {
-                            fields :attrs.fields.split(','),
-                            values :attrs.values.split('__markersep__'),
-                            skip :attrs.skip || ''
+                            fields: attrs.fields.split(','),
+                            values: attrs.values.split('__markersep__'),
+                            skip: attrs.skip || ''
                         };
 
                         ctrl.$setValidity('uniquegroup', true);
@@ -715,10 +745,10 @@ app.directive('markerParseattrs', ['$filter', function($filter) {
                 ctrl.$render = function() {
                     if (ctrl.$viewValue) {
                         //console.log(ctrl.$viewValue, typeof ctrl.$viewValue);
-                        if(typeof ctrl.$viewValue === 'string'){
-                            try{
+                        if (typeof ctrl.$viewValue === 'string') {
+                            try {
                                 ctrl.$viewValue = angular.fromJson(ctrl.$viewValue);
-                            }catch(e){
+                            } catch (e) {
                                 ctrl.$viewValue = {};
                             }
                         }
@@ -735,9 +765,9 @@ app.directive('markerParseattrs', ['$filter', function($filter) {
                 // load init value from DOM
                 //elm.blur();
                 //ctrl.$render();
-                 //ctrl.$setViewValue(elm.val());
-                 //elm.blur();
-                
+                //ctrl.$setViewValue(elm.val());
+                //elm.blur();
+
             }
         };
     }]);

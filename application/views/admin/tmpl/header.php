@@ -36,8 +36,9 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
         <?php echo Content::link('admin/assets/css/pages/about-us.css') ?>
         <?php echo Content::link('admin/assets/css/themes/default.css') ?>
         <?php echo Content::link('admin/assets/css/custom.css') ?>
-        
         <!-- END THEME STYLES -->
+        
+        <?php echo Content::link('admin/css/colorbox.css') ?> 
         <?php echo Content::link('admin/css/main.css') ?>
         <link rel="shortcut icon" href="favicon.ico" />
 
@@ -67,7 +68,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
             <div class="header-inner">
                 <!-- BEGIN LOGO -->  
                 <a class="navbar-brand" href="#/index">
-                    Marker
+                    <?php echo config_item('project_title') ?>
                     <!--<img src="assets/img/logo.png" alt="logo" class="img-responsive" />-->
                 </a>
                 <!-- END LOGO -->

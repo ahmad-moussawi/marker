@@ -15,7 +15,7 @@
             <i class="icon-angle-right"></i>
         </li>
         <li>
-            <a href="#/index"><?php echo $list->title ?></a> 
+            <a href="#/modules/<?php echo $list->id ?>/index"><?php echo $list->title ?></a>  
             <i class="icon-angle-right"></i>
         </li>
         <li>Item <small class="muted">(New)</small></li>

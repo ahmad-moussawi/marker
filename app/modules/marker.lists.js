@@ -88,8 +88,6 @@ app.controller('ListsCreateFromExistingFieldsCtrl',
         ['$scope', '$http', '$filter', '$routeParams', '$location', 'webStorage',
             function($scope, $http, $filter, $routeParams, $location, webStorage) {
                 $scope.list = webStorage.get('list');
-                console.log($scope.list);
-
                 if (!$scope.list) {
                     alert('Table not selected');
                     $location.path('lists/existing');

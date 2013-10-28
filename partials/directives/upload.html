@@ -1,40 +1,39 @@
 <input type="file" name="files" multiple />
 <table class="files table table-condensed">
-    <tr ng-repeat="data in ngModel" ng-switch="data[0].mime.indexOf('image') > -1">
-        <td ng-switch-when="true">
-            <a class="file" target="_blank" ng-href="../{{data[0].full_path}}">
-                <img class="thumb" ng-src="../{{data[0].full_path}}" />
-            </a>
-        </td>
-        <td>
-            <ul class="unstyled replications">
-                <li ng-repeat="replication in data">
-                    <a title="{{replication.size}}" target="_blank" href="../{{replication.full_path}}">{{replication.mime}} {{replication.full_path | filename}}</a>
-                </li>
-            </ul>
-        </td>
-        <td>
-            <a class="btn btn-mini btn-danger" ng-click="removeFile(data, true)">Remove</a>
-        </td>
-    </tr>
     <tr ng-repeat="data in queue">
         <td>
             <a class="file" target="_blank" ng-href="{{data.response().result.upload_data[0][0].full_path}}" ng-switch on="data.state()">
-                <div ng-switch-default class="progress progress-success progress-striped">
-                    <div class="bar" style="width:{{data.getProgress()}}%"></div>
+                <div ng-switch-default class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="{{data.getProgress()}}" aria-valuemin="0" aria-valuemax="100" style="width: {{data.getProgress()}}%">
+                        <span class="sr-only">{{data.getProgress()}}% Complete</span>
+                    </div>
                 </div>
+
                 <div ng-switch-when="resolved">
                     <img class="thumb" src="../assets/admin/assets/img/ajax-loading.gif" ng-src="../{{data.response().result.upload_data[0][0].full_path}}" />
                 </div>
             </a>
         </td>
         <td colspan="2">
-            <ul class="unstyled replications">
-                <li>Uploading {{data.files[0].name}}...</li>
-            </ul>
+            <h4>Uploading {{data.files[0].name}}...</h4>
         </td>
     </tr>
 </table>
+
+<div class="row">
+    <div ng-repeat="data in ngModel" class="col-md-2">
+        <a ng-if="data[0].mime.indexOf('image') > -1" class="file" target="_blank" ng-href="../{{data[0].full_path}}" colorbox id="thumb_{{id}}">
+            <img class="thumb" ng-src="../{{data[0].full_path}}" />
+        </a>
+        <h5>
+            <span ng-repeat="replication in data" title="{{replication.size}}" >
+                {{replication.full_path | filename}} <small>{{replication.mime}}</small>
+            </span>
+        </h5>
+        <a class="btn red" ng-click="removeFile(data, true)">Remove</a>
+    </div>
+</div>
+
 <ul class="upload-errors">
     <li ng-repeat="error in errors">{{error}}</li>
 </ul>

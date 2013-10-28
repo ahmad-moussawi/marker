@@ -55,7 +55,7 @@
                         <td>{{field.type}}</td>
                         <td><input type="text" ng-init="field.title = (field.name | camelCaseToHuman)" ng-model="field.title" class="form-control-inline" /></td>
                         <td><span marker:typeMatcher metadata="{{field}}"></span></td>
-                        <td><textarea ng-model="field.description" ng-init="field.attrs=''" class="form-control-inline"></textarea></td>
+                        <td><textarea ng-init="field.description=''" ng-model="field.description" class="form-control-inline"></textarea></td>
                         <td><textarea ng-model="field.attrs" ng-init="field.attrs=''" class="form-control-inline"></textarea></td>
                         <!--<td><span marker:typeDefault metadata="{{field}}"></span></td>-->
                         <td>{{field.primary_key | checkmark}}</td>

@@ -2,7 +2,7 @@
     <!-- END LOGIN -->
     <!-- BEGIN COPYRIGHT -->
     <div class="copyright">
-        <?php echo date('Y') ?> &copy; Marker CMS.
+        <?php echo config_item('project_copyright') ?>
     </div>
     <!-- END COPYRIGHT -->
 

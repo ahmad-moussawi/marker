@@ -5,7 +5,7 @@ if (!defined('BASEPATH'))
 class Api extends CI_Controller {
     public function __construct() {
         parent::__construct();
-        Auth::validate_request();
+        Auth::ValidateRequest();
         $this->load->database();
         $this->load->model('queries');
         $this->load->library('xml');

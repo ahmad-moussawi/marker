@@ -55,11 +55,21 @@ class Content {
 
                     if (isset($attrs->unique_group)) {
 
-                        foreach ($field->list->fields as $field) {
-                            var_dump($field->attrs);
+                        $fields = array();
+                        $values = array();
+                        $titles = array();
+                        foreach ($field->list->fields as $otherfield) {
+                            if (isset($otherfield->attrs) && isset($otherfield->attrs->unique_group) && $otherfield->attrs->unique_group == $attrs->unique_group
+                            ) {
+                                $titles[] = $otherfield->title;
+                                $fields[] = $field->listid . '.' . $otherfield->internaltitle;
+                                $values[] = '{{item.' . $otherfield->internaltitle . '}}';
+                            }
                         }
 
-                        $str .= " marker-unique-group=\"$attrs->unique_group\" fields=\"$field->listid.$field->internaltitle\"";
+                        $str .= " marker-unique-group=\"$attrs->unique_group\"";
+                        $str .= 'fields="' . implode(',', $fields) . '"';
+                        $str .= 'values="' . implode('__markersep__', $values) . '"';
                         if (!$createMode) {
                             $str .=" skip=\"{{item.{$field->list->identity}}}\"";
                         }
@@ -70,9 +80,15 @@ class Content {
                     }
                 }
 
-                $html .="<input class=\"form-control\" $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />" .
-                        '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.unique">Value already exist</span>' .
-                        '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatingunique">Checking the new value ...</span>';
+                $html .="<input class=\"form-control\" $str name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
+                if (isset($attrs->unique)) {
+                    $html .='<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.unique">Value already exists</span>' .
+                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatingunique">Checking the new value ...</span>';
+                }
+                if (isset($attrs->unique_group)) {
+                    $html .='<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.uniquegroup">The combination ' . implode(', ', $titles) . ' already exists</span>' .
+                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatinguniquegroup">Checking the new values ...</span>';
+                }
                 break;
             case '1.2':
                 if (isset($attrs)) {
@@ -109,7 +125,7 @@ class Content {
                 if (isset($attrs)) {
                     $str = '';
                     if (isset($attrs->required) && $attrs->required) {
-                        $str = ' required="required"';
+                        $str = ' ng-required="true"';
                     }
 
                     if (isset($attrs->theme) && $attrs->theme > 0) {
@@ -217,10 +233,12 @@ class Content {
                     }
                 }
                 $html .="<input $str class=\"form-control\" type=\"number\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" />";
-                if (isset($attrs->unique_group)) {
+                if (isset($attrs->unique)) {
                     $html .='<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.unique">Value already exists</span>' .
-                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatingunique">Checking the new value ...</span>' .
-                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.uniquegroup">The combination '. implode(', ', $titles) .' already exists</span>' .
+                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatingunique">Checking the new value ...</span>';
+                }
+                if (isset($attrs->unique_group)) {
+                    $html .='<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.uniquegroup">The combination ' . implode(', ', $titles) . ' already exists</span>' .
                             '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatinguniquegroup">Checking the new values ...</span>';
                 }
                 break;
@@ -231,6 +249,36 @@ class Content {
                 $str = '';
                 if (isset($attrs->required) && $attrs->required) {
                     $str .= ' required="required"';
+                }
+
+                if (isset($attrs->unique) && $attrs->unique) {
+                    $attrs->unique = $attrs->unique === TRUE ? 1 : $attrs->unique;
+                    $str .= " marker-unique=\"$field->listid.$field->internaltitle\" max-count=\"$attrs->unique\"";
+                    if (!$createMode) {
+                        $str .=" skip=\"{{item.{$field->list->identity}}}\"";
+                    }
+                }
+
+                if (isset($attrs->unique_group)) {
+
+                    $fields = array();
+                    $values = array();
+                    $titles = array();
+                    foreach ($field->list->fields as $otherfield) {
+                        if (isset($otherfield->attrs) && isset($otherfield->attrs->unique_group) && $otherfield->attrs->unique_group == $attrs->unique_group
+                        ) {
+                            $titles[] = $otherfield->title;
+                            $fields[] = $field->listid . '.' . $otherfield->internaltitle;
+                            $values[] = '{{item.' . $otherfield->internaltitle . '}}';
+                        }
+                    }
+
+                    $str .= " marker-unique-group=\"$attrs->unique_group\"";
+                    $str .= 'fields="' . implode(',', $fields) . '"';
+                    $str .= 'values="' . implode('__markersep__', $values) . '"';
+                    if (!$createMode) {
+                        $str .=" skip=\"{{item.{$field->list->identity}}}\"";
+                    }
                 }
 
                 if ($attrs->type == 'static') {
@@ -247,7 +295,16 @@ class Content {
                 }
 
                 if ($attrs->type == 'internal') {
-                    $html .= "<select class=\"form-control\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" field:internal=\"$attrs->type_internal\" field:display=\"$attrs->type_internal_display\"></select>";
+                    $html .= "<select $str class=\"form-control\" name=\"$field->internaltitle\" id=\"$field->internaltitle\" ng-model=\"item.$field->internaltitle\" field:internal=\"$attrs->type_internal\" field:display=\"$attrs->type_internal_display\"></select>";
+                }
+
+                if (isset($attrs->unique)) {
+                    $html .='<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.unique">Value already exists</span>' .
+                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatingunique">Checking the new value ...</span>';
+                }
+                if (isset($attrs->unique_group)) {
+                    $html .='<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.uniquegroup">The combination ' . implode(', ', $titles) . ' already exists</span>' .
+                            '<span class="help-block" ng-show="form.' . $field->internaltitle . '.$error.validatinguniquegroup">Checking the new values ...</span>';
                 }
 
                 break;
@@ -326,9 +383,16 @@ class Content {
         $html = '';
         $attrs = $field->attrs;
         switch ($field->typeref) {
-            case 1:
+            case '1.3':
+                $html .= "<span ng-bind-html-unsafe=\"item.$field->internaltitle | truncate:100\"></span>";
+                break;
             case '1.5':
-                $html .="<span class=\"color-box\" style=\"border-color:{{item.$field->internaltitle}};\">{{item.$field->internaltitle}}</span>";
+                if (isset($attrs->mode) && $attrs->mode === 'minirgb') {
+                    $style = "style=\"border-color:rgb({{item.$field->internaltitle}});\"";
+                } else {
+                    $style = "style=\"border-color:{{item.$field->internaltitle}};\"";
+                }
+                $html .="<span class=\"color-box\" $style >{{item.$field->internaltitle}}</span>";
                 break;
 
             case '1.6':
@@ -379,7 +443,12 @@ class Content {
                 $html .= "<span ng-bind-html-unsafe=\"item.$field->internaltitle | truncate:100\"></span>";
                 break;
             case '1.5':
-                $html .="<span class=\"color-box\" style=\"border-color:{{item.$field->internaltitle}};\">{{item.$field->internaltitle}}</span>";
+                if (isset($attrs->mode) && $attrs->mode === 'minirgb') {
+                    $style = "style=\"border-color:rgb({{item.$field->internaltitle}});\"";
+                } else {
+                    $style = "style=\"border-color:{{item.$field->internaltitle}};\"";
+                }
+                $html .="<span class=\"color-box\" $style >{{item.$field->internaltitle}}</span>";
                 break;
 
             case '1.6':

@@ -4,7 +4,7 @@
 <div class="footer">
     <div class="footer-inner">
         <div class="copyright">
-            <?php echo date('Y') ?> &copy; Marker CMS.
+            <?php echo config_item('project_copyright') ?>
         </div>
     </div>
     <div class="footer-tools">
@@ -36,9 +36,9 @@
 <?php echo Content::script('admin/js/vendor/bootstrap.min.js') ?>
 <?php //echo Content::script('admin/js/plugins.js') ?>
 <?php //echo Content::script('admin/js/main.js') ?>
-<?php echo Content::script('admin/js/angular/angular.js') ?>
-<?php echo Content::script('admin/js/angular/angular-sanitize.js') ?>
-<?php echo Content::script('admin/js/angular/angular-route.js') ?>
+<?php echo Content::script('admin/js/angular/angular.min.js') ?>
+<?php echo Content::script('admin/js/angular/angular-sanitize.min.js') ?>
+<?php echo Content::script('admin/js/angular/angular-route.min.js') ?>
 <?php echo Content::script('admin/assets/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js') ?>
 
 
@@ -59,12 +59,10 @@
 
 <!-- spectrum -->
 <?php echo Content::script('admin/js/spectrum/spectrum.js') ?>
-
 <!-- Barcode -->
 <?php echo Content::script('admin/js/barcode/jquery-barcode.min.js') ?>
-
-
 <?php echo Content::script('admin/js/jquery.elevateZoom-3.0.3.min.js') ?>
+<?php echo Content::script('admin/js/jquery.colorbox-min.js') ?>
 
 <?php echo Content::script('admin/js/angular/angular-webstorage.js') ?>
 <?php echo Content::script('admin/js/angular/ng-loadingindicator.js') ?>
@@ -82,21 +80,6 @@
 
 <!-- //MARKER -->
 
-
-<?php //echo Content::script('admin/assets/plugins/bootstrap-hover-dropdown/twitter-bootstrap-hover-dropdown.min.js') ?>
-<?php //echo Content::script('admin/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js') ?>
-<?php //echo Content::script('admin/assets/plugins/jquery.blockui.min.js') ?>
-<?php echo Content::script('admin/assets/plugins/jquery.cookie.min.js') ?>
-<?php //echo Content::script('admin/assets/plugins/uniform/jquery.uniform.min.js') ?>
-
-<!-- END CORE PLUGINS -->
-<!--<script src="assets/scripts/app.js"></script>-->  
-<?php //echo Content::script('admin/assets/scripts/app.js') ?>
-<script>
-//    jQuery(document).ready(function() {
-//        //App.init();
-//    });
-</script>
 <!-- END JAVASCRIPTS -->
 </body>
 <!-- END BODY -->
