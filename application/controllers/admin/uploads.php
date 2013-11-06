@@ -52,7 +52,7 @@ class Uploads extends CI_Controller {
     }
 
     private function uploadImage($fieldId) {
-        $field = $this->db->get_where('fields', array('id' => $fieldId), 1)->row();
+        $field = $this->db->get_where(getTableName('fields'), array('id' => $fieldId), 1)->row();
         $attrs = json_decode($field->attrs);
 
         $data['errors'] = array();
@@ -145,7 +145,7 @@ class Uploads extends CI_Controller {
     }
 
     private function uploadVideo($fieldId) {
-        $field = $this->db->get_where('fields', array('id' => $fieldId), 1)->row();
+        $field = $this->db->get_where(getTableName('fields'), array('id' => $fieldId), 1)->row();
         $attrs = json_decode($field->attrs);
 
         $data['errors'] = array();
@@ -257,35 +257,6 @@ class Uploads extends CI_Controller {
         echo json_encode($data);
     }
 
-    function upload2() {
-
-        $config = $this->_conf();
-
-
-        foreach ($_FILES as $value) {
-
-            $this->my_upload->upload($value);
-
-
-            if ($this->my_upload->uploaded == true) {
-                $result = array();
-                $this->my_upload->process($config['upload_path']);
-
-                if ($this->my_upload->processed == true) {
-                    $result[] = array(
-                        'name' => $this->my_upload->file_dst_name,
-                        'full_path' => ltrim(str_replace('\\', '/', $this->my_upload->file_dst_pathname), '.'),
-                        'ext' => $this->my_upload->file_dst_name_ext,
-                        'mime' => $this->my_upload->file_src_mime,
-                        'size' => $this->my_upload->file_src_size,
-                    );
-                }
-            }
-        }
-
-        return $this->json($result);
-    }
-
     private function _conf($attrs = NULL) {
         // default values
         $config['path'] = $this->upload_path;
@@ -364,10 +335,6 @@ class Uploads extends CI_Controller {
             }
         }
         return $config;
-    }
-
-    private function resolvePath($path){
-        
     }
 }
 

@@ -503,6 +503,9 @@ app.directive('markerImagePreview', ['$rootScope', function($root) {
                     for (var i = 0; i < model.length, i< limit; i++) {
 
                         var image = model[i];
+                        
+                        if(!image ) return; // the model is not yet loaded 
+                        
                         var imgSrc = image[0].full_path,
                                 thumbSrc = image[1] !== undefined ? image[1].full_path : imgSrc;
                         var img = $('<img/>').attr({
@@ -605,11 +608,20 @@ app.directive('markerBarcode', [function() {
 app.directive('checkbox', [function() {
         return {
             restrict: 'A',
-            template: '<div class="checker"><span ng-class="{checked:ngModel}"><input type="checkbox" ng-checked="ngModel" /></span></div>',
+            template: '<div class="checker"><span ng-class="{checked:ngModel}">\n\
+                            <input id="{{id}}" name="{{name}}" type="checkbox" ng-checked="ngModel" />\n\
+                        </span></div>',
             scope: {
                 ngModel: '='
             },
             link: function(scope, elm, attrs) {
+                
+                scope.id = attrs.id;
+                scope.name = attrs.name;
+                
+                elm.removeAttr('id');
+                elm.removeAttr('name');
+                
                 elm.click(function() {
                     scope.$apply(function() {
                         scope.ngModel = !scope.ngModel;

@@ -4,19 +4,24 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
 class Account extends CI_Controller {
+    
+    private $members_table;
+    private $roles_table;
+    private $members_roles_table;
 
     public function __construct() {
         parent::__construct();
         $this->load->database();
+        
+        $this->members_roles_table = getTableName('membersinroles');
+        $this->members_table = getTableName('members');
+        $this->roles_table = getTableName('roles');
 
         if (!isset($_SESSION)) {
             session_start();
         }
     }
-
-    private $members_table = 'members';
-    private $roles_table = 'roles';
-    private $members_roles_table = 'membersinroles';
+    
 
     function auth() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

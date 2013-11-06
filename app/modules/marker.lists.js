@@ -42,7 +42,7 @@ app.controller('ListsDeleteCtrl', ['$scope', '$http', '$routeParams', '$location
 app.controller('ListsCreateCtrl', ['$scope', '$http', '$filter', '$routeParams', '$location', function($scope, $http, $filter, $routeParams, $location) {
         $scope.working = false;
 
-        $scope.list = {created: $filter('date')(new Date(), 'yyyy-MM-dd'), title: '', description: '', attrs: {view_create: true, view_edit: true, view_delete: true}};
+        $scope.list = {created: $filter('date')(new Date(), 'yyyy-MM-dd'), title: '', description: '', ispublished:true, attrs: {view_create: true, view_edit: true, view_delete: true}};
         $scope.$watch('list.title', function(value) {
             $scope.list.internaltitle = $filter('safetitle')(value);
         });
@@ -64,7 +64,7 @@ app.controller('ListsCreateCtrl', ['$scope', '$http', '$filter', '$routeParams',
 app.controller('ListsCreateFromExistingCtrl',
         ['$scope', '$http', '$filter', '$routeParams', '$location', 'webStorage',
             function($scope, $http, $filter, $routeParams, $location, webStorage) {
-                $scope.list = {created: $filter('date')(new Date(), 'yyyy-MM-dd'), title: '', description: '', attrs: {view_create: true, view_edit: true, view_delete: true}};
+                $scope.list = {created: $filter('date')(new Date(), 'yyyy-MM-dd'), title: '', description: '', ispublished:true, attrs: {view_create: true, view_edit: true, view_delete: true}};
                 $scope.tables = [];
                 $http.get(path.ajax + 'lists/getTables').success(function(r) {
                     $scope.tables = r.data;
@@ -140,7 +140,6 @@ app.controller('ListsEditCtrl', ['$scope', '$http', '$filter', '$routeParams', '
             $scope.working = true;
             $scope.list.ispublished = +$scope.list.ispublished;
             var list = angular.copy($scope.list);
-            console.log(list);
             $http.post(path.ajax + 'lists/set/' + $routeParams.id, list).success(function(r) {
                 $scope.working = false;
                 $scope.saved = true;
@@ -155,7 +154,6 @@ app.controller('ListsEditCtrl', ['$scope', '$http', '$filter', '$routeParams', '
         $scope.dragEnd = function(e, ui) {
             var start = ui.item.data('start'),
                     end = ui.item.index();
-            console.log(start, end);
             $scope.list.fields.splice(end, 0,
                     $scope.list.fields.splice(start, 1)[0]);
 
@@ -176,7 +174,7 @@ app.controller('ListsEditCtrl', ['$scope', '$http', '$filter', '$routeParams', '
 app.controller('ListsCreateFieldCtrl', ['$scope', '$http', '$routeParams', '$filter', '$location', function($scope, $http, $routeParams, $filter, $location) {
         $scope.working = true;
         $scope.attrs = {};
-        $scope.field = {created: $filter('date')(new Date(), 'yyyy-MM-dd'), title: '', type: '1.1'};
+        $scope.field = {created: $filter('date')(new Date(), 'yyyy-MM-dd'), title: '', description: '', typeref: '11', ispublished: true};
         $scope.$watch('field.title', function(value) {
             $scope.field.internaltitle = $filter('safetitle')(value);
         });
@@ -197,6 +195,22 @@ app.controller('ListsCreateFieldCtrl', ['$scope', '$http', '$routeParams', '$fil
                 $location.path('lists/edit/' + $routeParams.id);
             });
         };
+
+        // Validate Barcode field
+        $scope.barcodeTypeChanged = function() {
+            switch ($scope.attrs.type) {
+                case 'ean8':
+                    $scope.attrs.minlength = $scope.attrs.maxlength = 8;
+                    break;
+
+                case 'ean13':
+                    $scope.attrs.minlength = $scope.attrs.maxlength = 13;
+                    break;
+                default:
+                    $scope.attrs.minlength = 5;
+                    $scope.attrs.maxlength = 13;
+            }
+        }
 
 
     }]);
@@ -243,28 +257,28 @@ app.directive('markerTypematcher', ['$http', function($http) {
             restrict: 'EA',
             template: '<span ng-switch="metadata.primary_key">\
                         <span ng-switch-when="1">Identity</span>\
-                        <span ng-switch-default><select ng-model="field.typeref" ng-options="row.reference as row.type group by row.category for row in types"></select></span>\
+                        <span ng-switch-default><select ng-model="field.typeref" ng-options="row.typeref as row.type group by row.category for row in types"></select></span>\
                     </span>',
             link: function(scope, elm, attrs) {
 
                 function getBestMatchType(dbtype) {
                     switch (dbtype) {
                         case 'varchar':
-                            return 1.1;
+                            return 11;
                         case 'text':
-                            return 1.2;
+                            return 12;
                         case 'int':
-                            return 3.1;
+                            return 31;
                         case 'float':
-                            return 3.2;
+                            return 32;
                         case 'tinyint':
-                            return 4.4;
+                            return 44;
                         case 'date':
-                            return 7.1;
+                            return 71;
                         case 'datetime':
-                            return 7.2;
+                            return 72;
                         case 'year':
-                            return 7.4;
+                            return 74;
                     }
                 }
 

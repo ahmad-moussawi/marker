@@ -2,7 +2,7 @@
 
 class Modules extends CI_Controller {
 
-    private $table = 'lists';
+    private $table;
     private $errors = array();
     private static $complexSeperator = '::';
     private static $complexPrefix = '__';
@@ -10,6 +10,7 @@ class Modules extends CI_Controller {
     public function __construct() {
         parent::__construct();
         Auth::ValidateRequest();
+        $this->table = getTableName('lists');
         $this->load->database();
         $this->load->helper('array');
         $this->load->model('queries');
@@ -20,58 +21,63 @@ class Modules extends CI_Controller {
         return $this->json($data);
     }
 
-    function get($moduleId, $id = FALSE) {
+    function get($entityId, $id = FALSE) {
 
-        try {
-            $module = $this->queries->getListMetadata($moduleId);
-        } catch (Exception $exc) {
+        $module = new Entity($entityId);
+        if (!$module->id) {
             if ($exc->getCode() === 404) {
                 return $this->json(FALSE, new Exception('NotFoundException'));
             }
         }
+        
+        //$module->getPublishedFields();
 
-        $data = $this->db->from($module->mapped_table);
+        //$this->db->get();
+
+        //$this->db->from($module->mapped_table);
 
         if ($this->input->get('select')) {
             $select = explode(',', $this->input->get('select'));
-            $data = $data->select($select);
+            $this->db->select($select);
         }
 
 
         if ($id) {
-            $data = $data->where(array("$module->mapped_table.$module->identity" => $id))->limit(1);
+            $this->db->where(array("$module->mapped_table.$module->identity" => $id))->limit(1);
         }
 
-        foreach ($module->fields as $field) {
-            if ($field->typeref == '4.1') {
-                $attrs = $field->attrs;
-                if ($attrs->type == 'internal') {
 
-                    // get the list internal title to make a join
-                    $list = $this->queries->getListTableById($attrs->type_internal);
+        foreach ($module->getPublishedFields() as $field) {
+            if ($field->typeref == 41 && $field->attr('type') === 'internal') {
 
-                    if (!empty($list)) {
-                        // append the field id to the alias in case more than 
-                        // on field lookup to the same list
-                        $alias = $list . '_' . $field->id;
+                // get the list internal title to make a join
+                $parent = new Entity($field->attr('type_internal'));
 
-                        $displayFieldId = explode(',', $attrs->type_internal_display);
-                        foreach ($displayFieldId as $fieldid) {
-                            $fieldTitle = $this->queries->getFieldInternalTitleById($fieldid);
-                            $data->select("$alias.$fieldTitle `" . $field->internaltitle . self::$complexSeperator . $fieldTitle . '`');
-                            $data->select("$alias.$fieldTitle `" . $field->internaltitle . self::$complexSeperator . $fieldid . '`');
-                        }
+                if (!empty($parent)) {
+                    // append the field id to the alias in case more than 
+                    // one field lookup to the same list
+                    $alias = $parent->mapped_table . '_' . $field->id;
 
-                        $data = $data->join(
-                                "$list `$alias`", "$alias.id = $module->mapped_table.$field->internaltitle", 'left'
-                        );
+                    $displayFieldId = explode(',', $field->attr('type_internal_display'));
+                    foreach ($displayFieldId as $fieldid) {
+                        $fieldTitle = $this->queries->getFieldInternalTitleById($fieldid);
+                        $data->select("$alias.$fieldTitle `" . $field->internaltitle . self::$complexSeperator . $fieldTitle . '`');
+                        $data->select("$alias.$fieldTitle `" . $field->internaltitle . self::$complexSeperator . $fieldid . '`');
                     }
+
+                    $data->join(
+                            "{$parent->mapped_table} `$alias`", "$alias.id = $module->mapped_table.$field->internaltitle", 'left'
+                    );
                 }
             }
         }
+        
+        
         $this->db->select("$module->mapped_table.*");
-        $data = $data->get()->result_array();
+        $data = $this->db->get($module->mapped_table)->result_array();
+        var_dump($this->db->last_query());
 
+        var_dump($data);die;
         $data = $this->_convertData($data);
 
         if ($id) {
@@ -112,9 +118,9 @@ class Modules extends CI_Controller {
         }
     }
 
-    function delete($moduleId, $id) {
+    function delete($entityId, $id) {
         try {
-            $module = $this->queries->getListMetadata($moduleId);
+            $module = $this->queries->getListMetadata($entityId);
             if (!$module->attrs->view_delete) {
                 return $this->json(FALSE, NULL, 'Operation failed, Create permission is disabled for this list');
             }
@@ -126,8 +132,8 @@ class Modules extends CI_Controller {
         return $this->json($response);
     }
 
-    function fieldInternalDataLookup($moduleId) {
-        $module = $this->queries->getListMetadata($moduleId);
+    function fieldInternalDataLookup($entityId) {
+        $module = $this->queries->getListMetadata($entityId);
         $data = $this->db->from($module->mapped_table);
         $map = $inverse = array();
 
@@ -218,25 +224,25 @@ class Modules extends CI_Controller {
         return $this->json(TRUE, $count);
     }
 
-    function renderView($viewName, $listId) {
-        $data['list'] = $this->queries->getListMetadata($listId);
+    function renderView($viewType, $listId) {
 
-        // Add the list reference for the fields
-        foreach ($data['list']->fields as $field) {
-            $field->list = $data['list'];
-        }
 
-        if ($viewName == 'create' && !$data['list']->attrs->view_create) {
+        //$data['list'] = $this->queries->getListMetadata($listId);
+
+        $data['list'] = new Entity($listId);
+        $data['fields'] = $data['list']->getPublishedFields($viewType);
+
+        if ($viewType == 'create' && !$data['list']->attr('view_create')) {
             echo '<div class="alert alert-danger">You cannot create a new item on this list</div>';
             return;
         }
 
-        if ($viewName == 'edit' && !$data['list']->attrs->view_edit) {
+        if ($viewType == 'edit' && !$data['list']->attr('view_edit')) {
             echo '<div class="alert alert-danger">You cannot edit items on this list</div>';
             return;
         }
 
-        if ($viewName == 'delete' && !$data['list']->attrs->view_delete) {
+        if ($viewType == 'delete' && !$data['list']->attr('view_delete')) {
             echo '<div class="alert alert-danger">You cannot delete items on this list</div>';
             return;
         }
@@ -245,11 +251,11 @@ class Modules extends CI_Controller {
             echo '<div class="alert alert-danger">Module not found</div>';
             return;
         }
-        $this->load->view('admin/modules/' . $viewName, $data);
+        $this->load->view('admin/modules/' . $viewType, $data);
     }
 
-    function getView($viewName) {
-        $this->load->view('admin/modules/tmpl/' . $viewName);
+    function getView($viewType) {
+        $this->load->view('admin/modules/tmpl/' . $viewType);
     }
 
     private function _convertData($data) {

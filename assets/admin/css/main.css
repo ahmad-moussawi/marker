@@ -84,6 +84,7 @@ input[type=number]::-webkit-outer-spin-button {
 #loading-indicator {position: fixed;z-index: 9995;top: 0;height: 4px;display: block;left: 0;right: 0;border-radius: 0;}
 .loading-message{margin-top:120px;}
 
+.page-content{padding-bottom: 80px;}
 .page-content.loading{background: url(../assets/img/ajax-modal-loading.gif) no-repeat 50% 35%;color:#fff;} 
 .content-progress{height:6px;width:60%;margin:180px auto 0 auto;}
 

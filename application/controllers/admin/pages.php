@@ -5,9 +5,11 @@ if (!defined('BASEPATH'))
 
 class Pages extends CI_Controller {
 
+    private $table;
     public function __construct() {
         parent::__construct();
         Auth::ValidateRequest();
+        $this->table = getTableName('pages');
         $this->load->database();
         $this->load->library('form_validation');
         $this->load->helper('array');
@@ -15,12 +17,12 @@ class Pages extends CI_Controller {
 
     function get($id = NULL) {
         if ($id !== NULL) {
-            $data = $this->db->get_where('pages', array('id' => $id), 1)->row();
+            $data = $this->db->get_where($this->table, array('id' => $id), 1)->row();
             $data->ispublished = !!$data->ispublished;
             $data->isdraft = !!$data->isdraft;
             $this->json(array('page' => $data));
         } else {
-            $data = $this->db->get('pages')->result();
+            $data = $this->db->get($this->table)->result();
             foreach ($data as $k => $row) {
                 $data[$k]->ispublished = !!$row->ispublished;
                 $data[$k]->isdraft = !!$row->isdraft;
@@ -32,7 +34,7 @@ class Pages extends CI_Controller {
     function delete() {
         header('Content-Type:application/json');
 
-        $this->db->delete('pages', array('id' => $this->input->post('id')));
+        $this->db->delete($this->table, array('id' => $this->input->post('id')));
 
         echo json_encode($this->db->affected_rows());
     }
@@ -46,32 +48,32 @@ class Pages extends CI_Controller {
         }
 
         $form = elements(array('title', 'body', 'meta', 'isdraft', 'ispublished', 'urlpath', 'images'), $this->input->post());
-        
+
         if ($id) {
             unset($form['created']);
             unset($form['urlpath']);
-            $this->db->update('pages', $form, array('id' => $id));
+            $this->db->update($this->table, $form, array('id' => $id));
             return $this->json(array('page' => $form));
         } else {
-            
-            $form['urlpath'] = empty($form['urlpath'])?$form['title']:$form['urlpath'];
-            $form['urlpath'] = $this->_getValidUrlPath( url_title($form['urlpath']) );
-            
+
+            $form['urlpath'] = empty($form['urlpath']) ? $form['title'] : $form['urlpath'];
+            $form['urlpath'] = $this->_getValidUrlPath(url_title($form['urlpath']));
+
             $form['created'] = date('Y-m-d H:i:s');
             $form['createdby'] = Auth::IsAuthenticated()->login;
-            $this->db->insert('pages', $form);
+            $this->db->insert($this->table, $form);
             $form['id'] = $this->db->insert_id();
 
             return $this->json(array('page' => $form));
         }
     }
-    
-    private function _getValidUrlPath($urlpath){
+
+    private function _getValidUrlPath($urlpath) {
         $this->load->helper('string');
-        while($this->db->from('pages')->where(array('urlpath' => $urlpath))->count_all_results() > 0){
-            $urlpath = increment_string($urlpath ,'-');
+        while ($this->db->from($this->table)->where(array('urlpath' => $urlpath))->count_all_results() > 0) {
+            $urlpath = increment_string($urlpath, '-');
         }
-        
+
         return $urlpath;
     }
 

@@ -4,6 +4,14 @@ class Queries extends CI_Model {
 
     private static $listsId = NULL;
     private static $InternalTitlesId = NULL;
+    private static $lists_table;
+    private static $fields_table;
+    
+    public function __construct() {
+        parent::__construct();
+        self::$lists_table = getTableName('lists');
+        self::$fields_table = getTableName('fields');
+    }
 
     public function getListMetadata($listId) {
 
@@ -12,7 +20,7 @@ class Queries extends CI_Model {
         } else {
             $where = array('internaltitle' => $listId);
         }
-        $list = $this->db->from('lists')->where($where)->limit(1)->get()->row();
+        $list = $this->db->from(self::$lists_table)->where($where)->limit(1)->get()->row();
 
         if (empty($list)) {
             throw new Exception('Module not found', 404);
@@ -36,7 +44,9 @@ class Queries extends CI_Model {
         $list->attrs = (object) array_merge($default, (array) json_decode($list->attrs));
 
         // Manage the list fields
-        $list->fields = $this->db->where(array('listid' => $list->id))->order_by('roworder')->get('fields')->result();
+        $list->fields = $this->db->where(array('listid' => $list->id))
+                ->order_by('roworder')->get(self::$fields_table)->result();
+        
         if (stripos(php_uname('s'), 'win') !== FALSE) {
             $list->table_exists = !!$this->db->table_exists(strtolower($list->mapped_table));
         } else {
@@ -44,10 +54,11 @@ class Queries extends CI_Model {
         }
 
         $list->fields_array = $list->published_fields_array = $list->published_fields = array();
+        
         foreach ($list->fields as &$field) {
             
             $field->ispublished = !!$field->ispublished;
-            $field->attrs = json_decode($field->attrs);
+            $field->attrs = new Attributes(json_decode($field->attrs));
             $list->fields_array[] = $field->internaltitle;
             if ($field->ispublished) {
                 $list->published_fields[] = $field;
@@ -73,7 +84,7 @@ class Queries extends CI_Model {
 
     public function getListTableById($id) {
         if (self::$listsId === NULL) {
-            $result = $this->db->query('SELECT id,mapped_table FROM lists WHERE ispublished = 1')->result();
+            $result = $this->db->query('SELECT id,mapped_table FROM ' . self::$lists_table . 'WHERE ispublished = 1')->result();
             foreach ($result as $row) {
                 self::$listsId[$row->id] = $row->mapped_table;
             }
@@ -91,7 +102,7 @@ class Queries extends CI_Model {
         }
 
         if (self::$InternalTitlesId === NULL) {
-            $result = $this->db->query('SELECT id,internaltitle FROM fields')->result();
+            $result = $this->db->query('SELECT id,internaltitle from ' . self::$fields_table)->result();
             foreach ($result as $row) {
                 self::$InternalTitlesId[$row->id] = $row->internaltitle;
             }

@@ -1,8 +1,8 @@
 <?php
 
 class Fields extends CI_Controller {
-
-    private $table = 'fields_types';
+    
+    private $table;
 
     public function __construct() {
         parent::__construct();
@@ -11,9 +11,11 @@ class Fields extends CI_Controller {
         $this->load->helper('array');
         $this->load->dbforge();
         header('Content-Type:application/json');
+        $this->table = getTableName('fields_types');
     }
 
     function Types() {
         echo json_encode($this->db->get($this->table)->result());
     }
+
 }

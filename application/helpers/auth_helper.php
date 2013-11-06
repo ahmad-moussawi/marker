@@ -12,9 +12,12 @@
  */
 class Auth {
 
-    private static $members_table = 'members';
-    private static $roles_table = 'roles';
-    private static $members_roles_table = 'membersinroles';
+    
+    public function __construct() {
+        self::$members_table = getTableName('members');
+        self::$roles_table = getTableName('roles');
+        self::$members_roles_table = getTableName('membersinroles');
+    }
 
     public static function IsAuthenticated() {
         if (!isset($_SESSION)) {
@@ -40,10 +43,10 @@ class Auth {
         $CI = & get_instance();
         $CI->load->database();
         $where = array(
-            self::$roles_table . '.role' => $role,
-            self::$members_roles_table . '.memberid' => $userId
+            getTableName('roles') . '.role' => $role,
+            getTableName('membersinroles') . '.memberid' => $userId
         );
-        $success = $CI->db->from(self::$roles_table)->join(self::$members_roles_table, self::$roles_table . '.id = ' . self::$members_roles_table . '.roleid')
+        $success = $CI->db->from(getTableName('roles'))->join(getTableName('membersinroles'), getTableName('roles') . '.id = ' . getTableName('membersinroles') . '.roleid')
                         ->where($where)->count_all_results() === 1;
         return $success;
     }

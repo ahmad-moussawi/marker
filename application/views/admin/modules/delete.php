@@ -1,5 +1,5 @@
 <ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
-<div class="page-content <?php echo $list->attrs->cssClass ?>">
+<div class="page-content <?php echo $list->attr('cssClass') ?>">
 
 
     <div class="row">
@@ -44,9 +44,9 @@
         <div class="row-fluid">
             <div class="span5">
                 <dl class="dl-horizontal">
-                    <?php foreach ($list->published_fields as $field): ?>
+                    <?php foreach ($fields as $field): ?>
                         <dt><?php echo $field->title ?></dt>
-                        <dd><?php echo Content::renderViewField($field) ?></dd>
+                        <dd><?php echo $field->RenderView() ?></dd>
                     <?php endforeach ?>
                 </dl>
             </div>

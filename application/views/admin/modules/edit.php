@@ -1,5 +1,5 @@
 <ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
-<div class="page-content <?php echo $list->attrs->cssClass ?>">
+<div class="page-content <?php echo $list->attr('cssClass') ?>">
 
 
     <div class="row">
@@ -42,27 +42,14 @@
     <form name="form" role="form" ng-submit="save()">
         <div class="form-body">
 
-            <?php foreach ($list->published_fields as $field): ?>
-                <?php if ($field->typeref < 5 && $field->typeref != '1.3') : ?>
-                    <div class="form-group" ng-class="{'has-error': form.<?php echo $field->internaltitle ?>.$invalid}">
-                        <label class="control-label" for="field_<?php echo $field->id ?>"><?php echo $field->title ?></label>
-                        <?php echo Content::renderEditField($field) ?>
-                    </div>
-                <?php endif ?>
+            <?php foreach ($fields as $field): /* @var $field EntityField */?>
+                <?php echo $field->RenderEdit() ?>
             <?php endforeach ?>
 
-            <?php foreach ($list->published_fields as $field): ?>
-                <?php if ($field->typeref > 5 || $field->typeref == '1.3') : ?>
-                    <div class="form-group" ng-class="{'has-error': form.<?php echo $field->internaltitle ?>.$invalid}">
-                        <label  class="control-label" for="field_<?php echo $field->id ?>"><?php echo $field->title ?></label>
-                        <?php echo Content::renderEditField($field) ?>
-                    </div>
-                <?php endif ?>
-            <?php endforeach ?>
         </div>
         <p class="pull-right">
             <button ng-disabled="working" type="submit" class="btn btn-primary">Save</button>
-            <a ng-disabled="working" class="btn" href="#/modules/<?php echo $list->id ?>/view/{{item.<?php echo $list->identity ?>}}">Back</a>
+            <a ng-disabled="working" class="btn" href="#/modules/<?php echo $list->id ?>/view/{{item.<?php echo $list->getIdentity() ?>}}">Back</a>
         </p>
     </form>
 

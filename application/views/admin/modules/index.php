@@ -1,5 +1,11 @@
+<?php
+/*
+ * @var $list Entity 
+ * @var $fields EntityField[]
+ */
+?>
 <ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
-<div class="page-content <?php echo $list->attrs->cssClass ?>">
+<div class="page-content <?php echo $list->attr('cssClass') ?>">
 
     <div class="row">
         <div class="col-md-12">
@@ -35,7 +41,7 @@
     </ul>
 
 
-    <?php if ($list->attrs->view_create): ?>
+    <?php if ($list->attr('view_create')): ?>
         <a href="#/modules/<?php echo $list->id ?>/create" class="btn green">
             Add New <i class="icon-plus"></i>
         </a>
@@ -43,28 +49,36 @@
     <p></p>
 
     <table ng-table="tableParams" show-filter="false" class="table table-hover">
-        <tr ng-repeat="item in $data | filter:searchText" >
-            <td sortable="<?php echo $list->identity ?>" data-title="'id'">{{item.<?php echo $list->identity ?>}}</td>
-            <?php foreach ($list->published_fields as $field) : ?>
+        <tr ng-repeat="item in $data| filter:searchText" >
+            <td sortable="<?php echo $list->identity ?>" data-title="'id'">{{item.<?php echo $list->getIdentity() ?>}}</td>
+            <?php foreach ($fields as $field) : /* @var $field EntityField */ ?>
                 <td 
-                <?php if (strpos($field->typeref, '5.') === FALSE): ?>
-                        filter="{ '<?php echo $field->internaltitle ?>': 'text' }" 
+                    
+                    <?php if ($field->attr('sortable')): ?>
                         sortable="<?php echo $field->internaltitle ?>"
                     <?php endif ?>
-                    data-title="'<?php echo $field->title ?>'"><?php echo Content::renderIndexField($field) ?></td>
-                <?php endforeach ?>
+
+                    <?php if ($field->attr('searchable')): ?>
+                        filter="{ '<?php echo $field->internaltitle ?>': 'text' }" 
+                    <?php endif ?>
+                    
+                    data-title="'<?php echo $field->title ?>'"
+                >
+                    <?php echo $field->RenderIndex() ?>
+                </td>
+            <?php endforeach ?>
             <td data-title="''">
 
                 <div class="btn-group">
                     <a class="btn btn-default" href="#/modules/<?php echo $list->id ?>/view/{{item.<?php echo $list->identity ?>}}">View</a>
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-angle-down"></i></button>
                     <ul class="dropdown-menu" role="menu">
-                        <?php if ($list->attrs->view_edit): ?>
+                        <?php if ($list->attr('view_edit')): ?>
                             <li>
                                 <a href="#/modules/<?php echo $list->id ?>/edit/{{item.<?php echo $list->identity ?>}}" >Edit</a>
                             </li>
                         <?php endif ?>
-                        <?php if ($list->attrs->view_delete): ?>
+                        <?php if ($list->attr('view_delete')): ?>
                             <li>
                                 <a href="#/modules/<?php echo $list->id ?>/delete/{{item.<?php echo $list->identity ?>}}" >Delete</a>
                             </li>

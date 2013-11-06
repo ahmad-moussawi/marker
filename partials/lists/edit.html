@@ -69,7 +69,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Attributes</label>
-                                <textarea type="text" ng-model="list.attrs" marker:parseattrs class="form-control"></textarea>
+                                <textarea type="text" rows="6" ng-model="list.attrs" marker:parseattrs class="form-control"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Is Published ?</label>
@@ -120,40 +120,60 @@
                     </div>
                 </div>
                 <div class="portlet-body form">
+
                     <div class="form-body">
                         <table class="table table-bordered table-full-width">
                             <thead>
                             <td><small>Drag To Sort</small></td>
-                            <th>Title</th>
-                            <th>Internal Title</th>
-                            <th>Type</th>
+                            <th>Title &amp; Type</th>
                             <th>Description</th>
                             <th>Attributes</th>
                             <th>Default</th>
-                            <th>Required</th>
-                            <th>Is Published</th>
+                            <th title="Required">*</th>
+                            <th title="Published">&#x2713;</th>
+                            <th title="This field will not appear on the selected views">Hide on</th>
                             <th></th>
                             </thead>
                             <tbody class="fields-body">
                                 <tr ng-repeat="field in list.fields">
                                     <td><a class="handle btn btn-default"><i class="icon-sort"></i></a></td>
-                                    <td><input class="input-small" type="text" required="required" ng-model="field.title" min-length="2" /></td>
-                                    <td>{{field.internaltitle}}</td>
-                                    <td><span marker:typeMatcher metadata="{{field}}"></span></td>
-                                    <td><textarea ng-model="field.description"></textarea></td>
-                                    <td><textarea ng-model="field.attrs" marker:parseattrs></textarea></td>
+                                    <td>
+                                        <p><small>{{field.internaltitle}}</small></p>
+                                        <p><input class="input-small" type="text" required="required" ng-model="field.title" min-length="2" /></p>
+                                        <span marker:typeMatcher metadata="{{field}}"></span>
+                                    </td>
+                                    <td><textarea rows="5" ng-model="field.description"></textarea></td>
+                                    <td><textarea rows="5" ng-model="field.attrs" marker:parseattrs></textarea></td>
                                     <td><input class="input-small" type="text" ng-model="field.attrs.default"/></td>
                                     <td><span checkbox ng-model="field.attrs.required"></span></td>
                                     <td><span checkbox ng-model="field.ispublished"></span></td>
-                                    <td><a href="#/lists/{{list.id}}/deletefield/{{field.id}}" class="btn btn-mini btn-danger">Delete</a></td>
+                                    <td>
+                                        <p>
+                                            <label>Index</label><br/>
+                                            <span checkbox ng-model="field.attrs.hide_index"></span>
+                                        </p>
+                                        <p>
+                                            <label>View</label><br/>
+                                            <span checkbox ng-model="field.attrs.hide_view"></span>
+                                        </p>
+                                        <p>     
+                                            <label>Edit</label><br/>
+                                            <span checkbox ng-model="field.attrs.hide_edit"></span>
+                                        </p>
+                                        <p>
+                                            <label>Create</label><br/>
+                                            <span checkbox ng-model="field.attrs.hide_create"></span>
+                                        </p>
+                                    </td>
+                                    <td><a href="#/lists/{{list.id}}/deletefield/{{field.id}}" class="btn btn-sm btn-danger">Delete</a></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-
-                    <div class="form-actions right">
-                        <a href="#/lists/{{list.id}}/newfield" class="btn btn-small btn-primary">Add field</a>
+                    <div class="form-actions">
+                        <a href="#/lists/{{list.id}}/newfield" class="btn btn-sm green">Add field</a>
                     </div>
+
                 </div>
             </div>
         </div>

@@ -1,0 +1,29 @@
+<div>
+    <h4>Bar Code Attributes</h4>
+    <dl class="dl-horizontal">
+
+        <dt>Type</dt>
+        <dd>
+            <select ng-change="barcodeTypeChanged()" ng-init="attrs.type='ean8'" ng-required="true" ng-model="attrs.type" ng-options="v for v in ['codabar', 'code11', 'code39', 'code93', 'code128', 'ean8','ean13','std25', 'int25', 'msi' ,'datamatrix']">
+            </select>
+        </dd>
+
+        <dt>Default Value</dt>
+        <dd>
+            <input type="text"  ng-model="attrs.default" />
+        </dd>
+        <dt>Maximum Length</dt>
+        <dd>
+            <input type="text" ng-disabled="attrs.type.indexOf('ean') > -1" ng-model="attrs.maxlength" />
+        </dd>
+        <dt>Minimum Length</dt>
+        <dd>
+            <input type="text" ng-disabled="attrs.type.indexOf('ean') > -1" ng-model="attrs.minlength" ng-init="attrs.minlength = 5" />
+        </dd>
+        <dt>Required</dt>
+        <dd>
+            <span checkbox ng-model="attrs.required"></span>
+        </dd>
+
+    </dl>
+</div>

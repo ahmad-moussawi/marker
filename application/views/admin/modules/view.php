@@ -1,5 +1,11 @@
+<?php
+/*
+ * @var $list Entity 
+ * @var $fields EntityField[]
+ */
+?>
 <ng-include src="'../admin/modules/getView/sidebar'"></ng-include>
-<div class="page-content <?php echo $list->attrs->cssClass ?>">
+<div class="page-content <?php echo $list->attr('cssClass') ?>">
 
     <div class="row">
         <div class="col-md-12">
@@ -25,10 +31,10 @@
             <div class="span12">
                 <dl class="dl-horizontal">
                     <dt>Id</dt>
-                    <dd>{{item.<?php echo $list->identity ?>}}</dd>
-                    <?php foreach ($list->published_fields as $field): ?>
+                    <dd>{{item.<?php echo $list->getIdentity() ?>}}</dd>
+                    <?php foreach ($fields as $field): /* @var $field EntityField */?>
                         <dt><?php echo $field->title ?></dt>
-                        <dd><?php echo Content::renderViewField($field) ?></dd>
+                        <dd><?php echo $field->RenderView() ?></dd>
                     <?php endforeach ?>
                 </dl>
             </div>
@@ -36,11 +42,11 @@
         <hr/>
         <p class="pull-right">
 
-            <?php if ($list->attrs->view_edit): ?>
-                <a class="btn btn-primary" href="#/modules/<?php echo $list->id ?>/edit/{{item.<?php echo $list->identity ?>}}" >Edit</a>
+            <?php if ($list->attr('view_edit')): ?>
+                <a class="btn btn-primary" href="#/modules/<?php echo $list->id ?>/edit/{{item.<?php echo $list->getIdentity() ?>}}" >Edit</a>
             <?php endif ?>
-            <?php if ($list->attrs->view_delete): ?>
-                <a class="btn btn-danger" href="#/modules/<?php echo $list->id ?>/delete/{{item.<?php echo $list->identity ?>}}" >Delete</a>
+            <?php if ($list->attr('view_delete')): ?>
+                <a class="btn btn-danger" href="#/modules/<?php echo $list->id ?>/delete/{{item.<?php echo $list->getIdentity() ?>}}" >Delete</a>
             <?php endif ?>
             <a class="btn" href="#/modules/<?php echo $list->id ?>/index">Back</a>
         </p>
