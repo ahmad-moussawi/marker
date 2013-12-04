@@ -1,0 +1,90 @@
+<ng-include src="'api/partials/static/sidebar'"></ng-include>
+<div class="page-content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title">Add new field</h3>
+        </div>
+    </div>
+
+
+    <ul class="page-breadcrumb breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="#/index">Dashboard</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>
+            <a href="#/entities">Entities</a>  
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>
+            <a href="#/entities/view/{{entity.id}}">{{entity.title}}</a>  
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>Field {{field.title}} <small class="muted">(New)</small></li>
+    </ul>
+
+    <div class="ng-cloak">
+        <div class="alert alert-warning" ng-show="working">
+            Working ... 
+        </div>
+
+        <div class="alert alert-success" ng-show="saved">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+            <strong>The field {{field.title}} is successfully saved</strong>
+        </div>
+
+        <div class="alert alert-danger alert-dismissable" ng-show="errors.length">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+            <strong>Oops!</strong>
+            <ul>
+                <li ng-repeat="error in errors">{{error}}</li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <form name="form">
+        <div class="row-fluid">
+            <div class="span5">
+                <dl class="dl-horizontal">
+                    <dt>Title</dt>
+                    <dd>
+                        <input type="text" ng-required="true" ng-model="field.title" />
+                    </dd>
+
+                    <dt>Internal Title</dt>
+                    <dd><input type="text" ng-model="field.internaltitle" /></dd>
+
+                    <dt>Type</dt>
+                    <dd>
+                        <select ng-model="field.typeref" 
+                                ng-options="row.typeref as row.type group by row.category for row in typesref"></select>
+                    </dd>
+
+
+                    <dt>Description</dt>
+                    <dd><textarea ng-model="field.description" ></textarea></dd>
+
+                    <dt>Is Published ?</dt>
+                    <dd><span checkbox ng-model="field.ispublished"></span></dd>
+                </dl>
+            </div>
+
+            <div ng-if="field.typeref > 0">
+                <div ng-include src="'../partials/controls/fields/' + field.typeref + '.html'"></div>
+            </div>
+        </div>
+        <pre>{{field}}</pre>
+        <pre>{{attrs}}</pre>
+
+        <hr/>
+        <p class="pull-right">
+            <button ng-disabled="working || !form.$valid" type="button" ng-click="addField()" class="btn btn-primary">Add field</button>
+            <a href="#/entities/edit/{{entity.id}}" class="btn">Back</a>
+        </p>
+    </form>
+
+</div>

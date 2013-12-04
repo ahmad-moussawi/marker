@@ -1,0 +1,71 @@
+<ng-include src="'api/partials/static/sidebar'"></ng-include>
+<div class="page-content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title">New Entity <small>Create a new datasource based on an existing table</small></h3>
+        </div>
+    </div>
+
+
+    <ul class="page-breadcrumb breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="#/index">Dashboard</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>
+            <a href="#/entities">Entities</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>New <i>From Existing Table</i> <i class="icon-angle-right"></i></li>
+        <li>Select fields types</li>
+    </ul>
+
+
+    <!--<pre>{{entity}}</pre>-->
+
+    <div class="alert alert-warning" ng-show="working">
+        Working ... 
+    </div>
+
+    <div class="alert alert-success" ng-show="saved">
+        <strong>Entity saved</strong>
+    </div>
+
+    <h2>{{entity.title}} <small>{{entity.mappedtable}}</small></h2>
+
+    <form name="form" role="form" ng-submit="save()">
+        <div class="form-body">
+            <table class="table table-bordered table-full-width">
+                <thead>
+                    <th>Field</th>
+                    <th>DB Type</th>
+                    <th>Title</th>
+                    <th>Control Type</th>
+                    <th>Description</th>
+                    <th>Attributes</th>
+                    <!--<th>Default</th>-->
+                    <th>Is Published</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="field in entity.fields">
+                        <td>{{field.internaltitle}}</td>
+                        <td>{{field.dbtype}}</td>
+                        <td><input type="text" ng-init="field.title = (field.internaltitle | camelCaseToHuman)" ng-model="field.title" class="form-control-inline" /></td>
+                        <td><span marker-typeMatcher metadata="{{field}}"></span></td>
+                        <td><textarea ng-init="field.description=''" ng-model="field.description" class="form-control-inline"></textarea></td>
+                        <td><textarea ng-model="field.attrs" marker-parseattrs class="form-control-inline"></textarea></td>
+                        <!--<td><span marker:typeDefault metadata="{{field}}"></span></td>-->
+                        <td><input type="checkbox" ng-model="field.ispublished" ng-init="field.ispublished = true"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr/>
+        <p class="pull-right">
+            <button ng-disabled="working || !form.$valid" type="submit" class="btn btn-primary">Create</button>
+            <a ng-disabled="working" class="btn" href="#/entities/existing">Back</a>
+        </p>
+    </form>
+</div>

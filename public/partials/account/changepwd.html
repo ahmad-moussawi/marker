@@ -1,0 +1,44 @@
+<div class="logo">
+    MARKER
+</div>
+<div class="content">
+    <form name="form" class="changepwd-form" ng-submit="change()" ng-cloak>
+        <div ng-show="errors.length > 0" class="ng-cloak alert alert-danger">
+            <div ng-repeat="error in errors">{{error}}</div>
+        </div>	
+        
+        <div ng-show="missMatch()" class="ng-cloak alert alert-danger">
+            Please make sure that the New Password and the Confirm Password matches
+        </div>	 
+        
+        <h3 class="form-title">Login to your account</h3>
+        
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">Old Password</label>
+            <div class="input-icon">
+                <i class="icon-user"></i>
+                <input ng-model="model.old" class="form-control placeholder-no-fix" type="password" placeholder="Old Password" ng-required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">Password</label>
+            <div class="input-icon">
+                <i class="icon-lock"></i>
+                <input ng-model="model.password"  class="form-control placeholder-no-fix" type="password"  placeholder="New Password" ng-required="true"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label visible-ie8 visible-ie9">Confirm Password</label>
+            <div class="input-icon">
+                <i class="icon-lock"></i>
+                <input ng-model="model.confirm" class="form-control placeholder-no-fix" type="password"  placeholder="Confirm Password" ng-required="true"/>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn green pull-right" ng-disabled="!form.$valid || working || missMatch()">
+                Change Password <i class="m-icon-swapright m-icon-white"></i>
+            </button> 
+        </div>
+    </form>
+    
+</div>

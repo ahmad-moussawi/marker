@@ -1,0 +1,24 @@
+<ng-include src="'api/partials/static/sidebar'"></ng-include>
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title">Settings</h3>
+        </div>
+    </div>
+
+    <ul class="page-breadcrumb breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="#/index">Dashboard</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li><a href="#">Settings</a></li>
+    </ul>
+
+    <a title="{{setting.description || ''}}" ng-repeat="setting in settings" href="#/{{setting.link}}" class="icon-btn">
+        <i class="icon-{{setting.icon}} group"></i>
+        <div>{{setting.title}}</div>
+        <!--<span class="badge badge-important">2</span>-->
+    </a>
+
+</div>

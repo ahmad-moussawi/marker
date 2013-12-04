@@ -1,0 +1,30 @@
+{
+  "name": "marker",
+  "version": "0.5.0",
+  "description": "Back office manager",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmad-moussawi/marker.git"
+  },
+  "keywords": [
+    "backoffice",
+    "cms",
+    "backend"
+  ],
+  "author": "Ahmad Moussawi <aymoussawi@gmail.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/ahmad-moussawi/marker/issues"
+  },
+  "homepage": "https://github.com/ahmad-moussawi/marker",
+	"devDependencies": {
+	    "grunt": "~0.4.1",
+	    "grunt-contrib-jshint": "~0.6.3",
+	    "grunt-contrib-nodeunit": "~0.2.0",
+	    "grunt-contrib-uglify": "~0.2.2"
+	  }
+}

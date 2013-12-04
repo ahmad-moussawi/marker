@@ -1,0 +1,55 @@
+<ng-include src="'api/partials/static/sidebar'"></ng-include>
+<div class="page-content">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title">Entities</h3>
+        </div>
+    </div>
+
+    <ul class="page-breadcrumb breadcrumb">
+        <li class="pull-right"><input type="text" ng-model="searchText.title" placeholder="Search ..." /></li>
+        <li>
+            <i class="icon-home"></i>
+            <a href="#/index">Dashboard</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>Entities</li>
+    </ul>
+
+    <a href="#/entities/create" class="btn green">
+        Add New <i class="icon-plus"></i>
+    </a>
+
+    <a href="#/entities/existing" class="btn green">
+        Add From Existing Table <i class="icon-plus"></i>
+    </a>
+
+    <p></p>
+
+    <table class="table table-hover">
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Mapped Table</th>
+            <th>Created</th>
+            <th>Published ?</th>
+            <th>Actions</th>
+        </tr>
+
+        <tr ng-repeat="entity in entities| filter:searchText">
+            <td>{{entity.id}}</td>
+            <td>{{entity.title}}</td>
+            <td>{{entity.mappedtable}}</td>
+            <td>{{entity.created_at}}</td>
+            <td>{{entity.ispublished| checkmark}}</td>
+            <td>
+                <a class="btn" ng-href="#/entities/view/{{entity.id}}" >View</a>
+                <a class="btn" ng-href="#/m/{{entity.internaltitle}}" >View Module</a>
+                <a class="btn btn-sucess" target="_blank" ng-href="../api/modules/{{entity.internaltitle}}" >JSON Api</a>
+                <a ng-if="!entity.protected" class="btn" ng-href="#/entities/edit/{{entity.id}}" >Edit</a>
+                <a ng-if="!entity.protected" class="btn btn-danger" ng-href="#/entities/delete/{{entity.id}}" >Delete</a>
+            </td>
+        </tr>
+
+    </table>
+</div>

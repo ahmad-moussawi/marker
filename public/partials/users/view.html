@@ -1,0 +1,54 @@
+<ng-include src="'api/partials/static/sidebar'"></ng-include>
+<div class="page-content">
+    
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title">{{user.login}}</h3>
+        </div>
+    </div>
+
+    <ul class="page-breadcrumb breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="#/index">Dashboard</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>
+            <a href="#/users/index">Users</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>{{user.login}}</li>
+    </ul>
+
+<form name="form" ng-show="!working">
+    <div class="row-fluid">
+        <div class="span5">
+            <dl class="dl-horizontal">
+                <dt>Login</dt>
+                <dd>
+                    {{user.login}}
+                </dd>
+                <dt>Password</dt>
+                <dd>
+                    ******
+                </dd>
+                <dt>Description</dt>
+                <dd>{{user.description}}</dd>
+            </dl>
+        </div>
+        <div class="span7">
+            <strong>Member Of:</strong>
+            <label ng-repeat="role in roles">
+                <input type="checkbox" disabled="disabled" ng-checked="user.roles.indexOf(role.id) > -1" />
+                {{role.role}}
+            </label>
+        </div>
+    </div>
+
+    <hr/>
+    <p class="pull-right">
+        <a ng-disabled="working" href="#/users/edit/{{user.id}}" class="btn btn-primary">Edit</a>
+        <a ng-disabled="working" href="#/users/index" class="btn">Back</a>
+    </p>
+</form>
+</div>

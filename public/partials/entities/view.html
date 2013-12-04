@@ -1,0 +1,57 @@
+<ng-include src="'api/partials/static/sidebar'"></ng-include>
+<div class="page-content">
+    <ul class="breadcrumb">
+        <li><a href="/ci/admin">Home</a> <span class="divider">/</span></li>
+        <li><a href="#/entities">Entities</a> <span class="divider">/</span></li>
+        <li class="active">{{entity.internaltitle}} - [{{entity.title}}]</li>
+    </ul>
+
+    <div class="row-fluid">
+        <div class="span5">
+            <dl class="dl-horizontal">
+                <dt>Title</dt>
+                <dd>{{entity.title}}</dd>
+
+                <dt>Internal Title</dt>
+                <dd>{{entity.internaltitle}}</dd>
+
+                <dt>Created</dt>
+                <dd>{{entity.created_at|| ''}}</dd>
+
+                <dt>Description</dt>
+                <dd>{{entity.description}}</dd>
+
+                <dt>Is Published ?</dt>
+                <dd>{{entity.ispublished | checkmark}}</dd>
+            </dl>
+        </div>
+        <div class="span7">
+            <strong>Entity fields</strong>
+            <p ng-show="entity.fields.length">
+                <input type="text" class="span3" ng-model="searchField" placeholder="Search the fields..."/>
+            </p>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                </tr>
+                <tr ng-repeat="field in entity.fields| filter:searchField">
+                    <td>{{field.title}}</td>
+                    <td>{{field.description}}</td>
+                    <td>{{field.definition}}</td>
+                    <td>{{field.created_at}}</td>
+                    <td>{{field.updated_at}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <hr/>
+    <p class="pull-right">
+        <a ng-if="!entity.protected" class="btn btn-primary" href="#/entities/edit/{{entity.id}}" >Edit</a>
+        <a href="#/entities" class="btn">Back</a>
+    </p>
+</div>

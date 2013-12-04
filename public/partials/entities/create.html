@@ -1,0 +1,123 @@
+<ng-include src="'api/partials/static/sidebar'"></ng-include>
+<div class="page-content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="page-title">New Entity <small>Create a new datasource table</small></h3>
+        </div>
+    </div>
+
+
+    <ul class="page-breadcrumb breadcrumb">
+        <li>
+            <i class="icon-home"></i>
+            <a href="#/index">Dashboard</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>
+            <a href="#/entities">Entities</a> 
+            <i class="icon-angle-right"></i>
+        </li>
+        <li>New</li>
+    </ul>
+
+    <div class="alert alert-warning" ng-show="working">
+        Working ... 
+    </div>
+
+    <div class="alert alert-success" ng-show="saved">
+        <strong>Entity saved</strong>
+    </div>
+
+    <form name="form" role="form" ng-submit="save()">
+        <div class="row">
+
+            <div class="col-md-8">
+                <div class="form-body">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" ng-required="true" ng-model="entity.title" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Identity</label>
+                        <input type="text" ng-required="true" ng-model="entity.identity" class="form-control" />
+                        <p class="help-block">The name of the identity column</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Internal Title</label>
+                        <input type="text" disabled="disabled" value="{{entity.title|safetitle}}" class="form-control" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea type="text" ng-model="entity.description" class="form-control"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Is Published ?</label>
+                        <span checkbox ng-model="entity.ispublished" />
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="icon-reorder"></i> Attributes
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label>Css Class Name</label>
+                                <input type="text" class="form-control" ng-model="entity.attrs.cssClass" />
+                            </div>
+                            <div class="form-group">
+                                <label class="">Available Views:</label>
+                                <div class="checkbox-entity">
+                                    <label>
+                                        <span checkbox ng-model="entity.attrs.view_create"></span> Create
+                                    </label>
+                                    <label>
+                                        <span checkbox ng-model="entity.attrs.view_edit"></span> Edit
+                                    </label>
+                                    <label>
+                                        <span checkbox ng-model="entity.attrs.view_delete"></span> Delete
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class="icon-reorder"></i> Link on Dashboard
+                        </div>
+                    </div>
+                    <div class="portlet-body form">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label>Create link ?</label>
+                                <span checkbox ng-model="entity.link.create" />
+                            </div>
+                            <div class="form-group" ng-show="entity.link.create">
+                                <label class="">Title</label>
+                                <input type="text" class="form-control" ng-model="entity.link.title" /> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions right">
+            <button ng-disabled="working || !form.$valid" type="submit" class="btn btn-primary">Save</button>
+            <a ng-disabled="working" class="btn" href="#/entities">Back</a>
+        </div>
+    </form>
+
+</div>
