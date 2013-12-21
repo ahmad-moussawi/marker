@@ -62,32 +62,30 @@ class Entity extends Eloquent {
 
         $query = DB::table($this->mappedtable);
 
+        // select the local fields
+        $columns = array("$this->mappedtable.*");
+
         // build the joins
         foreach ($this->pointerFields() as $field) {
             $parentEntity = $field->getPointedEntity();
             $parentAlias = $parentEntity->mappedtable . '_' . $this->id;
 
             $parentFields = $parentEntity->fields()->
-                            whereIn($parentEntity->identity, $field->getPointedFieldsIds())->get();
-
-            // select the local fields
-            $query = $query->select("$this->mappedtable.*");
+                            whereIn(
+                                    $parentEntity->identity, $field->getPointedFieldsIds()
+                            )->get();
 
             // select the parent fields
             foreach ($parentFields as $parentField) {
-                //$parentFieldAlias1 = $parentEntity->internaltitle. '>' . $parentField->internaltitle;
-                //$query = $query->addSelect("$parentAlias.$parentField->internaltitle as $parentFieldAlias1");
-
                 $parentFieldAlias = "{$parentEntity->internaltitle}>{$parentField->internaltitle}";
-                $query = $query->addSelect("$parentAlias.$parentField->internaltitle as $parentFieldAlias");
+                $columns[] = "$parentAlias.$parentField->internaltitle as $parentFieldAlias";
             }
 
-
-
-            $query = $query->leftjoin(
+            $query->leftjoin(
                     "$parentEntity->mappedtable as $parentAlias", "$this->mappedtable.$field->internaltitle", '=', "$parentAlias.$parentEntity->identity");
         }
 
+        $query->select($columns);
         return $query;
     }
 
