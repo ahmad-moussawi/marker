@@ -7,6 +7,9 @@ app.controller('AccLoginCtrl', ['$scope', '$http', 'AuthService', function($scop
 
         $('body').addClass('login');
 
+        $scope.logo = project.logo;
+        $scope.projectTitle = project.title;
+
         $scope.errors = [];
         $scope.trial = 0;
         $scope.signin = function() {
@@ -35,6 +38,9 @@ app.controller('AccChangePwdCtrl', ['$scope', '$http', '$location', 'AuthService
         $('body').addClass('login');
         $scope.errors = [];
         var count = 0;
+
+        $scope.logo = project.logo;
+        $scope.projectTitle = project.title;
 
         $scope.missMatch = function() {
             if ($scope.model && $scope.model.password && $scope.model.confirm) {

@@ -25,7 +25,11 @@ class AuthController extends \BaseController {
         Auth::logout();
         return Response::json(true);
     }
-
+    
+    public function getHash($str){
+        return Hash::make($str);
+    }
+    
     public function postCheck() {
         if (Auth::check()) {
             return Response::json(array('status' => true, 'member' => Auth::user()->toArray()));

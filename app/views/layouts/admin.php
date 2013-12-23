@@ -35,6 +35,7 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
         <?php echo HTML::style('assets/admin/assets/css/style-responsive.css') ?>
         <?php echo HTML::style('assets/admin/assets/css/plugins.css') ?>
         <?php echo HTML::style('assets/admin/assets/css/pages/about-us.css') ?>
+        <?php echo HTML::style('assets/admin/assets/css/pages/error.css') ?>
         <?php echo HTML::style('assets/admin/assets/css/themes/default.css') ?>
         <?php echo HTML::style('assets/admin/assets/css/pages/login.css') ?>
         <?php echo HTML::style('assets/admin/assets/css/custom.css') ?>
@@ -45,18 +46,25 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
         <link rel="shortcut icon" href="favicon.ico" />
 
         <script>
-            var site = {name: '<?php echo Config::get('marker.project_title') ?>'};
-            var path = {
-                base: '<?php echo URL::to('/') ?>/',
-                admin: '<?php echo URL::to('admin') ?>/',
-                api: '<?php echo URL::to('/api') ?>/',
-                partials: '<?php echo URL::to('partials') ?>/'
+            var site = {
+                name: '<?php echo Config::get('marker.project_title') ?>'
             };
+            var path =
+                    {
+                        base: '<?php echo URL::to('/') ?>/',
+                        admin: '<?php echo URL::to('admin') ?>/',
+                        api: '<?php echo URL::to('/api') ?>/',
+                        partials: '<?php echo URL::to('partials') ?>/'
+                    };
+            var project = {
+                title: '<?php echo Config::get('marker.project_title') ?>',
+                logo: '<?php echo Config::get('marker.logo') ?>'
+            }
         </script>
     </head>
     <!-- END HEAD -->
     <!-- BEGIN BODY -->
-    <body class="page-header-fixed <?php // echo Auth::IsUserInRole('super') ? '' : 'page-sidebar-closed'     ?>">
+    <body class="page-header-fixed <?php // echo Auth::IsUserInRole('super') ? '' : 'page-sidebar-closed'                 ?>">
 
         <div id="loading-indicator" class="progress progress-striped active">
             <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">

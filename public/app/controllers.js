@@ -1,9 +1,6 @@
 'use strict';
-
 /* Controllers */
-
 var app = angular.module('myApp.controllers', []);
-
 
 ///////////////
 // Index
@@ -16,7 +13,6 @@ app.controller('IndexCtrl', ['$scope', '$http', function($scope, $http) {
             });
         });
     }]);
-
 
 
 app.controller('TableCtrl', function($scope, $filter, ngTableParams) {
@@ -58,22 +54,17 @@ app.controller('TableCtrl', function($scope, $filter, ngTableParams) {
 });
 
 
-
-
 ///////////////
 // Account
 ///////////////
 
 app.controller('AccLogoutCtrl', ['$scope', '$http', '$location', 'AuthService', function($scope, $http, $location, auth) {
         $scope.done = false;
-        $scope.clazz = 'warning';
-        $scope.message = 'Logging out now';
         $http.post(path.base + 'auth/logout').success(function(r) {
             $scope.done = true;
             auth.member = null;
             auth.isLogged = false;
-            $scope.clazz = 'success';
-            $scope.message = 'Logged out ☺';
+            $location.path('account/login');
         });
 
     }]);

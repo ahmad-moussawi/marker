@@ -13,7 +13,7 @@ var routes = [
     ['/m/:id/delete/:rowId', path.partials + 'modules/blank.html', 'ModulesDeleteCtrl'],
     // Account
     ['/account/login', path.partials + 'account/login.html', 'AccLoginCtrl'],
-    ['/account/logout', path.partials + 'account/logout.html', 'AccLogoutCtrl'],
+    ['/account/logout', path.partials + 'modules/blank.html', 'AccLogoutCtrl'],
     ['/account/changepwd', path.partials + 'account/changepwd.html', 'AccChangePwdCtrl'],
     // Entities
     ['/entities', path.partials + 'entities/index.html', 'EntitiesIndexCtrl'],

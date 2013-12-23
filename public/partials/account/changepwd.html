@@ -1,5 +1,6 @@
 <div class="logo">
-    MARKER
+    <img ng-src="{{logo}}" />
+    <h2>{{projectTitle}}</h2>
 </div>
 <div class="content">
     <form name="form" class="changepwd-form" ng-submit="change()" ng-cloak>
@@ -7,11 +8,11 @@
             <div ng-repeat="error in errors">{{error}}</div>
         </div>	
         
-        <div ng-show="missMatch()" class="ng-cloak alert alert-danger">
-            Please make sure that the New Password and the Confirm Password matches
+        <div ng-show="model.password !== model.confirm" class="ng-cloak alert alert-danger">
+            Confirm password and password are different
         </div>	 
         
-        <h3 class="form-title">Login to your account</h3>
+        <h3 class="form-title">Change your password</h3>
         
         <div class="form-group">
             <label class="control-label visible-ie8 visible-ie9">Old Password</label>
@@ -35,6 +36,7 @@
             </div>
         </div>
         <div class="form-actions">
+            <a class="btn btn-default" href="#">Cancel</a>
             <button type="submit" class="btn green pull-right" ng-disabled="!form.$valid || working || missMatch()">
                 Change Password <i class="m-icon-swapright m-icon-white"></i>
             </button> 
